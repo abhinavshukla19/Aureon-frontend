@@ -1,0 +1,32 @@
+button {
+    width: 100%;
+    height: 48px;
+    margin-top: 12px;
+  
+    background: #7c2ae8;
+    border: none;
+    border-radius: 8px;
+  
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+  
+    cursor: pointer;
+    transition: background 0.25s ease,
+                transform 0.15s ease,
+                box-shadow 0.2s ease;
+  }
+  
+  button:hover:not(:disabled) {
+    background: #6a22cc;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(124, 42, 232, 0.45);
+  }
+  
+  button:disabled {
+    background: #3a3a55;
+    color: #9a9aab;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  

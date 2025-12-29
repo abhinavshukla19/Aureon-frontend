@@ -1,0 +1,110 @@
+.form-div {
+    width: 100%;
+    max-width: 420px;
+  
+    display: flex;
+    flex-direction: column;
+  
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  
+  .signin-text {
+    margin-bottom: 24px;
+  }
+  
+  .signin-main-head {
+    font-size: 32px;      /* Bigger, like reference */
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+  }
+  
+  button {
+    margin-top: 0;
+    height: 48px;
+  
+    background: #7c2ae8;
+    border-radius: 10px;
+  
+    font-size: 15px;
+    font-weight: 600;
+    color: #ffffff;
+  
+    transition: background 0.2s ease,
+                transform 0.15s ease,
+                box-shadow 0.2s ease;
+  }
+  
+  button:hover:not(:disabled) {
+    background: #6a22cc;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(124, 42, 232, 0.45);
+  }
+  
+  button:disabled {
+    background: #3a3a55;
+    color: #9a9aab;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  
+  /* =========================
+     FORM OPTIONS (Remember me & Need help)
+  ========================= */
+  .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #ffffff;
+    cursor: pointer;
+  }
+  
+  .remember-me input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #7c2ae8;
+  }
+  
+  .remember-me span {
+    user-select: none;
+  }
+  
+  .need-help {
+    font-size: 14px;
+    color: #b88cff;
+    text-decoration: none;
+  }
+  
+  .need-help:hover {
+    text-decoration: underline;
+    color: #c9a5ff;
+  }
+  
+  .form-div footer {
+    margin-top: 22px;
+    font-size: 13px;
+    color: #b3b3b3;
+  }
+  
+  .form-div footer a {
+    color: #b88cff;
+    text-decoration: none;
+  }
+  
+  .form-div footer a:hover {
+    text-decoration: underline;
+  }
+  
