@@ -1,5 +1,5 @@
-import { Signin_form } from "../../../Combiner/signin-form/signin_form";
-import { Appname } from "../../../Global-exports/global-exports";
+import { Signin_form } from "../../../../Combiner/signin-form/signin_form";
+import { Appname } from "../../../../Global-exports/global-exports";
 import Link from "next/link";
 import "./signin.css";
 
