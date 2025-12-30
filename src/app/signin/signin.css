@@ -2,23 +2,25 @@
    RESET
 ========================= */
 * {
-    box-sizing: border-box;
-  }
-  
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-    font-family: "Inter", Arial, Helvetica, sans-serif;
-    background: #000;
-  }
-  
-  #__next {
-    min-height: 100vh;
-  }
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #000;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#__next {
+  min-height: 100vh;
+}
   
   /* =========================
      PAGE FADE
@@ -63,49 +65,138 @@
     }
   }
   
-  /* =========================
+/* =========================
      OVERLAY
   ========================= */
-  .main-frame-div::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at 30% 30%, rgba(90, 30, 160, 0.35), rgba(0, 0, 0, 0.92)),
-      linear-gradient(to bottom, rgba(0,0,0,0.65), rgba(0,0,0,0.95));
-    z-index: 0;
-  }
-  
-  .main-frame-div > * {
-    position: relative;
-    z-index: 1;
-  }
-  
-  /* =========================
+.main-frame-div::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,0.2) 0%,
+      rgba(0,0,0,0.6) 30%,
+      rgba(0,0,0,0.95) 100%
+    ),
+    radial-gradient(
+      circle at 30% 30%,
+      rgba(90, 30, 160, 0.25),
+      rgba(0, 0, 0, 0.92)
+    );
+  z-index: 0;
+}
+
+.main-frame-div > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* =========================
      HEADER
   ========================= */
-  .header-div {
-    padding: 26px 48px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #fff;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
+.header-div {
+  position: relative;
+  z-index: 5;
+  padding: 32px 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  transition: padding 0.3s ease;
+}
+
+/* brand container */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: #ffffff;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+
+.brand:hover {
+  transform: scale(1.02);
+}
+
+.brand span {
+  background: linear-gradient(135deg, #ffffff 0%, #e0d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo {
+  width: 42px;
+  height: 42px;
+  display: block;
+  filter: drop-shadow(0 2px 8px rgba(120, 80, 255, 0.3));
+  transition: transform 0.3s ease, filter 0.3s ease;
+  animation: logoGlow 3s ease-in-out infinite;
+  box-shadow: 
+    0 0 20px rgba(120, 80, 255, 0.4),
+    0 0 40px rgba(120, 80, 255, 0.2),
+    0 0 60px rgba(120, 80, 255, 0.1);
+  border-radius: 50%;
+  padding: 2px;
+}
+
+@keyframes logoGlow {
+  0%, 100% {
+    filter: drop-shadow(0 2px 8px rgba(120, 80, 255, 0.4)) drop-shadow(0 0 12px rgba(120, 80, 255, 0.3));
+    box-shadow: 
+      0 0 20px rgba(120, 80, 255, 0.4),
+      0 0 40px rgba(120, 80, 255, 0.2),
+      0 0 60px rgba(120, 80, 255, 0.1);
   }
-  
-  .logo {
-    width: 30px;
-    height: 30px;
-    display: block;
-    color: #ffffff;
+  50% {
+    filter: drop-shadow(0 2px 12px rgba(120, 80, 255, 0.6)) drop-shadow(0 0 20px rgba(120, 80, 255, 0.4));
+    box-shadow: 
+      0 0 30px rgba(120, 80, 255, 0.6),
+      0 0 50px rgba(120, 80, 255, 0.3),
+      0 0 70px rgba(120, 80, 255, 0.15);
   }
-  
-  .header-div h1 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: 600;
-  }
+}
+
+.brand:hover .logo {
+  transform: rotate(5deg) scale(1.05);
+  filter: drop-shadow(0 4px 16px rgba(120, 80, 255, 0.7)) drop-shadow(0 0 24px rgba(120, 80, 255, 0.5));
+  box-shadow: 
+    0 0 35px rgba(120, 80, 255, 0.7),
+    0 0 55px rgba(120, 80, 255, 0.4),
+    0 0 75px rgba(120, 80, 255, 0.2);
+}
+
+/* sign-up link (top right) */
+.signup-btn {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 11px 24px;
+  border-radius: 8px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.signup-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+.signup-btn:active {
+  transform: translateY(0);
+}
   
   /* =========================
      CENTER AREA
@@ -122,59 +213,122 @@
     justify-content: center;
   }
   
-  /* =========================
+/* =========================
      CARD ANIMATION
   ========================= */
-  @keyframes cardEnter {
-    from {
-      opacity: 0;
-      transform: translateY(30px) scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
   
-  /* =========================
-     SIGNIN / SIGNUP CARD
+/* =========================
+     SIGNIN / SIGNUP CARD - GLASSMORPHIC
   ========================= */
-  .signin-content {
-    width: 100%;
-    max-width: 420px;
+.signin-content {
+  width: 100%;
+  max-width: 480px;
+  background: rgba(20, 20, 30, 0.4);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  color: #fff;
+  padding: 48px 40px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 2px 8px rgba(255, 255, 255, 0.05) inset,
+    0 20px 60px rgba(0, 0, 0, 0.6),
+    0 0 80px rgba(120, 80, 255, 0.1);
+  animation: cardEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.signin-content::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  opacity: 0.6;
+}
+
+.signin-content::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(120, 80, 255, 0.1) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.signin-content:hover {
+  transform: translateY(-4px);
+  background: rgba(25, 25, 35, 0.45);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+    0 2px 12px rgba(255, 255, 255, 0.08) inset,
+    0 24px 72px rgba(0, 0, 0, 0.7),
+    0 0 100px rgba(120, 80, 255, 0.15);
+}
+
+.signin-content:hover::after {
+  opacity: 1;
+}
+
+/* Ensure form content appears above pseudo-elements */
+.signin-content .form-div,
+.signin-content .signin-card-footer {
+  position: relative;
+  z-index: 1;
+}
   
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  
-    color: #fff;
-  
-    padding: 36px;
-    border-radius: 18px;
-  
-    box-shadow: 0 35px 90px rgba(0, 0, 0, 0.95);
-  
-    animation: cardEnter 0.7s ease-out forwards;
-  }
-  
-   
-  
-  /* =========================
+/* =========================
      HEADINGS
   ========================= */
-  .signin-content h1,
-  .signup-main-head {
-    margin: 0 0 14px;
-    font-size: 34px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-  }
-  
-  .signup-sub-head {
-    margin-bottom: 22px;
-    font-size: 14px;
-    color: #b3b3b3;
-  }
+.signin-content .main-heading {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 0%, #e8d9ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.signup-sub-head {
+  margin-bottom: 22px;
+  font-size: 14px;
+  color: #b3b3b3;
+}
   
   /* =========================
      INPUTS
@@ -271,161 +425,218 @@
     box-shadow: none;
   }
   
-  /* =========================
+/* =========================
      CARD FOOTER
   ========================= */
-  .signin-content footer {
-    margin-top: 22px;
-    font-size: 13px;
-    color: #b3b3b3;
-  }
+.signin-card-footer {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signin-footer-text {
+  font-size: 14px;
+  color: #b8b8c5;
+  text-align: center;
+  margin: 0;
+}
+
+.signin-link {
+  color: #9b7bff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.signin-link:hover {
+  color: #b8a0ff;
+  text-decoration: underline;
+}
+
+.paragraph-text {
+  font-size: 12px;
+  line-height: 1.5;
+  margin: 0;
+  color: #8e8ea3;
+  text-align: center;
+}
+
+.terms-link {
+  color: #9b7bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.terms-link:hover {
+  color: #b8a0ff;
+  text-decoration: underline;
+}
   
-  .signin-content a {
-    color: #b88cff;
-    text-decoration: none;
-  }
-  
-  .signin-content a:hover {
-    text-decoration: underline;
-  }
-  
-  .paragraph-text {
-    margin-top: 12px;
-    font-size: 11px;
-    color: #888;
-  }
-  
-  .paragraph-text a {
-    color: #888;
-    text-decoration: underline;
-  }
-  
-  .paragraph-text a:hover {
-    color: #b88cff;
-  }
-  
-  /* =========================
+/* =========================
      BOTTOM FOOTER
   ========================= */
-  .footer {
-    padding: 36px 48px;
-    background: rgba(0, 0, 0, 0.8);
-    color: #8c8c8c;
-    font-size: 13px;
-  }
+.footer {
+  text-align: center;
+  padding: 48px 20px 36px;
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contact-text {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin: 0 0 24px 0;
+}
+
+.contact-link {
+  color: #9b7bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.contact-link:hover {
+  color: #b8a0ff;
+  text-decoration: underline;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.footer-links-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px 24px;
+}
+
+.footer-link {
+  font-size: 13px;
+  color: #8c8c8c;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.footer-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #9b7bff;
+  transition: width 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #b8a0ff;
+}
+
+.footer-link:hover::after {
+  width: 100%;
+}
   
-  .foot,
-  .foot2 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px;
-    margin-bottom: 16px;
-  }
-  
-  .contact {
-    margin-bottom: 18px;
-  }
-  
-  .footer-links-container {
-    display: grid;
-    grid-template-columns: auto auto;
-    gap: 80px;
-    margin-bottom: 20px;
-  }
-  
-  .footer-column {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-  
-  .footer-column a {
-    color: #8c8c8c;
-    text-decoration: none;
-    font-size: 13px;
-  }
-  
-  .footer-column a:hover {
-    text-decoration: underline;
-  }
-  
-  .language-selector {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #8c8c8c;
-    font-size: 13px;
-    cursor: pointer;
-    padding: 8px 12px;
-    border: 1px solid #8c8c8c;
-    border-radius: 4px;
-    width: fit-content;
-    margin-top: 16px;
-  }
-  
-  .language-selector:hover {
-    color: #ffffff;
-    border-color: #ffffff;
-  }
-  
-  .language-selector svg:first-child {
-    width: 16px;
-    height: 16px;
-  }
-  
-  .language-selector svg:last-child {
-    width: 12px;
-    height: 12px;
-    margin-left: auto;
-  }
-  
-  .footer a {
-    color: #8c8c8c;
-    text-decoration: none;
-  }
-  
-  .footer a:hover {
-    text-decoration: underline;
-  }
-  
-  /* =========================
+/* =========================
      MOBILE
   ========================= */
-  @media (max-width: 768px) {
-    .header-div {
-      padding: 16px 20px;
-    }
-  
-    .header-div h1 {
-      font-size: 18px;
-    }
-  
-    .signin-content {
-      max-width: 94%;
-      padding: 24px;
-    }
-  
-    .signin-content h1 {
-      font-size: 26px;
-    }
-  
-    button {
-      height: 44px;
-      font-size: 15px;
-    }
-  
-    .footer {
-      padding: 24px 20px;
-    }
+@media (max-width: 768px) {
+  .header-div {
+    padding: 24px 20px;
   }
-  
-  /* =========================
+
+  .brand {
+    font-size: 22px;
+    gap: 10px;
+  }
+
+  .logo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .signup-btn {
+    padding: 9px 18px;
+    font-size: 14px;
+  }
+
+  .signin-content {
+    max-width: 100%;
+    padding: 32px 24px;
+    border-radius: 16px;
+  }
+
+  .signin-content .main-heading {
+    font-size: 28px;
+  }
+
+  button {
+    height: 48px;
+    font-size: 15px;
+  }
+
+  .signin-card-footer {
+    margin-top: 24px;
+    padding-top: 20px;
+    gap: 10px;
+  }
+
+  .paragraph-text {
+    font-size: 11px;
+  }
+
+  .footer-links-row {
+    gap: 16px 20px;
+  }
+
+  .footer-link {
+    font-size: 12px;
+  }
+
+  .footer {
+    padding: 36px 16px 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-div {
+    padding: 20px 16px;
+  }
+
+  .brand {
+    font-size: 20px;
+  }
+
+  .logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .signin-content {
+    padding: 28px 20px;
+  }
+
+  .footer-links-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* =========================
      ACCESSIBILITY
   ========================= */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation: none !important;
-      transition: none !important;
-    }
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
   }
+}
   

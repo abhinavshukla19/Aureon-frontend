@@ -19,7 +19,7 @@
   }
   
   button:disabled {
-    background: #3a3a55;
+    background: rgba(124, 42, 232, 0.35);
     color: #9a9aab;
     cursor: not-allowed;
     box-shadow: none;

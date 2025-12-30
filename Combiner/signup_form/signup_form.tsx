@@ -14,9 +14,9 @@ export const Signup_form = () => {
 
   return (
     <form className="form-div">
-      <h1 className="main-heading">Unlimited movies, TV shows, and more.</h1>
+      <h1 className="main-heading">Start your streaming journey</h1>
       <p className="sub-para">
-        Create your account and start watching today.
+        Create your account in seconds and dive into a world of premium content.
       </p>
 
       <Input

@@ -1,26 +1,27 @@
 .form-div {
-    width: 100%;
-    max-width: 420px;
-  
-    display: flex;
-    flex-direction: column;
-  
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-    box-shadow: none;
-  }
-  
-  .signin-text {
-    margin-bottom: 24px;
-  }
-  
-  .main-heading {
-    font-size: 32px;      /* Bigger, like reference */
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0;
-  }
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  gap: 20px;
+}
+
+.signin-text {
+  margin-bottom: 8px;
+}
+
+.main-heading {
+  font-size: 32px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+}
   
   button {
     margin-top: 0;
@@ -51,60 +52,71 @@
     box-shadow: none;
   }
   
-  /* =========================
+/* =========================
      FORM OPTIONS (Remember me & Need help)
   ========================= */
-  .form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 16px;
-    margin-bottom: 16px;
-  }
-  
-  .remember-me {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    color: #ffffff;
-    cursor: pointer;
-  }
-  
-  .remember-me input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    accent-color: #7c2ae8;
-  }
-  
-  .remember-me span {
-    user-select: none;
-  }
-  
-  .need-help {
-    font-size: 14px;
-    color: #b88cff;
-    text-decoration: none;
-  }
-  
-  .need-help:hover {
-    text-decoration: underline;
-    color: #c9a5ff;
-  }
-  
-  .form-div footer {
-    margin-top: 22px;
-    font-size: 13px;
-    color: #b3b3b3;
-  }
-  
-  .form-div footer a {
-    color: #b88cff;
-    text-decoration: none;
-  }
-  
-  .form-div footer a:hover {
-    text-decoration: underline;
-  }
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.remember-me:hover {
+  opacity: 0.9;
+}
+
+.remember-me input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #7c2ae8;
+  transition: transform 0.2s ease;
+}
+
+.remember-me input[type="checkbox"]:hover {
+  transform: scale(1.1);
+}
+
+.remember-me span {
+  user-select: none;
+}
+
+.need-help {
+  font-size: 14px;
+  color: #9b7bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.need-help:hover {
+  color: #b8a0ff;
+  text-decoration: underline;
+}
+
+.form-div footer {
+  margin-top: 22px;
+  font-size: 13px;
+  color: #b3b3b3;
+}
+
+.form-div footer a {
+  color: #b88cff;
+  text-decoration: none;
+}
+
+.form-div footer a:hover {
+  text-decoration: underline;
+}
   
