@@ -1,0 +1,409 @@
+/* ===== Page wrapper ===== */
+.subs-main-div {
+  padding: 40px 60px;
+  min-height: 100vh;
+  background: radial-gradient(
+    ellipse at top,
+    rgba(24, 39, 114, 0.25),
+    rgba(5, 1, 1, 0.95)
+  );
+  color: #ffffff;
+  animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Header text ===== */
+.subs-head-text {
+  margin-bottom: 40px;
+}
+
+.subs-head-text h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subs-head-para {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+/* ===== Current Plan Card ===== */
+.subs-current-plan {
+  margin-top: 32px;
+  margin-bottom: 48px;
+  padding: 28px 32px;
+
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(25, 18, 45, 0.95),
+    rgba(15, 10, 30, 0.98)
+  );
+
+  border-radius: 16px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subs-current-plan:hover {
+  border-color: rgba(168, 85, 247, 0.5);
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba(168, 85, 247, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+
+/* ===== Icon ===== */
+.subs-logo {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 12px;
+
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+}
+
+/* ===== Text block ===== */
+.subs-current-overview {
+  flex: 1;
+}
+
+.subs-current-text {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.subs-current-price {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* ===== Active badge ===== */
+.subs-current-active-degine {
+  padding: 8px 16px;
+  border-radius: 999px;
+
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  box-shadow: 
+    0 0 15px rgba(34, 197, 94, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  
+  position: relative;
+}
+
+.subs-current-active-degine::before {
+  content: "•";
+  font-size: 16px;
+  margin-right: 2px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ===== Feature Comparison Section ===== */
+.feature-comparison-section {
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
+
+.comparison-heading {
+  font-size: 32px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 28px;
+  letter-spacing: -0.3px;
+}
+
+.comparison-table {
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(25, 18, 45, 0.95),
+    rgba(15, 10, 30, 0.98)
+  );
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.comparison-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.comparison-row.header-row {
+  background: rgba(124, 58, 237, 0.2);
+  font-weight: 600;
+}
+
+.comparison-cell {
+  padding: 18px 24px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  background: rgba(25, 18, 45, 0.95);
+  transition: background 0.2s ease;
+}
+
+.comparison-row:not(.header-row):hover .comparison-cell {
+  background: rgba(35, 25, 60, 0.98);
+}
+
+.comparison-row.header-row .comparison-cell {
+  background: rgba(124, 58, 237, 0.15);
+  color: #ffffff;
+}
+
+.comparison-cell.highlight {
+  color: #a855f7;
+  font-weight: 600;
+}
+
+.comparison-row.header-row .comparison-cell.highlight {
+  background: rgba(124, 58, 237, 0.3);
+}
+
+/* ===== Billing Section ===== */
+.billing-section {
+  margin-top: 50px;
+  margin-bottom: 40px;
+}
+
+.billing-heading {
+  font-size: 32px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 28px;
+  letter-spacing: -0.3px;
+}
+
+.billing-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 28px 32px;
+  background: linear-gradient(
+    135deg,
+    rgba(25, 18, 45, 0.95),
+    rgba(15, 10, 30, 0.98)
+  );
+  border-radius: 16px;
+  border: 1px solid rgba(168, 85, 247, 0.3);
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.billing-content:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 
+    0 15px 50px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(168, 85, 247, 0.2);
+}
+
+.billing-card-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.billing-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(168, 85, 247, 0.15);
+  color: #a855f7;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+}
+
+.billing-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.billing-card-text {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.billing-card-expiry {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.billing-actions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.billing-history-btn {
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.billing-history-btn:hover {
+  color: #ffffff;
+}
+
+.update-method-btn {
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 15px rgba(124, 58, 237, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.update-method-btn:hover {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  box-shadow: 
+    0 6px 20px rgba(124, 58, 237, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.update-method-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== Cancel Section ===== */
+.cancel-section {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}
+
+.cancel-link {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.cancel-link:hover {
+  color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 768px) {
+  .subs-main-div {
+    padding: 24px 16px;
+  }
+
+  .subs-head-text h1 {
+    font-size: 28px;
+  }
+
+  .subs-current-plan {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .subs-current-active-degine {
+    align-self: flex-start;
+  }
+
+  .comparison-table {
+    overflow-x: auto;
+  }
+
+  .comparison-row {
+    min-width: 600px;
+  }
+
+  .billing-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .billing-actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .billing-history-btn,
+  .update-method-btn {
+    width: 100%;
+  }
+}

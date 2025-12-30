@@ -1,0 +1,151 @@
+.plan-card {
+  position: relative;
+  width: 300px;
+  padding: 32px;
+  border-radius: 18px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(35, 25, 60, 0.98),
+    rgba(20, 15, 35, 0.98)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.plan-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(168, 85, 247, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Highlighted (Standard) */
+.plan-card.current {
+  border: 2px solid #7c3aed;
+  box-shadow: 
+    0 0 40px rgba(124, 58, 237, 0.5),
+    0 8px 30px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: linear-gradient(
+    180deg,
+    rgba(45, 30, 75, 0.98),
+    rgba(25, 18, 45, 0.98)
+  );
+}
+
+.plan-card.current:hover {
+  box-shadow: 
+    0 0 50px rgba(124, 58, 237, 0.6),
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* CURRENT PLAN pill */
+.current-pill {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 18px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: white;
+  border-radius: 999px;
+  box-shadow: 
+    0 4px 15px rgba(124, 58, 237, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Premium badge */
+.premium-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 16px;
+}
+
+/* Name & price */
+.plan-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.plan-price {
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.plan-price span {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 4px;
+}
+
+/* Features */
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+}
+
+.plan-features li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.plan-features svg {
+  color: #7c3aed;
+}
+
+/* Button */
+.plan-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  color: white;
+  box-shadow: 
+    0 4px 15px rgba(124, 58, 237, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.plan-btn:hover:not(.disabled) {
+  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
+  box-shadow: 
+    0 6px 20px rgba(124, 58, 237, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.plan-btn:active:not(.disabled) {
+  transform: translateY(0);
+}
+
+.plan-btn.disabled {
+  background: rgba(255, 255, 255, 0.12);
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
