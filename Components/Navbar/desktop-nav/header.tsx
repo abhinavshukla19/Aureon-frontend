@@ -1,33 +1,34 @@
 "use client"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Appname, navItems } from "../../../Global-exports/global-exports"
 import "./header.css"
 
 
 export const Main_header=()=>{
+    const pathname = usePathname()
     
     return(
         <>
         <div className="main-header-div">
-            <div className="brand">
+            <Link href="/" className="brand">
                 <img src="/aureon-logo-icon.svg" alt="Aureon logo" className="logo" />
                 <span>{Appname}</span>
-            </div>
+            </Link>
             <div className="main-header-elements">
-                <div className="element-header">
-                <Link href={navItems[2].path}> {navItems[2].name}</Link>
-                </div>
-                <div className="element-header">
-                <Link href={navItems[1].path}> {navItems[1].name}</Link>
-                </div>
-                <div className="element-header">
-                <Link href={navItems[0].path}> {navItems[0].name}</Link>
-                </div>
-                <div className="element-header">
-                <Link href={navItems[3].path}> {navItems[3].name}</Link>
-                </div>
-                <div className="profile-element-header">
-                <Link href={navItems[4].path}>😊</Link>
+                {navItems.slice(0, 4).map((item, index) => {
+                    const isActive = pathname === item.path || 
+                        (item.path === "/" && pathname === "/") ||
+                        (item.path !== "/" && pathname?.startsWith(item.path));
+                    
+                    return (
+                        <div key={index} className={`element-header ${isActive ? "active" : ""}`}>
+                            <Link href={item.path}>{item.name}</Link>
+                        </div>
+                    );
+                })}
+                <div className={`profile-element-header ${pathname === navItems[4].path ? "active" : ""}`}>
+                    <Link href={navItems[4].path}>😊</Link>
                 </div>
             </div>
         </div>
