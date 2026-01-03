@@ -6,20 +6,14 @@
   top: 0;
   z-index: 1000;
   
-  background: linear-gradient(
-    180deg,
-    rgba(11, 11, 15, 0.95) 0%,
-    rgba(15, 10, 26, 0.98) 50%,
-    rgba(11, 11, 15, 0.95) 100%
-  );
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 
-    0 4px 20px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(124, 42, 232, 0.05) inset;
+    0 4px 24px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
   
   padding: 16px 48px;
   transition: all 0.3s ease;
@@ -35,10 +29,10 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(124, 42, 232, 0.4),
+    rgba(124, 42, 232, 0.5),
     transparent
   );
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .main-header-elements {
@@ -203,10 +197,11 @@
   transition: all 0.3s ease;
   cursor: pointer;
   text-decoration: none;
+  position: relative;
 }
 
 .brand:hover {
-  transform: translateX(2px);
+  transform: translateY(-1px);
   color: #ffffff;
 }
 
@@ -214,13 +209,13 @@
   width: 32px;
   height: 32px;
   object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(124, 42, 232, 0.3));
+  filter: drop-shadow(0 2px 8px rgba(124, 42, 232, 0.4));
   transition: all 0.3s ease;
 }
 
 .brand:hover .logo {
-  filter: drop-shadow(0 4px 12px rgba(124, 42, 232, 0.5));
-  transform: scale(1.05);
+  filter: drop-shadow(0 4px 16px rgba(124, 42, 232, 0.6));
+  transform: scale(1.08) rotate(2deg);
 }
 
 /* =========================
@@ -238,12 +233,13 @@
   }
 
   .element-header a {
-    padding: 8px 14px;
+    padding: 8px 16px;
     font-size: 13px;
   }
 
   .brand {
     font-size: 18px;
+    gap: 10px;
   }
 
   .brand .logo {
@@ -256,6 +252,7 @@
 @media (max-width: 768px) {
   .main-header-div {
     padding: 12px 20px;
+    justify-content: center;
   }
 
   .main-header-elements {
@@ -263,13 +260,14 @@
   }
 
   .brand {
-    font-size: 16px;
+    font-size: 18px;
     gap: 10px;
+    margin: 0 auto;
   }
 
   .brand .logo {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 }
 
@@ -277,15 +275,17 @@
 @media (max-width: 480px) {
   .main-header-div {
     padding: 10px 16px;
+    justify-content: center;
   }
 
   .brand {
-    font-size: 15px;
-    gap: 8px;
+    font-size: 17px;
+    gap: 9px;
+    margin: 0 auto;
   }
 
   .brand .logo {
-    width: 22px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
   }
 }
