@@ -1,8 +1,15 @@
+"use client";
 import { Button } from "../../../../Components/button/button";
 import { Settings as SettingsIcon, Crown, Shield, Lock } from "lucide-react";
 import "./settings.css";
 
 const Settings = () => {
+
+
+  const handleSubscriptionbutton = () => {
+    window.location.href = "/subscription";
+  };
+
   return (
     <div className="setting-main-div">
       {/* HEADER */}
@@ -40,7 +47,7 @@ const Settings = () => {
         </div>
 
         <div className="button-to-subscription-div">
-          <Button buttonname="Go to Subscription Page"/>
+          <Button onclick={handleSubscriptionbutton} buttonname="Go to Subscription Page"/>
         </div>
       </div>
 

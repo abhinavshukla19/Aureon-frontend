@@ -38,6 +38,13 @@ export const Continue_watching=()=>{
       episode:null,
       progress:81,
       url: "https://encrypted-tbn0.gstatic.com/https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ9hWNPJHpDxC3mLIrh3POavCywM4NhwcIIQ&s?q=tbn:ANd9GcTl7iX_Y-7TlMLT1_gpp6sdlv0KCw3GhJTLrQ&s",
+    },
+    {
+      name: "Dhurendhar",
+      time: "3hr 39min",
+      episode:null,
+      progress:81,
+      url: "https://images.moneycontrol.com/static-mcnews/2025/07/20250707120301_dhss.jpg?impolicy=website&width=770&height=431",
     }
   ];
 

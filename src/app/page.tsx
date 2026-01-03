@@ -7,11 +7,11 @@ import { Topfive } from "../../Components/topten-movies/topfive";
 
 export default function Home() {
   return (
-    <>
+    <main style={{ width: '100%', overflowX: 'hidden' }}>
       <Header></Header>
       <Hero_section></Hero_section>
       <Continue_watching></Continue_watching>
       <Topfive></Topfive>
-    </>
+    </main>
   );
 }
