@@ -1,4 +1,7 @@
+"use client";
+
 import { Check } from "lucide-react";
+import { useAlert } from "../alert/alert";
 import "./subs-plan.css";
 
 type PlanProps = {
@@ -11,15 +14,19 @@ type PlanProps = {
   isYearly?: boolean;
 };
 
-export const Subs_plan = ({
-  planName,
-  price,
-  features,
-  isCurrent,
-  isPremium,
-  isBasic,
-  isYearly,
-}: PlanProps) => {
+export const Subs_plan = ({ planName, price, features, isCurrent, isPremium, isBasic, isYearly}: PlanProps) => {
+  const { showSuccess, showInfo } = useAlert();
+
+  const handlePlanAction = () => {
+    if (isCurrent) return;
+    
+    if (isBasic) {
+      showInfo("Downgrade feature is coming soon!", "Feature Coming Soon");
+    } else {
+      showInfo("Upgrade feature is coming soon!", "Feature Coming Soon");
+    }
+  };
+
   return (
     <div className={`plan-card ${isCurrent ? "current" : ""}`}>
       
@@ -46,6 +53,7 @@ export const Subs_plan = ({
       <button
         className={`plan-btn ${isCurrent ? "disabled" : ""}`}
         disabled={isCurrent}
+        onClick={handlePlanAction}
       >
         {isCurrent ? "Current Plan" : isBasic ? "Downgrade" : "Upgrade"}
       </button>

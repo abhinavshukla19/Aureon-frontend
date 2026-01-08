@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Appname, navItems } from "../../../Global-exports/global-exports"
+import { Appname, navItems } from "../../Global-exports/global-exports"
 import "./header.css"
 
 

@@ -1,85 +1,60 @@
-"use client";
-import { Button } from "../../../../Components/button/button";
-import { Settings as SettingsIcon, Crown, Shield, Lock } from "lucide-react";
 import "./settings.css";
+import { Settingheader } from "./setting-comp/settingheader";
+import { Settingsubs } from "./setting-comp/settingsubs";
+import { Settingreset } from "./setting-comp/settingreset";
+import { Settingcontact } from "./setting-comp/settingcontact";
+import { SettingsErrorHandler } from "./setting-comp/settings-error-handler";
+import { cookies, headers } from "next/headers";
+import axios from "axios";
+import { Host } from "../../../../Components/Global-exports/global-exports";
 
-const Settings = () => {
 
+const Settings = async() => {
+  let email , phone_number , next_billing , plan_name , status
+  let errorMessage: string | null = null;
+  
+  try {
+    const cookie=await cookies()
+    const token=cookie.get("token")?.value;
+    
+    if (!token) {
+      errorMessage = "Authentication required. Please sign in.";
+    } else {
+    const res=await axios.get(`${Host}/settings`,{headers:{token:token}})
+    if(res.status===200){
+      const data=res.data.data;
+      email=data.email;
+      phone_number=data.phone_number ; 
+      next_billing=new Date(data.next_billing).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); 
+      plan_name=data.plan_name ; 
+      status=data.status;
+    }
+    }
 
-  const handleSubscriptionbutton = () => {
-    window.location.href = "/subscription";
-  };
+  } catch (error: any) {
+    console.log(error);
+    if (error?.response?.status === 401) {
+      errorMessage = "Your session has expired. Please sign in again.";
+    } else if (error?.response?.status === 403) {
+      errorMessage = "You don't have permission to access this page.";
+    } else if (error?.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else {
+      errorMessage = "Failed to load settings. Please try again later.";
+    }
+  }
 
   return (
     <div className="setting-main-div">
+      <SettingsErrorHandler error={errorMessage} />
       {/* HEADER */}
-      <div className="setting-header-div fade-in">
-        <div className="setting-title-row">
-          <div className="settings-icon-wrapper">
-            <SettingsIcon size={24} strokeWidth={2} />
-          </div>
-          <h1 className="settings-main-head-para">Settings</h1>
-        </div>
-        <p className="setting-head-para">
-          Manage your subscription, security and playback preferences
-        </p>
-      </div>
+      <Settingheader />
 
       {/* SUBSCRIPTION CARD */}
-      <div className="setting-subscription-main-div slide-up">
-        <div className="setting-subscription-content">
-          <div className="setting-subscription-header">
-            <div className="subscription-icon-wrapper">
-              <Crown size={18} strokeWidth={2} />
-            </div>
-            <h2 className="settng-subscription-head">Subscription</h2>
-          </div>
+        <Settingsubs plan_name={plan_name} next_billing={next_billing} />
 
-          <div className="setting-plans-div">
-            <div className="plan-badge">
-              <span className="setting-plan-para">Standard HDR</span>
-            </div>
-            <div className="billing-info">
-              <span className="billing-label">Next billing date</span>
-              <span className="setting-plan-bill">23 Jan 2026</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="button-to-subscription-div">
-          <Button onclick={handleSubscriptionbutton} buttonname="Go to Subscription Page"/>
-        </div>
-      </div>
-
-      {/* Security */}
-      <div className="setting-security-div slide-up">
-        <div className="setting-security-header">
-          <div className="security-icon-wrapper">
-            <Shield size={18} strokeWidth={2} />
-          </div>
-          <h2 className="setting-security-head">Security</h2>
-        </div>
-        
-        <div className="setting-password-main-div">
-          <div className="setting-password-div">
-            <div className="password-label-group">
-              <Lock size={16} strokeWidth={2} />
-              <p className="pass-head">Password</p>
-            </div>
-            <p className="pass-symbol">••••••••••</p>
-          </div>
-          
-          <div className="setting-changepassword-div">
-            <Button buttonname="Change Password"/>
-          </div>
-          
-          <div className="more-detail-para-div">
-            <p className="detail-para">
-              For more details about you. Check <a href="/profile">Profile page</a>
-            </p>
-          </div>
-        </div>
-      </div>
+      {/* ACCOUNT & SECURITY */}
+        <Settingcontact email={email} phone_number={phone_number} />
     </div>
   );
 };

@@ -1,24 +1,50 @@
 "use client";
-import "./signin_form.css"
+import "./signin_form.css";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "../../Components/input/input";
 import { Button } from "../../Components/button/button";
+import axios from "axios";
+import { useAlert } from "../../Components/alert/alert";
 
 export const Signin_form = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  
+  const router = useRouter();
+  const { showSuccess, showError } = useAlert();
 
-  const handleButton = () => {
-    // later
+  const isDisabled = !email || !password;
+
+  const buttonclick = async () => {
+    try {
+      const res = await axios.post(`/api/signin`, {
+        username: email,
+        password: password
+      });
+      
+      console.log(res.data);
+      
+      // CHECK IF SUCCESS AND REDIRECT
+      if (res.data.success) {
+        showSuccess("Welcome back!", "Signed In");
+        setTimeout(() => {
+          router.push("/"); // REDIRECT TO HOME PAGE!
+        }, 1000);
+      } else {
+        showError(res.data.message || "Invalid credentials", "Sign In Failed");
+      }
+      
+    } catch (error: any) {
+      console.error(error);
+      showError(error?.response?.data?.message || "Login failed. Please try again.", "Sign In Failed");
+    }
   };
 
-  const isDisabled =!email || !password ;
-
-
   return (
-    <form className="form-div">
+    <div className="form-div">
       {/* HERO TEXT */}
       <header className="signin-text">
         <h1 className="main-heading">Sign In</h1>
@@ -57,8 +83,7 @@ export const Signin_form = () => {
       </div>
 
       {/* CTA */}
-      <Button buttonname="Sign In" onclick={handleButton} disabled={isDisabled} />
-    </form>
+      <Button buttonname="Sign In" onclick={buttonclick} disabled={isDisabled} />
+    </div>
   );
 };
-

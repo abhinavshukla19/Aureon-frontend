@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navItems } from "../../../Global-exports/global-exports";
+import { navItems } from "../../Global-exports/global-exports";
 import "./mobile-navi.css";
 
 export const Mobile_nav = () => {

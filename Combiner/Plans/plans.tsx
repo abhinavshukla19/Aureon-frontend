@@ -7,6 +7,8 @@ import "./plan.css"
 export const Plans_detail=()=>{
     const [isMonthly, setIsMonthly] = useState(true);
 
+    
+
     return(
         <>
         <div className="subscription-container">
