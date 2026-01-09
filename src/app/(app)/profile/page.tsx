@@ -8,7 +8,7 @@ import { Profilehead } from "../../../../Combiner/profile/profilehead/profilehea
 
 
 const Profile=async()=>{
-    let username , email , phone_number , plan_name , member_since;
+    let username , email , phone_number , plan_name , member_since , is_verified;
     let errorMessage: string | null = null;
     
      try {
@@ -20,11 +20,13 @@ const Profile=async()=>{
       } else {
         const res=await axios.get(`${Host}/profile`,{headers:{token :token}})
         const data=res.data.data
+        console.log(data)
         username=data.username as string;
         email=data.email as string;
         phone_number=data.phone_number,
         plan_name=data.plan_name,
         member_since=new Date(data.member_since).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+        is_verified=data.is_verified;
       }
     } 
     catch (error: any) {
@@ -49,7 +51,8 @@ const Profile=async()=>{
               email={email as string} 
               phone_number={phone_number}
               plan_name={plan_name as string}
-              member_since={member_since}
+              member_since={member_since as undefined}
+              is_verified={is_verified as boolean | undefined} 
             />
         </div>
     )

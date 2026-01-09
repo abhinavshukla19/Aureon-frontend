@@ -1,0 +1,60 @@
+.movies-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #000000 0%, #0a0a0a 100%);
+  padding-top: 2rem;
+}
+
+.movies-page-header {
+  padding: 2rem 5vw 1rem;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.movies-page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 0%, #e8d9ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.movies-page-subtitle {
+  font-size: 1.125rem;
+  color: #b8b8c5;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Override section padding for better integration */
+.movies-page .all-movies-tv-section {
+  padding-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .movies-page-header {
+    padding: 1.5rem 5vw 1rem;
+  }
+
+  .movies-page-title {
+    font-size: 2rem;
+  }
+
+  .movies-page-subtitle {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .movies-page-title {
+    font-size: 1.75rem;
+  }
+
+  .movies-page-subtitle {
+    font-size: 0.875rem;
+  }
+}

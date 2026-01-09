@@ -6,10 +6,11 @@ type variable={
   email:string,
   phone_number:number;
   plan_name: string | null;
-  member_since: string | null;
+  member_since: string | undefined;
+  is_verified: boolean | undefined;
 }
 
-export const Profile_detail = async({username , email , phone_number, plan_name, member_since}:variable) => {
+export const Profile_detail = async({username , email , phone_number, plan_name, member_since, is_verified}:variable) => {
   // Calculate account age from member_since
   const calculateAccountAge = () => {
     if (!member_since) return "N/A";
@@ -49,7 +50,7 @@ export const Profile_detail = async({username , email , phone_number, plan_name,
     },
     {
       label: "Current Plan",
-      value: plan_name || "No Plan",
+      value: plan_name || "Free Plan",
       icon: CreditCard,
       color: "#10b981",
       description: "Subscription plan"
@@ -63,7 +64,7 @@ export const Profile_detail = async({username , email , phone_number, plan_name,
     },
     {
       label: "Email Verified",
-      value: email ? "Verified" : "Not verified",
+      value: is_verified ? "Verified" : "Not verified", 
       icon: Mail,
       color: "#6366f1",
       description: email || "No email"

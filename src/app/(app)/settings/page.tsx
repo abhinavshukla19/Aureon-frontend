@@ -1,7 +1,6 @@
 import "./settings.css";
 import { Settingheader } from "./setting-comp/settingheader";
 import { Settingsubs } from "./setting-comp/settingsubs";
-import { Settingreset } from "./setting-comp/settingreset";
 import { Settingcontact } from "./setting-comp/settingcontact";
 import { SettingsErrorHandler } from "./setting-comp/settings-error-handler";
 import { cookies, headers } from "next/headers";

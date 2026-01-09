@@ -54,11 +54,12 @@ export const Signup_form =() => {
       console.log(error);
       showError(error?.response?.data?.message || "Something went wrong. Please try again.", "Signup Failed");
     }
+    
   }
   
 
   return (
-    <form className="form-div">
+    <div className="form-div">
       <h1 className="main-heading">Start your streaming journey</h1>
       <p className="sub-para">
         Create your account in seconds and dive into a world of premium content.
@@ -109,7 +110,7 @@ export const Signup_form =() => {
         onchange={(e) => setConfirm(e.target.value)}
       />
 
-      <Button onclick={signupbutton} buttonname="Create Account" disabled={invalid} />
-    </form>
+      <Button onclick={signupbutton}  buttonname="Create Account" disabled={invalid} />
+    </div>
   );
 };
