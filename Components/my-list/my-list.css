@@ -1,0 +1,1013 @@
+.my-list-section {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%);
+  padding: 0;
+  position: relative;
+}
+
+.my-list-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(155, 92, 255, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(199, 125, 255, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  animation: backgroundPulse 8s ease-in-out infinite;
+}
+
+@keyframes backgroundPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.my-list-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 80px 5vw 60px;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
+.my-list-header {
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.my-list-header-content {
+  margin-bottom: 2rem;
+}
+
+.my-list-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 0 0 0.75rem 0;
+  letter-spacing: -1px;
+  background: linear-gradient(135deg, #ffffff 0%, #e8d9ff 50%, #c77dff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 20px rgba(155, 92, 255, 0.3);
+  position: relative;
+}
+
+.my-list-title::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #9b5cff 0%, #c77dff 100%);
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(155, 92, 255, 0.5);
+  animation: titleAccentGrow 1.2s ease-out 0.5s backwards;
+}
+
+@keyframes titleAccentGrow {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 80px;
+    opacity: 1;
+  }
+}
+
+.my-list-subtitle {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 1.5rem 0 0 0;
+  font-weight: 400;
+  letter-spacing: 0.3px;
+}
+
+/* Controls */
+.my-list-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1.5rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.my-list-filters {
+  display: flex;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.my-list-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.my-list-filter-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-2px);
+}
+
+.my-list-filter-btn.active {
+  background: linear-gradient(135deg, rgba(155, 92, 255, 0.2) 0%, rgba(199, 125, 255, 0.15) 100%);
+  border-color: rgba(155, 92, 255, 0.5);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(155, 92, 255, 0.3);
+  animation: filterActive 0.3s ease-out;
+}
+
+@keyframes filterActive {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.my-list-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.my-list-sort-select {
+  padding: 0.625rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  outline: none;
+}
+
+.my-list-sort-select:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.my-list-sort-select:focus {
+  border-color: rgba(155, 92, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(155, 92, 255, 0.1);
+}
+
+.my-list-view-toggle {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.25rem;
+  backdrop-filter: blur(10px);
+}
+
+.my-list-view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.6);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.my-list-view-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.my-list-view-btn.active {
+  background: linear-gradient(135deg, rgba(155, 92, 255, 0.3) 0%, rgba(199, 125, 255, 0.2) 100%);
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(155, 92, 255, 0.3);
+  animation: viewToggleActive 0.3s ease-out;
+}
+
+@keyframes viewToggleActive {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Content */
+.my-list-content {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.my-list-content.grid-view {
+  animation: gridFadeIn 0.5s ease-out;
+}
+
+.my-list-content.list-view {
+  animation: listFadeIn 0.5s ease-out;
+}
+
+@keyframes gridFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes listFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.my-list-content.grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+}
+
+.my-list-content.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Card */
+.my-list-card {
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: cardFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+  will-change: transform;
+}
+
+.my-list-card.removing {
+  animation: cardRemove 0.4s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes cardRemove {
+  to {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+    filter: blur(4px);
+  }
+}
+
+.my-list-content.grid-view .my-list-card {
+  animation-delay: calc(var(--index, 0) * 0.05s);
+}
+
+.my-list-content.grid-view .my-list-card:hover {
+  transform: translateY(-8px);
+}
+
+.my-list-content.list-view .my-list-card {
+  display: flex;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.my-list-content.list-view .my-list-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(155, 92, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.my-list-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.my-list-content.list-view .my-list-card-link {
+  flex-shrink: 0;
+  width: 180px;
+}
+
+/* Poster */
+.my-list-poster {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a1a3a 100%);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.my-list-poster::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(155, 92, 255, 0.5), rgba(199, 125, 255, 0.3), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.my-list-content.grid-view .my-list-card:hover .my-list-poster {
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.7),
+    0 0 0 2px rgba(155, 92, 255, 0.4),
+    0 0 40px rgba(155, 92, 255, 0.2);
+  transform: scale(1.02) translateY(-4px);
+  border-radius: 14px;
+}
+
+.my-list-content.grid-view .my-list-card:hover .my-list-poster::before {
+  opacity: 1;
+}
+
+.my-list-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.my-list-content.grid-view .my-list-card:hover .my-list-poster img {
+  transform: scale(1.08);
+}
+
+.my-list-poster-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  transition: left 0.6s ease;
+  pointer-events: none;
+}
+
+.my-list-content.grid-view .my-list-card:hover .my-list-poster-shine {
+  left: 100%;
+}
+
+.my-list-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  z-index: 2;
+}
+
+.my-list-content.grid-view .my-list-card:hover .my-list-overlay {
+  opacity: 1;
+}
+
+.my-list-type-badge {
+  align-self: flex-start;
+  background: linear-gradient(135deg, rgba(155, 92, 255, 0.95) 0%, rgba(199, 125, 255, 0.95) 100%);
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 12px rgba(155, 92, 255, 0.4);
+}
+
+.my-list-play-button {
+  align-self: center;
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.my-list-play-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(155, 92, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.my-list-play-button:hover {
+  transform: scale(1.15) rotate(5deg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(155, 92, 255, 0.4);
+}
+
+.my-list-play-button:hover::before {
+  opacity: 1;
+}
+
+/* Card Info */
+.my-list-card-info {
+  margin-top: 1rem;
+  padding: 0 4px;
+}
+
+.my-list-content.list-view .my-list-card-info {
+  margin-top: 0;
+  padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.my-list-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.my-list-content.list-view .my-list-card-header {
+  margin-bottom: 0;
+}
+
+.my-list-card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  flex: 1;
+}
+
+.my-list-card-title:hover {
+  color: #c77dff;
+}
+
+.my-list-content.list-view .my-list-card-title {
+  font-size: 1.5rem;
+  -webkit-line-clamp: 1;
+}
+
+.my-list-remove-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.my-list-remove-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255, 77, 77, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.my-list-remove-btn:hover {
+  background: rgba(255, 77, 77, 0.2);
+  border-color: rgba(255, 77, 77, 0.5);
+  color: #ff4d4d;
+  transform: scale(1.15) rotate(90deg);
+  box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+}
+
+.my-list-remove-btn:hover::before {
+  opacity: 1;
+}
+
+.my-list-remove-btn:active {
+  transform: scale(0.9) rotate(90deg);
+}
+
+.my-list-remove-btn.removing {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation: removePulse 0.6s ease-in-out infinite;
+}
+
+@keyframes removePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.my-list-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+  flex-wrap: wrap;
+}
+
+.my-list-year {
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.my-list-separator {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.my-list-genre {
+  font-weight: 400;
+}
+
+.my-list-duration {
+  font-weight: 400;
+}
+
+.my-list-description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Empty State */
+.my-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  text-align: center;
+  min-height: 400px;
+}
+
+.my-list-empty-icon {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 2rem;
+  color: rgba(155, 92, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.my-list-empty-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 1rem 0;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.my-list-empty-text {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 2rem 0;
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+.my-list-empty-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, #9b5cff 0%, #c77dff 100%);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(155, 92, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.my-list-empty-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.my-list-empty-button:hover::before {
+  left: 100%;
+}
+
+.my-list-empty-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(155, 92, 255, 0.6);
+}
+
+.my-list-empty-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Loading State */
+.my-list-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  min-height: 400px;
+}
+
+.my-list-loading p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.125rem;
+  margin-top: 1.5rem;
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+@keyframes textPulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.my-list-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(155, 92, 255, 0.2);
+  border-top-color: #9b5cff;
+  border-right-color: #c77dff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  position: relative;
+}
+
+.my-list-spinner::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border: 4px solid transparent;
+  border-top-color: rgba(155, 92, 255, 0.1);
+  border-radius: 50%;
+  animation: spin 2s linear infinite reverse;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Skeleton Loaders */
+.my-list-skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 2rem;
+  animation: skeletonFadeIn 0.5s ease-out;
+}
+
+@keyframes skeletonFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.my-list-skeleton-card {
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeletonPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.my-list-skeleton-poster {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 2s ease-in-out infinite;
+}
+
+@keyframes skeletonShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.my-list-skeleton-title {
+  height: 20px;
+  width: 80%;
+  margin-top: 1rem;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 2s ease-in-out infinite;
+}
+
+.my-list-skeleton-meta {
+  height: 14px;
+  width: 60%;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 2s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+  .my-list-content.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.75rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .my-list-container {
+    padding: 60px 4vw 50px;
+  }
+
+  .my-list-content.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .my-list-content.list-view .my-list-card-link {
+    width: 160px;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-list-container {
+    padding: 40px 5vw 40px;
+  }
+
+  .my-list-title {
+    font-size: 2.5rem;
+  }
+
+  .my-list-subtitle {
+    font-size: 1rem;
+  }
+
+  .my-list-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .my-list-filters {
+    flex-wrap: wrap;
+  }
+
+  .my-list-filter-btn {
+    flex: 1;
+    min-width: 100px;
+    justify-content: center;
+  }
+
+  .my-list-sort {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .my-list-sort-select {
+    flex: 1;
+  }
+
+  .my-list-content.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .my-list-content.list-view .my-list-card {
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .my-list-content.list-view .my-list-card-link {
+    width: 100%;
+  }
+
+  .my-list-content.list-view .my-list-card-title {
+    font-size: 1.25rem;
+  }
+
+  .my-list-empty-title {
+    font-size: 1.5rem;
+  }
+
+  .my-list-empty-text {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-list-container {
+    padding: 30px 4vw 30px;
+  }
+
+  .my-list-title {
+    font-size: 2rem;
+  }
+
+  .my-list-header {
+    margin-bottom: 2rem;
+  }
+
+  .my-list-content.grid-view {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 1rem;
+  }
+
+  .my-list-poster {
+    border-radius: 10px;
+  }
+
+  .my-list-card-title {
+    font-size: 0.9375rem;
+  }
+
+  .my-list-card-meta {
+    font-size: 0.75rem;
+  }
+
+  .my-list-empty-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .my-list-empty-title {
+    font-size: 1.25rem;
+  }
+
+  .my-list-empty-text {
+    font-size: 0.875rem;
+  }
+}

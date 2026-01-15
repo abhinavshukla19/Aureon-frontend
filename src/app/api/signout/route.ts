@@ -16,11 +16,11 @@ export async function POST(req: NextRequest) {
             }
         ); 
 
-    } catch (error) {
+    } catch (error: any) {
         console.error("Signout error:", error);
         return NextResponse.json({
             success: false,
-            message: "Error signing out"
+            message: "Failed to sign out. Please try again or refresh the page."
         }, {
             status: 500
         });

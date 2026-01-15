@@ -31,14 +31,22 @@ const Profile=async()=>{
     } 
     catch (error: any) {
         console.log("Profile error" , error);
-        if (error?.response?.status === 401) {
-            errorMessage = "Your session has expired. Please sign in again.";
+        if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
+            errorMessage = "Unable to connect to the server. Please check your internet connection.";
+        } else if (error?.response?.status === 401) {
+            errorMessage = "Your session has expired. Please sign in again to view your profile.";
         } else if (error?.response?.status === 403) {
-            errorMessage = "You don't have permission to access this page.";
+            errorMessage = "You don't have permission to access this profile. Please contact support if this is an error.";
+        } else if (error?.response?.status === 500) {
+            errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
+        } else if (error?.response?.status === 503) {
+            errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
+        } else if (error?.message?.includes('timeout')) {
+            errorMessage = "The request took too long. Please check your connection and try again.";
         } else if (error?.response?.data?.message) {
             errorMessage = error.response.data.message;
         } else {
-            errorMessage = "Failed to load profile. Please try again later.";
+            errorMessage = "Failed to load your profile information. Please refresh the page or try again later.";
         }
     }
     

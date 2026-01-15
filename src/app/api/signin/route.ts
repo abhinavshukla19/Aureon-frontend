@@ -57,12 +57,32 @@ export async function POST(req: NextRequest) {
       status: 400
     });
     
-  } catch (err) {
+  } catch (err: any) {
+    console.error("Signin error:", err);
+    
+    let errorMessage = "Something went wrong";
+    
+    if (err?.code === 'ECONNREFUSED' || err?.code === 'ENOTFOUND') {
+      errorMessage = "Unable to connect to the server. Please check your internet connection and try again.";
+    } else if (err?.response?.status === 500) {
+      errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
+    } else if (err?.response?.status === 503) {
+      errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
+    } else if (err?.message?.includes('timeout')) {
+      errorMessage = "The request took too long. Please check your connection and try again.";
+    } else if (err?.response?.data?.message) {
+      errorMessage = err.response.data.message;
+    } else if (err?.response?.status === 401) {
+      errorMessage = "Invalid email/phone number or password. Please check your credentials and try again.";
+    } else if (err?.response?.status === 404) {
+      errorMessage = "Account not found. Please check your email/phone number or sign up for a new account.";
+    }
+    
     return NextResponse.json({
       success: false,
-      message: "Something went wrong"
+      message: errorMessage
     }, {
-      status: 500 // Changed to 500
+      status: err?.response?.status || 500
     });
   }
 }

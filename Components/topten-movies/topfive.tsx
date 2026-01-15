@@ -1,50 +1,76 @@
+import axios from "axios";
 import "./topfive.css"
+import { Host } from "../Global-exports/global-exports";
+import { cookies } from "next/headers";
+import { ErrorHandler } from "../error-handler/error-handler";
 
 
-const topfive = [
-    {
-    rank: 1,
-    title: "Stranger Things",
-    img: "https://dnm.nflximg.net/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABQEq9p8KKh4cDljpOPBvnme-VOdV0kO-1mqfBIHlUbqQHGNOpERWh3cjE_J6UitiD-6dryVOoz1HyEp_ab_vT4popBXwkpea8YFU.jpg?r=e8ahttps://images.unsplash.com/photo-1542206395-9feb3edaa68d",
-    },
-    {
-    rank: 2,
-    title: "Don't Look UP",
-    img: "https://dnm.nflximg.net/api/v6/mAcAr9TxZIVbINe88xb3Teg5_OA/AAAABaa7zSeOtW5ON9mx0Qmpii1K-9xpKKXfNTwcB7AvclDduYgu9lAQDpnVTG7QBY2BteEMa7TOuFtrz5jL6PYv-cOCn4mmsWyylywc.jpg?r=5b6",
-  },
-  {
-    rank: 3,
-    title: "Anyone but you",
-    img: "https://m.media-amazon.com/images/I/71OweZnYOoL._AC_UF1000,1000_QL80_.jpg"
-  },
-  {
-    rank: 4,
-    title: "Ballerina",
-    img: "https://m.media-amazon.com/images/M/MV5BOTgxNzA0MDktYzc5ZC00MGY3LWIwYjItMDJhNzE2ZGFjYmE1XkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg",
-  },
-  {
-    rank: 5,
-    title: "Narcos",
-    img: "https://www.tallengestore.com/cdn/shop/products/Narcos-Escobar-RiseOfTheCartels-NetflixTVShowPosterFanArt_5d6c5f7d-f9e6-4ba5-8598-9085e561a32b.jpg?v=1589271649g",
+type rowdata={
+     movie_id: number,
+    title: string,
+    banner_url: string,
+    rank_position:number
   }
-];
 
-export const Topfive = () => {
+export const Topfive = async() => {
+  let data=[] as rowdata[]
+  let errorMessage: string | null = null;
+  
+  try {
+    const cookiestore=await cookies()
+    const token=cookiestore.get("token")?.value
+    if(!token){
+      errorMessage = "Please sign in to view top movies.";
+    } else {
+      const res=await axios(`${Host}/topfivemovies`,{headers:{token:token}})
+      if (res.data && res.data.data) {
+        data=res.data.data as rowdata[]
+      } else {
+        errorMessage = "No top movies available at the moment.";
+      }
+    }
+  } catch (error: any) {
+    console.log(error);
+    if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
+      errorMessage = "Unable to connect to the server. Please check your internet connection.";
+    } else if (error?.response?.status === 401) {
+      errorMessage = "Your session has expired. Please sign in again to view top movies.";
+    } else if (error?.response?.status === 500) {
+      errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
+    } else if (error?.response?.status === 503) {
+      errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
+    } else if (error?.message?.includes('timeout')) {
+      errorMessage = "The request took too long. Please check your connection and try again.";
+    } else if (error?.response?.data?.message) {
+      errorMessage = error.response.data.message;
+    } else {
+      errorMessage = "Failed to load top movies. Please refresh the page or try again later.";
+    }
+  }
+
+
   return (
     <section className="top-ten">
+      <ErrorHandler error={errorMessage} title="Top Movies Error" />
       <h2 className="top-ten-title">Top 10 In Your Country Today</h2>
 
-      <div className="top-ten-row">
-        {topfive.map((item) => (
-          <div key={item.rank} className="rank-card">
-            <span className="rank-number">{item.rank}</span>
+      {data.length === 0 && !errorMessage ? (
+        <div style={{ padding: '2rem', textAlign: 'center' }}>
+          <p>No top movies available at the moment.</p>
+        </div>
+      ) : (
+        <div className="top-ten-row">
+          {data.map((item) => (
+            <div key={item.rank_position} className="rank-card">
+              <span className="rank-number">{item.rank_position}</span>
 
-            <div className="rank-poster">
-              <img src={item.img} alt={item.title} />
+              <div className="rank-poster">
+                <img src={item.banner_url} alt={item.title} />
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 };

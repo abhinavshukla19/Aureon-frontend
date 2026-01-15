@@ -1,5 +1,3 @@
-import Image from "next/image";
-import styles from "./page.module.css";
 import { Hero_section } from "../../Components/Hero-section/herosection";
 import { Header } from "../../Combiner/header/header";
 import { Continue_watching } from "../../Components/continue-watching/continue-watching";

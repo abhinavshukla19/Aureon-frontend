@@ -1,158 +1,485 @@
-.continue-watching-div {
+/* Continue Watching - Complete Redesign */
+.cw-section {
+  width: 100%;
+  padding: 4rem 0;
   position: relative;
+  background: transparent;
 }
 
-/* RIGHT FADE */
-.continue-watching-div::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 60px;
-  height: 100%;
-  pointer-events: none;
-  background: linear-gradient(
-    to left,
-    #000,
-    transparent
-  );
-}
-
-.continue-watching-div {
-  position: relative;
-  overflow-x: auto;
-
-  /* fade effect */
-  mask-image: linear-gradient(
-    to right,
-    black 90%,
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to right,
-    black 90%,
-    transparent 100%
-  );
-}
-
-
-
-
-.continue-watching-head-div {
+.cw-container {
+  width: 100%;
+  max-width: 100%;
   padding: 0 5vw;
-  margin-bottom: 18px;
+  position: relative;
 }
 
-.continue-watching-para {
-  font-size: 20px;
-  font-weight: 600;
-  color: #fff;
-}
-
-.continue-watching-div {
+/* Header */
+.cw-header {
+  position: relative;
+  margin-bottom: 2.5rem;
   display: flex;
-  gap: 18px;
-  padding: 0 5vw;
-  overflow-x: auto;
-  scrollbar-width: none;
+  align-items: center;
+  gap: 1rem;
 }
 
-.continue-watching-div::-webkit-scrollbar {
-  display: none;
-}
-
-/* CARD */
-.continue-watching-repeat-div {
-  min-width: 260px;
-  cursor: pointer;
-  transition: transform 0.25s ease;
-}
-
-.continue-watching-repeat-div:hover {
-  transform: translateY(-6px);
-}
-
-/* IMAGE */
-.continue-watching-image {
+.cw-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   position: relative;
-  width: 260px;
-  height: 145px;
-  border-radius: 10px;
+}
+
+.cw-title-accent {
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(155, 92, 255, 0.6) 0%, transparent 100%);
+  border-radius: 2px;
+}
+
+/* Carousel Wrapper */
+.cw-carousel-wrapper {
+  position: relative;
+  width: 100%;
   overflow: hidden;
 }
 
-.continue-watching-image::after {
-  content: "▶";
-  position: absolute;
-  inset: 0;
+.cw-carousel {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 42px;
-  color: white;
-  background: rgba(0,0,0,0.35);
-  opacity: 0;
-  transition: opacity 0.25s ease;
+  gap: 1.5rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1rem 0 2rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
 
-.continue-watching-repeat-div:hover
-.continue-watching-image::after {
-  opacity: 1;
-  transform: scale(1.05);
+.cw-carousel::-webkit-scrollbar {
+  display: none;
 }
 
+/* Fade Gradients */
+.cw-carousel-wrapper::before,
+.cw-carousel-wrapper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 2rem;
+  width: 100px;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.3s ease;
+}
 
-.continue-watching-image img {
+.cw-carousel-wrapper::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.95), transparent);
+}
+
+.cw-carousel-wrapper::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.95), transparent);
+}
+
+/* Movie Card */
+.cw-movie-card {
+  min-width: 180px;
+  width: 180px;
+  flex-shrink: 0;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  cursor: pointer;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+}
+
+.cw-movie-card:hover {
+  transform: translateY(-12px) scale(1.05);
+}
+
+/* Poster Frame */
+.cw-poster-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  border-radius: 16px;
+  overflow: visible;
+}
+
+.cw-poster {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cw-movie-card:hover .cw-poster {
+  box-shadow: 
+    0 20px 60px rgba(155, 92, 255, 0.4),
+    0 0 0 2px rgba(155, 92, 255, 0.6),
+    0 0 40px rgba(155, 92, 255, 0.2);
+  transform: scale(1.02);
+}
+
+.cw-poster img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* PROGRESS BAR */
-.progress-bar {
+.cw-movie-card:hover .cw-poster img {
+  transform: scale(1.15);
+}
+
+/* Shine Effect */
+.cw-poster-shine {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 4px;
+  top: 0;
+  left: -100%;
   width: 100%;
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #9b5cff, #c77dff);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.2) 50%,
+    transparent 100%
+  );
+  transition: left 0.6s ease;
+  pointer-events: none;
 }
 
-/* TEXT */
-.continue-watching-detail-div {
-  margin-top: 10px;
+.cw-movie-card:hover .cw-poster-shine {
+  left: 100%;
+}
+
+/* Play Indicator */
+.cw-play-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
+}
+
+.cw-movie-card:hover .cw-play-indicator {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Progress Ring */
+.cw-progress-ring {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+  width: 48px;
+  height: 48px;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 50%;
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-.continue-watching-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
+.cw-progress-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
 }
 
-.continue-watching-episode {
-  font-size: 12px;
-  color: #aaa;
-  margin-top: 2px;
+.cw-progress-bg {
+  stroke: rgba(255, 255, 255, 0.15);
 }
 
-.continue-watching-time-para {
-  font-size: 12px;
-  color: #aaa;
-  white-space: nowrap;
+.cw-progress-fill {
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.3s ease;
 }
 
+.cw-progress-ring svg {
+  position: absolute;
+}
+
+.cw-progress-text {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  z-index: 1;
+}
+
+
+/* Card Info */
+.cw-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0 0.25rem;
+}
+
+.cw-movie-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.3s ease;
+  letter-spacing: -0.01em;
+}
+
+.cw-movie-card:hover .cw-movie-title {
+  color: #c77dff;
+}
+
+.cw-meta-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.cw-episode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #d0d0d0;
+  font-weight: 500;
+  padding: 0.25rem 0.625rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  width: fit-content;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cw-episode-icon {
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.cw-time-info {
+  color: #999999;
+  font-weight: 400;
+  font-size: 0.75rem;
+}
+
+/* Resume Bar */
+.cw-resume-bar {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.25rem;
+}
+
+.cw-resume-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #9b5cff 0%, #c77dff 50%, #e89fff 100%);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px rgba(155, 92, 255, 0.6);
+}
+
+/* Empty State */
+.cw-empty-state {
+  padding: 4rem 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 20px;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+}
+
+.cw-empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.cw-empty-state p {
+  color: #888888;
+  font-size: 1.125rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .cw-container {
+    padding: 0 4vw;
+  }
+
+  .cw-title {
+    font-size: 1.875rem;
+  }
+
+  .cw-movie-card {
+    min-width: 160px;
+    width: 160px;
+  }
+
+  .cw-carousel {
+    gap: 1.25rem;
+  }
+}
 
 @media (max-width: 768px) {
-  .continue-watching-repeat-div {
-    min-width: 220px;
+  .cw-section {
+    padding: 3rem 0;
   }
+
+  .cw-container {
+    padding: 0 4vw;
+  }
+
+  .cw-header {
+    margin-bottom: 2rem;
+  }
+
+  .cw-title {
+    font-size: 1.5rem;
+  }
+
+  .cw-title-accent {
+    display: none;
+  }
+
+  .cw-carousel {
+    gap: 1rem;
+    padding: 0.75rem 0 1.5rem;
+  }
+
+  .cw-movie-card {
+    min-width: 140px;
+    width: 140px;
+    gap: 0.75rem;
+  }
+
+  .cw-card-info {
+    gap: 0.5rem;
+  }
+
+  .cw-movie-title {
+    font-size: 0.9375rem;
+  }
+
+  .cw-meta-info {
+    font-size: 0.75rem;
+    gap: 0.375rem;
+  }
+
+  .cw-progress-ring {
+    width: 40px;
+    height: 40px;
+    bottom: -6px;
+    right: -6px;
+  }
+
+  .cw-progress-text {
+    font-size: 9px;
+  }
+
+  .cw-carousel-wrapper::before,
+  .cw-carousel-wrapper::after {
+    width: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cw-section {
+    padding: 2rem 0;
+  }
+
+  .cw-title {
+    font-size: 1.25rem;
+  }
+
+  .cw-movie-card {
+    min-width: 120px;
+    width: 120px;
+  }
+
+  .cw-movie-title {
+    font-size: 0.875rem;
+  }
+
+  .cw-meta-info {
+    font-size: 0.6875rem;
+  }
+
+  .cw-progress-ring {
+    width: 36px;
+    height: 36px;
+  }
+
+  .cw-progress-text {
+    font-size: 8px;
+  }
+
+  .cw-empty-state {
+    padding: 3rem 1.5rem;
+  }
+
+  .cw-empty-icon {
+    font-size: 3rem;
+  }
+
+  .cw-empty-state p {
+    font-size: 1rem;
+  }
+}
+
+/* Smooth Animations */
+@media (prefers-reduced-motion: no-preference) {
+  .cw-carousel {
+    scroll-behavior: smooth;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cw-movie-card,
+  .cw-poster,
+  .cw-poster img,
+  .cw-poster-shine,
+  .cw-play-indicator {
+    transition: none;
+  }
+
+  .cw-movie-card:hover {
+    transform: none;
+  }
+}
+
+/* Progress ring hover effect */
+.cw-movie-card:hover .cw-progress-ring {
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.6),
+    0 0 0 2px rgba(155, 92, 255, 0.4);
 }

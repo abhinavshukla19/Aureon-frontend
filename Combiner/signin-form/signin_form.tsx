@@ -39,7 +39,25 @@ export const Signin_form = () => {
       
     } catch (error: any) {
       console.error(error);
-      showError(error?.response?.data?.message || "Login failed. Please try again.", "Sign In Failed");
+      let errorMessage = "Login failed. Please try again.";
+      
+      if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
+        errorMessage = "Unable to connect to the server. Please check your internet connection and try again.";
+      } else if (error?.response?.status === 500) {
+        errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
+      } else if (error?.response?.status === 503) {
+        errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
+      } else if (error?.message?.includes('timeout')) {
+        errorMessage = "The request took too long. Please check your connection and try again.";
+      } else if (error?.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error?.response?.status === 401) {
+        errorMessage = "Invalid email/phone number or password. Please check your credentials and try again.";
+      } else if (error?.response?.status === 404) {
+        errorMessage = "Account not found. Please check your email/phone number or sign up for a new account.";
+      }
+      
+      showError(errorMessage, "Sign In Failed");
     }
   };
 

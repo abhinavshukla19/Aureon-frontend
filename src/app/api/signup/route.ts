@@ -49,9 +49,27 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
         console.error("Signup error:", error);
         
+        let errorMessage = "Something went wrong";
+        
+        if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
+            errorMessage = "Unable to connect to the server. Please check your internet connection and try again.";
+        } else if (error?.response?.status === 500) {
+            errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
+        } else if (error?.response?.status === 503) {
+            errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
+        } else if (error?.message?.includes('timeout')) {
+            errorMessage = "The request took too long. Please check your connection and try again.";
+        } else if (error?.response?.data?.message) {
+            errorMessage = error.response.data.message;
+        } else if (error?.response?.status === 409) {
+            errorMessage = "An account with this email or phone number already exists. Please sign in instead.";
+        } else if (error?.response?.status === 400) {
+            errorMessage = "Invalid information provided. Please check all fields and try again.";
+        }
+        
         return NextResponse.json({
             success: false,
-            message: error.response?.data?.message || "Something went wrong"
-        }, { status: error.response?.status || 500 });
+            message: errorMessage
+        }, { status: error?.response?.status || 500 });
     }
 }
