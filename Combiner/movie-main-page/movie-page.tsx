@@ -1,13 +1,12 @@
 "use client";
 
 import { Recommendation } from "../../Components/recommendation/recomendation"
-import { Play, Plus, ThumbsUp, Share2 } from "lucide-react"
+import { Play, Plus, Share2 } from "lucide-react"
 import "./movie-page.css"
-import { MouseEventHandler } from "react";
 import { Cast_actor } from "../../Components/cast-actor/cast-actor";
 
 type rowdata={
-    movie_id: number,
+    movie_id: string,
     title: string,
     description: string,
     release_year: number,
@@ -19,7 +18,7 @@ type rowdata={
     // onclick:MouseEventHandler<HTMLButtonElement> | undefined
   }
 
-export const Movie_page=({title , release_year , description,type , duration , genre ,audio_languages , subtitle_languages }:rowdata)=>{
+export const Movie_page=({movie_id , title , release_year , description,type , duration , genre ,audio_languages , subtitle_languages }:rowdata)=>{
 
     const movie = {
         topTag: "TOP 5 SERIES",
@@ -91,7 +90,7 @@ export const Movie_page=({title , release_year , description,type , duration , g
                     </div>
 
                     <div className="movie-cast-section">
-                        <Cast_actor />
+                        <Cast_actor movie_id={movie_id} />
                     </div>
                 </div>
                 <div className="movie-detail-right">

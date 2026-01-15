@@ -13,7 +13,7 @@ type PageProps = {
 };
 
 type rowdata = {
-  movie_id: number,
+  movie_id: string,
   title: string,
   description: string,
   release_year: number,
