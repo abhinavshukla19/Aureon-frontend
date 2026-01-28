@@ -1,0 +1,264 @@
+.pcw-section {
+  width: 100%;
+}
+
+.pcw-empty {
+  padding: 12px 10px;
+  border-radius: 12px;
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pcw-empty-icon {
+  font-size: 18px;
+}
+
+.pcw-empty-text {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(209, 213, 219, 0.9);
+}
+
+.pcw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pcw-item {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 8px 8px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  background: radial-gradient(circle at top left, rgba(76, 29, 149, 0.35), rgba(15, 23, 42, 0.96));
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.pcw-item:hover {
+  border-color: rgba(129, 140, 248, 0.9);
+  transform: translateY(-1px);
+}
+
+.pcw-thumb-wrap {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.pcw-thumb {
+  width: 100%;
+  height: 74px;
+  object-fit: cover;
+  display: block;
+}
+
+.pcw-progress-pill {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.9);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(129, 140, 248, 0.5);
+}
+
+.pcw-progress-value {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.pcw-progress-remaining {
+  font-size: 10px;
+  color: rgba(156, 163, 175, 0.95);
+}
+
+.pcw-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pcw-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #f9fafb;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pcw-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pcw-episode {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  font-size: 10px;
+  color: rgba(209, 213, 219, 0.9);
+}
+
+.pcw-bar {
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(30, 64, 175, 0.5);
+  overflow: hidden;
+}
+
+.pcw-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4f46e5, #a855f7, #f97316);
+  box-shadow: 0 0 8px rgba(129, 140, 248, 0.8);
+}
+
+@media (max-width: 768px) {
+  .pcw-section {
+    margin-top: 4px;
+  }
+
+  .pcw-empty {
+    padding: 10px 8px;
+    border-radius: 10px;
+  }
+
+  .pcw-empty-icon {
+    font-size: 16px;
+  }
+
+  .pcw-empty-text {
+    font-size: 12px;
+  }
+
+  .pcw-list {
+    gap: 8px;
+  }
+
+  .pcw-item {
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 8px;
+    padding: 6px;
+    border-radius: 10px;
+  }
+
+  .pcw-thumb {
+    height: 62px;
+    border-radius: 8px;
+  }
+
+  .pcw-progress-pill {
+    left: 4px;
+    bottom: 4px;
+    padding: 2px 5px;
+    gap: 4px;
+  }
+
+  .pcw-progress-value {
+    font-size: 10px;
+  }
+
+  .pcw-progress-remaining {
+    font-size: 9px;
+  }
+
+  .pcw-meta {
+    gap: 4px;
+  }
+
+  .pcw-title {
+    font-size: 13px;
+  }
+
+  .pcw-meta-row {
+    gap: 5px;
+  }
+
+  .pcw-episode {
+    padding: 2px 6px;
+    font-size: 9px;
+  }
+
+  .pcw-bar {
+    height: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pcw-empty {
+    padding: 8px 6px;
+    border-radius: 8px;
+  }
+
+  .pcw-empty-icon {
+    font-size: 14px;
+  }
+
+  .pcw-empty-text {
+    font-size: 11px;
+  }
+
+  .pcw-list {
+    gap: 6px;
+  }
+
+  .pcw-item {
+    grid-template-columns: 80px minmax(0, 1fr);
+    gap: 6px;
+    padding: 5px;
+    border-radius: 8px;
+  }
+
+  .pcw-thumb {
+    height: 58px;
+    border-radius: 6px;
+  }
+
+  .pcw-progress-pill {
+    left: 3px;
+    bottom: 3px;
+    padding: 1px 4px;
+    gap: 3px;
+  }
+
+  .pcw-progress-value {
+    font-size: 9px;
+  }
+
+  .pcw-progress-remaining {
+    font-size: 8px;
+  }
+
+  .pcw-meta {
+    gap: 3px;
+  }
+
+  .pcw-title {
+    font-size: 12px;
+  }
+
+  .pcw-episode {
+    padding: 1px 5px;
+    font-size: 8px;
+  }
+
+  .pcw-bar {
+    height: 2px;
+  }
+}

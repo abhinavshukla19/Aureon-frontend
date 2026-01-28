@@ -10,15 +10,21 @@ type InputProps = {
   placeholder?: string;
   value: string;
   onchange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  maxLength?: number;
 };
 
-export const Input = ({
-  label,
-  id,
-  type,
-  placeholder,
-  value,
+export const Input = ({ 
+  label, 
+  id, 
+  type, 
+  placeholder, 
+  value, 
   onchange,
+  onKeyPress,
+  disabled = false,
+  maxLength
 }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -35,13 +41,17 @@ export const Input = ({
           placeholder={placeholder}
           value={value}
           onChange={onchange}
+          onKeyPress={onKeyPress}
+          disabled={disabled}
+          maxLength={maxLength}
         />
 
         {isPassword && (
           <span
             className="password-toggle"
-            onClick={() => setShowPassword(!showPassword)}
+            onClick={() => !disabled && setShowPassword(!showPassword)}
             aria-label="Toggle password visibility"
+            style={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: disabled ? 0.5 : 1 }}
           >
             {showPassword ? (
               /* eye-off svg */

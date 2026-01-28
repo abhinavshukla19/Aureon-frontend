@@ -58,7 +58,7 @@ export const Video_player =({movie_id , movie_url}:urltype) => {
       className="video-player"
       ref={videoRef}
       src={movie_url}
-      controls 
+      controls controlsList="nodownload"
        />
     </div>
     </>

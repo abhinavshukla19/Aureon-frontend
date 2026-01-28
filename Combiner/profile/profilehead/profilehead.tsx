@@ -24,7 +24,7 @@ export const Profilehead=({member_since , plan_name , username}:Userdetail)=>{
             setTimeout(() => {
                 router.push("/signin");
                 router.refresh();
-            }, 1000);
+            }, 500);
         } else {
             showError(res.data.message || "Sign out failed", "Error");
         }

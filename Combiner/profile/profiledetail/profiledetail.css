@@ -4,22 +4,84 @@
 }
 
 .profile-detail-main-div {
-  display: grid;
-  grid-template-columns: 2.4fr 1fr;
-  gap: 36px;
-  padding: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px 0 8px;
   background: transparent;
   color: #fff;
   font-family: "Inter", system-ui, -apple-system, sans-serif;
   position: relative;
 }
 
-/* ===== COLUMNS ===== */
+.profile-detail-grid {
+  display: grid;
+  grid-template-columns: 2.3fr 1fr;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.profile-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.profile-detail-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 6px;
+}
+
+.profile-detail-title {
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  margin: 0;
+}
+
+.profile-detail-subtitle {
+  margin-top: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.64);
+  max-width: 420px;
+}
+
+.profile-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.meta-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+.meta-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.7);
+}
+
+.meta-location {
+  opacity: 0.85;
+}
+
 .left-column,
 .right-column {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: 24px;
 }
 
 /* ===== CARD ===== */
@@ -31,35 +93,14 @@
   );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: 24px;
-  padding: 32px;
+  border-radius: 20px;
+  padding: 24px 22px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(124, 42, 232, 0.05) inset;
-  
+    0 10px 30px rgba(15, 23, 42, 0.7);
   position: relative;
   overflow: hidden;
-  animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
-}
-
-.card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-.card:nth-child(4) {
-  animation-delay: 0.4s;
 }
 
 .card::before {
@@ -79,19 +120,6 @@
   transition: opacity 0.4s ease;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 20px 50px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(124, 42, 232, 0.1) inset,
-    0 0 60px rgba(124, 42, 232, 0.1);
-}
-
-.card:hover::before {
-  opacity: 1;
-}
-
 .profile-card {
   background: linear-gradient(
     135deg,
@@ -101,23 +129,30 @@
 }
 
 .card-header {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-header--compact {
+  margin-bottom: 12px;
 }
 
 /* ===== TITLES ===== */
 .card-title {
-  font-size: 20px;
-  font-weight: 700;
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: -0.3px;
   color: #ffffff;
-  margin-bottom: 4px;
+  margin-bottom: 0;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card-subtitle {
-  font-size: 13px;
+  font-size: 12px;
   color: rgba(255, 255, 255, 0.65);
-  margin-top: 6px;
+  margin-top: 2px;
   font-weight: 400;
   letter-spacing: 0.1px;
 }
@@ -130,8 +165,8 @@
     rgba(0, 0, 0, 0.3) 100%
   );
   border-radius: 16px;
-  padding: 20px 22px;
-  margin-top: 20px;
+  padding: 16px 18px;
+  margin-top: 16px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   
   transition: all 0.3s ease;
@@ -148,28 +183,47 @@
   transform: translateX(4px);
 }
 
+
+.info-box--split {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.info-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: rgba(148, 163, 184, 0.9);
+}
+
 .name-para {
   font-size: 15px;
   font-weight: 600;
   color: #ffffff;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.02em;
 }
 
 .mobile-para,
 .email-para {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-top: 6px;
+  color: rgba(226, 232, 240, 0.9);
   font-weight: 400;
-  letter-spacing: 0.1px;
+  letter-spacing: 0.02em;
 }
 
 /* ===== WATCH STATISTICS ===== */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-top: 20px;
+  gap: 14px;
+  margin-top: 16px;
 }
 
 .stat-card {
@@ -179,7 +233,7 @@
     rgba(0, 0, 0, 0.3) 100%
   );
   border-radius: 16px;
-  padding: 20px;
+  padding: 16px 14px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
@@ -222,8 +276,8 @@
 }
 
 .stat-icon-wrapper {
-  width: 56px;
-  height: 56px;
+  width: 46px;
+  height: 46px;
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -254,7 +308,7 @@
 }
 
 .stat-value {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 700;
   color: #ffffff;
   margin: 0;
@@ -263,7 +317,7 @@
 }
 
 .stat-label {
-  font-size: 13px;
+  font-size: 11px;
   color: rgba(255, 255, 255, 0.9);
   margin: 4px 0 0 0;
   font-weight: 600;
@@ -278,82 +332,6 @@
   letter-spacing: 0.1px;
 }
 
-/* ===== ACTIVE DEVICES ===== */
-.device-card {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.3) 100%
-  );
-  border-radius: 16px;
-  padding: 20px 22px;
-  margin-top: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-}
-
-.device-card:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.5) 0%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
-  border-color: rgba(124, 42, 232, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(124, 42, 232, 0.2);
-}
-
-.device-card:first-of-type {
-  border-color: rgba(124, 42, 232, 0.4);
-  background: linear-gradient(
-    135deg,
-    rgba(124, 42, 232, 0.15) 0%,
-    rgba(0, 0, 0, 0.4) 100%
-  );
-  box-shadow: 
-    0 4px 20px rgba(124, 42, 232, 0.2),
-    0 0 0 1px rgba(124, 42, 232, 0.3);
-}
-
-.device-para {
-  font-size: 15px;
-  font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.1px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.device-card:first-of-type .device-para::before {
-  content: "●";
-  color: #7c2ae8;
-  font-size: 10px;
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-
-.location-para,
-.last-session-para {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.65);
-  margin-top: 6px;
-  font-weight: 400;
-}
-
-.last-session-para {
-  color: rgba(124, 42, 232, 0.9);
-  font-weight: 500;
-}
 
 /* ===== CONTINUE WATCHING ===== */
 .watching-row {
@@ -423,225 +401,127 @@
 /* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .profile-detail-main-div {
-    grid-template-columns: 1fr;
-    padding: 32px 24px;
-    gap: 28px;
+    padding-top: 28px;
   }
-  
-  .left-column,
-  .right-column {
-    gap: 28px;
+
+  .profile-detail-grid {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 24px;
   }
-  
+
   .card {
-    padding: 28px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-  }
-
-  .stat-card {
-    padding: 18px;
-  }
-
-  .stat-icon-wrapper {
-    width: 50px;
-    height: 50px;
-  }
-
-  .stat-icon {
-    font-size: 22px;
-  }
-
-  .stat-value {
-    font-size: 22px;
+    padding: 20px;
   }
 }
 
 /* Mobile (below 768px) */
 @media (max-width: 768px) {
   .profile-detail-main-div {
-    grid-template-columns: 1fr;
-    padding: 24px 16px;
-    gap: 24px;
-  }
-  
-  .left-column,
-  .right-column {
-    gap: 24px;
-  }
-  
-  .card {
-    padding: 24px 20px;
-    border-radius: 20px;
+    padding-top: 20px;
+    gap: 18px;
   }
 
-  .card-title {
-    font-size: 18px;
-  }
-
-  .card-subtitle {
-    font-size: 12px;
-  }
-
-  .info-box {
-    padding: 18px 20px;
-    margin-top: 16px;
-  }
-
-  .name-para {
-    font-size: 14px;
-  }
-
-  .mobile-para,
-  .email-para {
-    font-size: 12px;
-    margin-top: 5px;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .stat-card {
-    padding: 16px;
-  }
-
-  .stat-icon-wrapper {
-    width: 48px;
-    height: 48px;
-  }
-
-  .stat-icon {
-    font-size: 20px;
-  }
-
-  .stat-value {
-    font-size: 20px;
-  }
-
-  .stat-label {
-    font-size: 11px;
-  }
-
-  .device-card {
-    padding: 18px 20px;
-    margin-top: 12px;
-  }
-
-  .device-para {
-    font-size: 14px;
-  }
-
-  .location-para,
-  .last-session-para {
-    font-size: 11px;
-    margin-top: 5px;
-  }
-
-  .watching-row {
+  .profile-detail-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
-    margin-top: 16px;
-    padding: 16px;
   }
 
-  .watching-row:hover {
-    transform: none;
+  .profile-detail-eyebrow {
+    font-size: 10px;
+    margin-bottom: 4px;
   }
 
-  .watching-row img {
-    width: 100%;
-    height: auto;
-    min-height: 140px;
-    border-radius: 12px;
+  .profile-detail-title {
+    font-size: 22px;
   }
 
-  .watching-row:hover img {
-    transform: none;
-  }
-
-  .watching-name {
-    font-size: 14px;
-  }
-
-  .watching-episode {
-    font-size: 11px;
-    margin-top: 5px;
-  }
-
-  .watching-time {
-    font-size: 11px;
+  .profile-detail-subtitle {
+    font-size: 12px;
     margin-top: 6px;
+    max-width: 100%;
   }
-}
 
-/* Small Mobile (below 480px) */
-@media (max-width: 480px) {
-  .profile-detail-main-div {
-    padding: 20px 12px;
-    gap: 20px;
+  .profile-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
   }
-  
+
   .left-column,
   .right-column {
-    gap: 20px;
+    gap: 18px;
   }
-  
+
   .card {
-    padding: 20px 16px;
-    border-radius: 18px;
+    padding: 18px 16px;
+    border-radius: 16px;
+  }
+
+  .card-header {
+    margin-bottom: 6px;
+  }
+
+  .card-header--compact {
+    margin-bottom: 10px;
   }
 
   .card-title {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .card-subtitle {
     font-size: 11px;
-    margin-top: 4px;
+    margin-top: 3px;
   }
 
   .info-box {
-    padding: 16px 18px;
+    padding: 14px 16px;
     margin-top: 14px;
-    border-radius: 14px;
+    border-radius: 12px;
+  }
+
+  .info-box--split {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .field-label {
+    font-size: 10px;
   }
 
   .name-para {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .mobile-para,
   .email-para {
-    font-size: 11px;
-    margin-top: 4px;
+    font-size: 12px;
   }
 
   .stats-grid {
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 14px;
   }
 
   .stat-card {
-    padding: 14px;
+    padding: 14px 12px;
+    gap: 12px;
   }
 
   .stat-icon-wrapper {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
   }
 
-  .stat-icon {
-    font-size: 18px;
+  .stat-icon-wrapper svg {
+    width: 18px;
+    height: 18px;
   }
 
   .stat-value {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .stat-label {
@@ -649,10 +529,144 @@
     margin-top: 3px;
   }
 
+  .stat-description {
+    font-size: 10px;
+    margin-top: 2px;
+  }
+
   .device-card {
     padding: 16px 18px;
-    margin-top: 10px;
+    margin-top: 12px;
+    border-radius: 12px;
+  }
+
+  .device-para {
+    font-size: 14px;
+  }
+
+  .location-para,
+  .last-session-para {
+    font-size: 11px;
+    margin-top: 4px;
+  }
+}
+
+/* Small Mobile (below 480px) */
+@media (max-width: 480px) {
+  .profile-detail-main-div {
+    padding: 16px 0 4px;
+    gap: 16px;
+  }
+
+  .profile-detail-header {
+    gap: 10px;
+  }
+
+  .profile-detail-eyebrow {
+    font-size: 9px;
+    margin-bottom: 3px;
+  }
+
+  .profile-detail-title {
+    font-size: 20px;
+  }
+
+  .profile-detail-subtitle {
+    font-size: 11px;
+    margin-top: 5px;
+  }
+  
+  .left-column,
+  .right-column {
+    gap: 16px;
+  }
+  
+  .card {
+    padding: 16px 14px;
     border-radius: 14px;
+  }
+
+  .card-header {
+    margin-bottom: 4px;
+  }
+
+  .card-header--compact {
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-size: 14px;
+  }
+
+  .card-subtitle {
+    font-size: 10px;
+    margin-top: 2px;
+  }
+
+  .info-box {
+    padding: 12px 14px;
+    margin-top: 12px;
+    border-radius: 12px;
+  }
+
+  .info-box--split {
+    gap: 10px;
+  }
+
+  .field-label {
+    font-size: 9px;
+  }
+
+  .name-para {
+    font-size: 13px;
+  }
+
+  .mobile-para,
+  .email-para {
+    font-size: 11px;
+    margin-top: 3px;
+  }
+
+  .stats-grid {
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .stat-card {
+    padding: 12px 10px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+
+  .stat-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+
+  .stat-icon-wrapper svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .stat-value {
+    font-size: 15px;
+  }
+
+  .stat-label {
+    font-size: 9px;
+    margin-top: 2px;
+  }
+
+  .stat-description {
+    font-size: 9px;
+    margin-top: 1px;
+  }
+
+  .device-card {
+    padding: 14px 16px;
+    margin-top: 10px;
+    border-radius: 12px;
   }
 
   .device-para {
@@ -662,31 +676,6 @@
   .location-para,
   .last-session-para {
     font-size: 10px;
-    margin-top: 4px;
-  }
-
-  .watching-row {
-    padding: 12px;
-    margin-top: 14px;
-    border-radius: 14px;
-  }
-
-  .watching-row img {
-    min-height: 120px;
-    border-radius: 10px;
-  }
-
-  .watching-name {
-    font-size: 13px;
-  }
-
-  .watching-episode {
-    font-size: 10px;
-    margin-top: 4px;
-  }
-
-  .watching-time {
-    font-size: 10px;
-    margin-top: 5px;
+    margin-top: 3px;
   }
 }

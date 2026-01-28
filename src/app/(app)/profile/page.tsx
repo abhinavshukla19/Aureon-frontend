@@ -1,13 +1,11 @@
 import { Profile_detail } from "../../../../Combiner/profile/profiledetail/profiledetail";
 import { ProfileErrorHandler } from "../../../../Combiner/profile/profile-error-handler";
-import "./profile.css"
-import { cookies } from "next/headers";
-import axios from "axios";
-import { Host } from "../../../../Components/Global-exports/global-exports";
 import { Profilehead } from "../../../../Combiner/profile/profilehead/profilehead";
-import { headers } from "next/headers";
-import { userAgent } from "next/server";
+import { Host } from "../../../../Components/Global-exports/global-exports";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import "./profile.css"
+import axios from "axios";
 
 
 const Profile=async()=>{
@@ -51,20 +49,29 @@ const Profile=async()=>{
             errorMessage = "Failed to load your profile information. Please refresh the page or try again later.";
         }
     }
-    
+
    
     return(
         <div className="profile-main-div">
             <ProfileErrorHandler error={errorMessage} />
-            <Profilehead username={username as string} plan_name={plan_name as string} member_since={member_since} ></Profilehead>
-            <Profile_detail 
+
+            <Profilehead 
               username={username as string} 
-              email={email as string} 
-              phone_number={phone_number}
-              plan_name={plan_name as string}
-              member_since={member_since as undefined}
-              is_verified={is_verified as boolean | undefined} 
+              plan_name={plan_name as string} 
+              member_since={member_since} 
             />
+
+            <div className="profile-detail-div">
+              <Profile_detail 
+                username={username as string} 
+                email={email as string} 
+                phone_number={phone_number}
+                plan_name={plan_name as string}
+                member_since={member_since}
+                is_verified={is_verified as boolean | undefined} 
+                token={token}
+              />
+            </div>
         </div>
     )
 }

@@ -5,8 +5,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "../../Components/input/input";
 import { Button } from "../../Components/button/button";
-import axios from "axios";
 import { useAlert } from "../../Components/alert/alert";
+import axios from "axios";
 
 export const Signin_form = () => {
   const [email, setEmail] = useState("");
@@ -25,13 +25,12 @@ export const Signin_form = () => {
         password: password
       });
       
-      console.log(res.data);
       
       // CHECK IF SUCCESS AND REDIRECT
       if (res.data.success) {
         showSuccess("Welcome back!", "Signed In");
         setTimeout(() => {
-          router.push("/"); // REDIRECT TO HOME PAGE!
+          router.push("/"); // REDIRECT TO home PAGE
         }, 1000);
       } else {
         showError(res.data.message || "Invalid credentials", "Sign In Failed");
