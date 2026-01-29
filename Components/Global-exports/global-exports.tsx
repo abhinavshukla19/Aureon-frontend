@@ -10,4 +10,5 @@ export const navItems = [
 ];
 
 
-export const Host="http://127.0.0.1:3001"
+// export const Host="http://127.0.0.1:3001"
+export const Host=process.env.PUBLIC_API_URL
