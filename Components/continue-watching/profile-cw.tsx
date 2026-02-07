@@ -11,7 +11,6 @@ type RowData = {
   watched_percent: number;
   remaining_time: number;
   episode?: string | null;
-  type?: string;
 };
 
 type TokenProps = {

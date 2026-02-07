@@ -28,7 +28,7 @@ export const Main_header=()=>{
                     );
                 })}
                 <div className={`profile-element-header ${pathname === navItems[4].path ? "active" : ""}`}>
-                    <Link href={navItems[4].path}>😊</Link>
+                    <Link href={navItems[4].path}><div className="user-avatar">A</div></Link>
                 </div>
             </div>
         </div>
