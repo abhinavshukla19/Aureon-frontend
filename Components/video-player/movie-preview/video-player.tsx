@@ -50,10 +50,27 @@ export const Video_player =({movie_id , movie_url}:urltype) => {
   }, [movie_id]);
 
 
+   /* 🚫 Disable DevTools shortcuts */
+  useEffect(() => {
+    const blockKeys = (e: KeyboardEvent) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && ["I", "C", "J"].includes(e.key)) ||
+        (e.ctrlKey && e.key === "U")
+      ) {
+        e.preventDefault();
+      }
+    };
+
+    document.addEventListener("keydown", blockKeys);
+    return () => document.removeEventListener("keydown", blockKeys);
+  }, []);
+
+
 
   return(
     <>
-    <div className="video-player-div">
+    <div className="video-player-div" onContextMenu={(e) => e.preventDefault()}> 
       <video 
       className="video-player"
       ref={videoRef}

@@ -12,6 +12,7 @@ interface Movie {
   genre: string; 
   banner_url: string;
   movie_url: string;
+  thumbnail:string;
   audio_languages: string;
   subtitle_languages: string;
   type: string;
@@ -67,7 +68,7 @@ export const Newmoviepage= ({moviedata}:any) => {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-backdrop">
-          <img src={featuredMovie?.banner_url} alt="hello" />
+          <img src={featuredMovie?.thumbnail} alt="hello" />
           <div className="hero-gradient"></div>
         </div>
         
@@ -184,7 +185,7 @@ export const Newmoviepage= ({moviedata}:any) => {
             </button>
             
             <div className="modal-backdrop">
-              <img src={selectedMovie.banner_url} alt="" />
+              <img src={ selectedMovie.thumbnail || selectedMovie.banner_url} alt="" />
               <div className="modal-gradient"></div>
             </div>
             
