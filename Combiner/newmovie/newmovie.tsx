@@ -59,7 +59,7 @@ export const Newmoviepage= ({moviedata}:any) => {
     return matchesCategory ;
   });
 
-  const featuredMovie = movies[3];
+  const featuredMovie = movies[0];
   console.log("featuredMovie" , featuredMovie)
   
 
