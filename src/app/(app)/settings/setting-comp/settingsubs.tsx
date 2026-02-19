@@ -1,6 +1,6 @@
 "use client"
 import { Crown } from "lucide-react"
-import { Button } from "../../../../../Components/button/button"
+import { Button } from "@/components/button/button"
 import { useRouter } from "next/navigation"
 
 type typevariabke={

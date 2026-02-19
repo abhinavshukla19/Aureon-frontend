@@ -1,7 +1,7 @@
-import { Profile_detail } from "../../../../Combiner/profile/profiledetail/profiledetail";
-import { ProfileErrorHandler } from "../../../../Combiner/profile/profile-error-handler";
-import { Profilehead } from "../../../../Combiner/profile/profilehead/profilehead";
-import { Host } from "../../../../Components/Global-exports/global-exports";
+import { Profile_detail } from "@/components/profile/profiledetail/profiledetail";
+import { ProfileErrorHandler } from "@/components/profile/profile-error-handler";
+import { Profilehead } from "@/components/profile/profilehead/profilehead";
+import { Host } from "@/components/Global-exports/global-exports";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import "./profile.css"

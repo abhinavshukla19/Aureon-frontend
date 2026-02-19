@@ -1,6 +1,6 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { Host } from "../../../../Components/Global-exports/global-exports";
+import { Host } from "@/components/Global-exports/global-exports";
 
 export async function POST(req: NextRequest) {
   try {

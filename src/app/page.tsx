@@ -1,8 +1,8 @@
-import { Hero_section } from "../../Components/Hero-section/herosection";
-import { Header } from "../../Combiner/header/header";
-import { Continue_watching } from "../../Components/continue-watching/cw";
-import { Topfive } from "../../Components/topten-movies/topfive";
-import { AllMoviesTV } from "../../Components/all-movies-tv/all-movies-tv";
+import { Hero_section } from "../components/Hero-section/herosection";
+import { Header } from "../components/header/header";
+import { Continue_watching } from "../components/continue-watching/cw";
+import { Topfive } from "../components/topten-movies/topfive";
+import { AllMoviesTV } from "../components/all-movies-tv/all-movies-tv";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -21,7 +21,7 @@ export default async function Home() {
       <Hero_section></Hero_section>
       <Topfive token={token} />
       <Continue_watching token={token} />
-      <AllMoviesTV token={token}></AllMoviesTV>
+      <AllMoviesTV token={token} limit={8} showViewMore={true}></AllMoviesTV>
     </main>
   );
 }

@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
-import { MyList } from "../../../../Components/my-list/my-list";
+import { MyList } from "@/components/my-list/my-list";
 import axios from "axios";
-import { Host } from "../../../../Components/Global-exports/global-exports";
+import { Host } from "@/components/Global-exports/global-exports";
 import { redirect } from "next/navigation";
 
 type rowdata = {

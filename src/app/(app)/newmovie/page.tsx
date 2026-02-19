@@ -1,7 +1,7 @@
 import axios from "axios"
-import { Host } from "../../../../Components/Global-exports/global-exports"
+import { Host } from "@/components/Global-exports/global-exports" 
 import { cookies } from "next/headers";
-import { Newmoviepage } from "../../../../Combiner/newmovie/newmovie";
+import { Newmoviepage } from "@/components/newmovie/newmovie";
 import { redirect } from "next/navigation";
 
 interface Movie {

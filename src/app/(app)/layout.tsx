@@ -2,7 +2,7 @@
 
 import { ReactNode, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Header } from "../../../Combiner/header/header";
+import { Header } from "@/components/header/header";
 
 export default function AppLayout({
   children,

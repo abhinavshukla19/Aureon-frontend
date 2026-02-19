@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AlertProvider } from "../../Components/alert/alert";
+import { AlertProvider } from "../components/alert/alert";
+import { Footer } from "../components/footer/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <AlertProvider position="top-right" maxAlerts={5}>
           {children}
+          <Footer />
         </AlertProvider>
       </body>
     </html>

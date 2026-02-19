@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Signup_form } from "../../../../Combiner/signup_form/signup_form";
-import { Appname } from "../../../../Components/Global-exports/global-exports";
+import { Signup_form } from "@/components/signup_form/signup_form";
+import { Appname } from "@/components/Global-exports/global-exports";
 import "./signup.css";
 
 const Signup = () => {

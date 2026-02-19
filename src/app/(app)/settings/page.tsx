@@ -5,7 +5,7 @@ import { Settingcontact } from "./setting-comp/settingcontact";
 import { SettingsErrorHandler } from "./setting-comp/settings-error-handler";
 import { cookies} from "next/headers";
 import axios from "axios";
-import { Host } from "../../../../Components/Global-exports/global-exports";
+import { Host } from "@/components/Global-exports/global-exports";
 
 
 const Settings = async() => {

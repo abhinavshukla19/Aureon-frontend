@@ -1,7 +1,7 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { Host } from "../../../../Components/Global-exports/global-exports";
+import { Host } from "@/components/Global-exports/global-exports";
 
 export async function POST(req: NextRequest) {
   const { username, password } = await req.json();

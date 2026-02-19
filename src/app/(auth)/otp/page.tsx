@@ -3,7 +3,7 @@ import "./otp.css";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAlert } from "../../../../Components/alert/alert";
+import { useAlert } from "@/components/alert/alert";
 import axios from "axios";
 
 export const Otp = () => {

@@ -1,5 +1,5 @@
 import { TvMinimalPlay, CreditCard } from "lucide-react";
-import { Plans_detail } from "../../../../Combiner/Plans/plans";
+import { Plans_detail } from "@/components/Plans/plans";  
 import "./subscription.css"
 
 
