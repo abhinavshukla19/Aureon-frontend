@@ -234,10 +234,7 @@ body {
   z-index: 0;
 }
 
-.hero-backdrop img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.hero-backdrop-image {
   animation: slowZoom 20s ease-in-out infinite alternate;
 }
 
@@ -521,14 +518,11 @@ body {
   background: linear-gradient(135deg, rgba(0, 217, 255, 0.05), rgba(14, 165, 233, 0.05));
 }
 
-.movie-thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.movie-thumbnail-image {
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.movie-card:hover .movie-thumbnail img {
+.movie-card:hover .movie-thumbnail-image {
   transform: scale(1.1);
 }
 
@@ -697,10 +691,8 @@ body {
   overflow: hidden;
 }
 
-.modal-backdrop img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.modal-backdrop-image {
+  /* Next.js Image with fill prop handles sizing */
 }
 
 .modal-gradient {

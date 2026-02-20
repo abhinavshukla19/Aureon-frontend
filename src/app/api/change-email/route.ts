@@ -1,70 +1,69 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { Host } from "@/components/Global-exports/global-exports";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, purpose, currentEmail } = await req.json();
+    const { newEmail } = await req.json();
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
 
-    // Validation
-    if (!email) {
+    if (!token) {
       return NextResponse.json(
-        { success: false, message: "Email is required" },
+        { success: false, message: "Authentication required. Please sign in." },
+        { status: 401 }
+      );
+    }
+
+    if (!newEmail) {
+      return NextResponse.json(
+        { success: false, message: "New email is required." },
         { status: 400 }
       );
     }
 
-    // Validate purpose if provided
-    const validPurposes = ['signup', 'password_change', 'email_change'];
-    if (purpose && !validPurposes.includes(purpose)) {
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmail)) {
       return NextResponse.json(
-        { success: false, message: "Invalid verification purpose" },
+        { success: false, message: "Please enter a valid email address." },
         { status: 400 }
       );
     }
 
-    // Prepare request body
-    const requestBody: any = {
-      email,
-      purpose: purpose || 'signup'
-    };
-
-    // For email change, include current email if provided
-    if (purpose === 'email_change' && currentEmail) {
-      requestBody.currentEmail = currentEmail;
-    }
-
-    // Call backend API with purpose
-    const res = await axios.post(`${Host}/resend-otp`, requestBody, {
-      timeout: 25000,
-      headers: {
-        'Content-Type': 'application/json'
+    
+    const res = await axios.post(
+      `${Host}/change-email`,
+      { newEmail: newEmail.toLowerCase().trim() },
+      {
+        timeout: 25000,
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token
+        }
       }
-    });
+    );
 
-    // Backend returns success: true/false, not 200
-    if (res.data.success) {
-      return NextResponse.json(
-        { 
-          success: true, 
-          message: res.data.message || "OTP sent successfully" 
-        },
-        { status: 200 }
-      );
+    if (res.data?.success) {
+      return NextResponse.json({
+        success: true,
+        message: res.data.message || "Email changed successfully",
+        data: {
+          newEmail: newEmail.toLowerCase().trim()
+        }
+      });
     }
 
     return NextResponse.json(
-      { 
-        success: false, 
-        message: res.data.message || "Failed to send OTP" 
-      },
+      { success: false, message: res.data?.message || "Failed to change email" },
       { status: 400 }
     );
 
   } catch (error: any) {
-    console.error("Resend OTP error:", error);
+    console.error("Change email error:", error);
 
-    let errorMessage = "Failed to resend OTP. Please try again.";
+    let errorMessage = "Failed to change email. Please try again.";
     let statusCode = 500;
 
     if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
@@ -79,6 +78,15 @@ export async function POST(req: NextRequest) {
     } else if (error?.code === 'ECONNABORTED' || error?.message?.includes('timeout')) {
       errorMessage = "The request took too long (over 25 seconds). The backend server may be slow or unresponsive. Please try again.";
       statusCode = 504;
+    } else if (error?.response?.status === 401) {
+      errorMessage = "Your session has expired. Please sign in again.";
+      statusCode = 401;
+    } else if (error?.response?.status === 409) {
+      errorMessage = "This email is already in use. Please use a different email address.";
+      statusCode = 409;
+    } else if (error?.response?.status === 400) {
+      errorMessage = error?.response?.data?.message || "Invalid email. Please check and try again.";
+      statusCode = 400;
     } else if (error?.response?.status === 500) {
       errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
       statusCode = 500;
@@ -88,9 +96,6 @@ export async function POST(req: NextRequest) {
     } else if (error?.response?.data?.message) {
       errorMessage = error.response.data.message;
       statusCode = error?.response?.status || 400;
-    } else if (error?.response) {
-      errorMessage = error.response.data?.message || errorMessage;
-      statusCode = error.response.status;
     }
 
     return NextResponse.json(

@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useAlert } from "../../Components/alert/alert";
-
+import { useAlert } from "../alert/alert";
 interface ProfileErrorHandlerProps {
   error?: string | null;
 }

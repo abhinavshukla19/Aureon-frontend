@@ -1,8 +1,8 @@
 "use client"
 import axios from "axios"
 import { useRouter } from "next/navigation"
-import { Button } from "../../../Components/button/button";
-import { useAlert } from "../../../Components/alert/alert";
+import { Button } from "@/components/button/button";
+import { useAlert } from "@/components/alert/alert";
 import "./profilehead.css"
 
 type Userdetail={

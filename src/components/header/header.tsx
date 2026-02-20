@@ -1,7 +1,7 @@
 "use client";
 
-import { Main_header } from "../../Components/Navbar/desktop-nav/header";
-import { Mobile_nav } from "../../Components/Navbar/mobile-nav/mobile-navi";
+import { Main_header } from "../Navbar/desktop-nav/header";
+import { Mobile_nav } from "../Navbar/mobile-nav/mobile-navi";
 
 export const Header = () => {
   return (

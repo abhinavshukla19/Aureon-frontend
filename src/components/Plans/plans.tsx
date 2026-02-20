@@ -1,6 +1,6 @@
 "use client"
 import { useState } from "react"
-import { Subs_plan } from "../../Components/subs-plan/subs-plan"
+import { Subs_plan } from "../subs-plan/subs-plan";
 import "./plan.css"
 
 

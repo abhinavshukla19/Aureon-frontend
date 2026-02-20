@@ -1,6 +1,6 @@
 import axios from "axios";
 import "./active.css";
-import { Host } from "../../../Components/Global-exports/global-exports";
+import { Host } from "@/components/Global-exports/global-exports";
 import { cookies } from "next/headers";
 import { timeAgo } from "./timeteller";
 

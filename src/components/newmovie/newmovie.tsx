@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import './newmovie.css';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface Movie {
   movie_id: number;
@@ -27,7 +28,6 @@ export const Newmoviepage= ({moviedata}:any) => {
 
   // Movie data fetch from db
   const movies: Movie[] = moviedata;
-  console.log("Movies" , movies)
 
   // Helper to format duration from minutes to "Xh Ym"
   const formatDuration = (minutes: number): string => {
@@ -68,7 +68,16 @@ export const Newmoviepage= ({moviedata}:any) => {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-backdrop">
-          <img src={featuredMovie?.thumbnail_url} alt="hello" />
+          {featuredMovie?.thumbnail_url && (
+            <Image 
+              src={featuredMovie.thumbnail_url} 
+              alt={featuredMovie.title || "Featured movie"}
+              fill
+              priority
+              className="hero-backdrop-image"
+              style={{ objectFit: 'cover' }}
+            />
+          )}
           <div className="hero-gradient"></div>
         </div>
         
@@ -142,7 +151,17 @@ export const Newmoviepage= ({moviedata}:any) => {
               >
                 <div className="movie-card-inner">
                   <div className="movie-thumbnail">
-                    <img src={movie.banner_url} alt={movie.title} />
+                    {movie.banner_url && (
+                      <Image 
+                        src={movie.banner_url} 
+                        alt={movie.title}
+                        fill
+                        loading={index < 12 ? "eager" : "lazy"}
+                        sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 280px"
+                        className="movie-thumbnail-image"
+                        style={{ objectFit: 'cover' }}
+                      />
+                    )}
                     <div className="movie-overlay">
                       <button className="play-button">
                         <svg width="32" height="32" viewBox="0 0 32 32" fill="currentColor">
@@ -185,7 +204,16 @@ export const Newmoviepage= ({moviedata}:any) => {
             </button>
             
             <div className="modal-backdrop">
-              <img src={ selectedMovie.thumbnail_url || selectedMovie.banner_url} alt="" />
+              {(selectedMovie.thumbnail_url || selectedMovie.banner_url) && (
+                <Image 
+                  src={selectedMovie.thumbnail_url || selectedMovie.banner_url} 
+                  alt={selectedMovie.title}
+                  fill
+                  priority
+                  className="modal-backdrop-image"
+                  style={{ objectFit: 'cover' }}
+                />
+              )}
               <div className="modal-gradient"></div>
             </div>
             

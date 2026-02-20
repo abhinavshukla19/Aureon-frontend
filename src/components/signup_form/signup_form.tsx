@@ -1,10 +1,10 @@
 "use client";
 import { useState } from "react";
-import { Input } from "../../Components/input/input";
-import { Button } from "../../Components/button/button";
+import { Input } from "@/components/input/input";
+import { Button } from "@/components/button/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useAlert } from "../../Components/alert/alert";
+import { useAlert } from "../alert/alert";
 
 export const Signup_form = () => {
   const router = useRouter();
@@ -57,6 +57,11 @@ export const Signup_form = () => {
         email: email.toLowerCase().trim(),
         phone_number,
         password: pass
+      }, {
+        timeout: 30000, // 30 seconds timeout
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       if (res.data.success === true) {
@@ -68,11 +73,13 @@ export const Signup_form = () => {
         // Store email in sessionStorage for OTP verification page
         sessionStorage.setItem("verification_email", email.toLowerCase().trim());
         
+        // Navigate to OTP page after a short delay
         setTimeout(() => {
           router.push("/otp");
         }, 1500);
       } else {
         showError(res.data.message || "Signup failed", "Error");
+        setIsLoading(false);
       }
 
     } catch (error: any) {
@@ -81,6 +88,10 @@ export const Signup_form = () => {
 
       if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
         errorMessage = "Unable to connect to the server. Please check your internet connection and try again.";
+      } else if (error?.response?.status === 502) {
+        errorMessage = "Backend server is not responding. The server may be down or overloaded. Please try again in a few moments.";
+      } else if (error?.response?.status === 504) {
+        errorMessage = "Request timeout. The server took too long to respond. Please try again.";
       } else if (error?.response?.status === 409) {
         errorMessage = "An account with this email or phone number already exists. Please sign in instead.";
       } else if (error?.response?.status === 400) {
@@ -89,8 +100,8 @@ export const Signup_form = () => {
         errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
       } else if (error?.response?.status === 503) {
         errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
-      } else if (error?.message?.includes('timeout')) {
-        errorMessage = "The request took too long. Please check your connection and try again.";
+      } else if (error?.code === 'ECONNABORTED' || error?.message?.includes('timeout')) {
+        errorMessage = "The request took too long (over 30 seconds). Please check your connection and try again.";
       } else if (error?.response?.data?.message) {
         errorMessage = error.response.data.message;
       }

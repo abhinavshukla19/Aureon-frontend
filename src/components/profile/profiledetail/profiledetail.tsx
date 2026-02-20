@@ -3,7 +3,7 @@ import "./profiledetail.css";
 import { Calendar, CreditCard, User, Mail } from "lucide-react";
 import { headers } from "next/headers";
 import { Active_device } from "../active-devices/active";
-import { ProfileContinueWatching } from "../../../Components/continue-watching/profile-cw";
+import { ProfileContinueWatching } from "@/components/continue-watching/profile-cw";
 import { AxiosHeaderValue } from "axios";
 
 type ProfileProps = {

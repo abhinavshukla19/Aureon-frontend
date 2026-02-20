@@ -5,7 +5,7 @@ import { Host } from "@/components/Global-exports/global-exports";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, otp } = await req.json();
+    const { email, otp, purpose } = await req.json();
 
     // Validation
     if (!email || !otp) {
@@ -15,32 +15,65 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Call backend API
-    const res = await axios.post(`${Host}/otpverify`, { email, otp });
-
-    if (!res.data?.success) {
+    // Validate purpose if provided
+    const validPurposes = ['signup', 'password_change', 'email_change'];
+    if (purpose && !validPurposes.includes(purpose)) {
       return NextResponse.json(
-        { success: false, message: res.data?.message || "Verification failed" },
+        { success: false, message: "Invalid verification purpose" },
         { status: 400 }
       );
     }
 
-    // Get the token from backend response cookie if sent
-    const backendToken = res.headers['set-cookie']?.find(cookie => 
-      cookie.startsWith('token=')
-    );
+    // Call backend API with purpose
+    const res = await axios.post(`${Host}/otpverify`, { 
+      email, 
+      otp,
+      purpose: purpose || 'signup' // Default to signup for backward compatibility
+    }, {
+      timeout: 25000,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+
+    if (!res.data?.success) {
+      return NextResponse.json(
+        { success: false, message: res.data?.message || "Verification failed" },
+        { status: res.status || 400 }
+      );
+    }
+
+    // Get token from response body (backend should return it)
+    let token: string | undefined = res.data?.token;
+
+    // Fallback: Try to get token from response cookie headers if not in body
+    if (!token) {
+      const setCookieHeader = res.headers['set-cookie'];
+      if (setCookieHeader) {
+        const cookieArray = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
+        const tokenCookie = cookieArray.find(cookie => cookie.startsWith('token='));
+        
+        if (tokenCookie) {
+          token = tokenCookie.split('token=')[1].split(';')[0];
+        }
+      }
+    }
 
     // Create response
     const response = NextResponse.json({ 
       success: true,
-      message: res.data?.message || "Email verified successfully" 
+      message: res.data?.message || "OTP verified successfully",
+      purpose: purpose || 'signup',
+      // Include additional data from backend if needed (e.g., new email for email change)
+      data: res.data?.data || {}
     });
 
-    // If backend sent a token in cookie, forward it to client
-    if (backendToken) {
+    // Only set token cookie for signup verification
+    // For password/email changes, user is already logged in
+    if (token && (!purpose || purpose === 'signup')) {
       response.cookies.set({
         name: 'token',
-        value: backendToken.split('token=')[1].split(';')[0],
+        value: token,
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
@@ -52,18 +85,41 @@ export async function POST(req: NextRequest) {
     return response;
 
   } catch (error: any) {
-    console.error("OTP verification error:", error.response?.data || error.message);
+    console.error("OTP verification error:", error);
 
-    // Handle specific error cases
     let errorMessage = "OTP verification failed";
     let statusCode = 500;
 
-    if (error.response) {
-      errorMessage = error.response.data?.message || errorMessage;
-      statusCode = error.response.status;
-    } else if (error.code === 'ECONNREFUSED') {
-      errorMessage = "Cannot connect to server";
+    if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
+      errorMessage = "Unable to connect to the backend server. Please check your internet connection and try again.";
       statusCode = 503;
+    } else if (error?.response?.status === 502) {
+      errorMessage = "Backend server is not responding. The server may be down or overloaded. Please try again in a few moments.";
+      statusCode = 502;
+    } else if (error?.response?.status === 504) {
+      errorMessage = "Request timeout. The backend server took too long to respond. Please try again.";
+      statusCode = 504;
+    } else if (error?.code === 'ECONNABORTED' || error?.message?.includes('timeout')) {
+      errorMessage = "The request took too long (over 25 seconds). The backend server may be slow or unresponsive. Please try again.";
+      statusCode = 504;
+    } else if (error?.response?.status === 401) {
+      errorMessage = error?.response?.data?.message || "Invalid OTP. Please check and try again.";
+      statusCode = 401;
+    } else if (error?.response?.status === 400) {
+      errorMessage = error?.response?.data?.message || "OTP expired or invalid.";
+      statusCode = 400;
+    } else if (error?.response?.status === 429) {
+      errorMessage = error?.response?.data?.message || "Too many attempts. Please request a new OTP.";
+      statusCode = 429;
+    } else if (error?.response?.status === 500) {
+      errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
+      statusCode = 500;
+    } else if (error?.response?.status === 503) {
+      errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
+      statusCode = 503;
+    } else if (error?.response?.data?.message) {
+      errorMessage = error.response.data.message;
+      statusCode = error?.response?.status || 400;
     }
 
     return NextResponse.json(
