@@ -11,4 +11,5 @@ export const navItems = [
 
 
 
-export const Host="https://aureon-backend-fxqq.onrender.com"
+// export const Host="https://aureon-backend-fxqq.onrender.com"
+export const Host="http://localhost:3001"

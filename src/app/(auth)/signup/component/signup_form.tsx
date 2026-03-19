@@ -69,7 +69,7 @@ export const Signup_form = () => {
 
         // consistent with signin — pass via URL params, no sessionStorage
         setTimeout(() => {
-          router.push(`/otpverify?email=${encodeURIComponent(email.toLowerCase().trim())}&purpose=signup`);
+          router.push(`/otp?email=${encodeURIComponent(email.toLowerCase().trim())}&purpose=signup`);
         }, 1500);
       } else {
         showError(res.data.message || "Signup failed", "Error");
