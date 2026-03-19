@@ -19,7 +19,7 @@ const Settings = async() => {
     if (!token) {
       errorMessage = "Authentication required. Please sign in.";
     } else {
-    const res=await axios.get(`${Host}/settings`,{headers:{token:token}})
+    const res=await axios.get(`${Host}/api/setting/settings`,{headers:{token:token}})
     if(res.status===200){
       const data=res.data.data;
       email=data.email;

@@ -1,101 +1,44 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 import { Host } from "@/components/Global-exports/global-exports";
+import { handleAxiosError } from "../ApiErrorHandler/errorHadler";
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, purpose, currentEmail } = await req.json();
+    const { email, purpose } = await req.json();
 
-    // Validation
-    if (!email) {
+    if (!email || !purpose) {
       return NextResponse.json(
-        { success: false, message: "Email is required" },
+        { success: false, message: "Email and purpose are required" },
         { status: 400 }
       );
     }
 
-    // Validate purpose if provided
-    const validPurposes = ['signup', 'password_change', 'email_change'];
-    if (purpose && !validPurposes.includes(purpose)) {
+    const validPurposes = ["signup", "signin", "password_change", "email_change"];
+    if (!validPurposes.includes(purpose)) {
       return NextResponse.json(
-        { success: false, message: "Invalid verification purpose" },
+        { success: false, message: "Invalid purpose" },
         { status: 400 }
       );
     }
 
-    // Prepare request body
-    const requestBody: any = {
-      email,
-      purpose: purpose || 'signup'
-    };
-
-    // For email change, include current email if provided
-    if (purpose === 'email_change' && currentEmail) {
-      requestBody.currentEmail = currentEmail;
-    }
-
-    // Call backend API with purpose
-    const res = await axios.post(`${Host}/resend-otp`, requestBody, {
-      timeout: 25000,
-      headers: {
-        'Content-Type': 'application/json'
+    const res = await axios.post(
+      `${Host}/api/otp/resend-otp`,
+      { email, purpose },
+      {
+        timeout: 25000,
+        headers: { "Content-Type": "application/json" },
       }
-    });
-
-    // Backend returns success: true/false, not 200
-    if (res.data.success) {
-      return NextResponse.json(
-        { 
-          success: true, 
-          message: res.data.message || "OTP sent successfully" 
-        },
-        { status: 200 }
-      );
-    }
-
-    return NextResponse.json(
-      { 
-        success: false, 
-        message: res.data.message || "Failed to send OTP" 
-      },
-      { status: 400 }
     );
+
+    return NextResponse.json({
+      success: true,
+      message: res.data.message || "OTP sent successfully",
+    });
 
   } catch (error: any) {
     console.error("Resend OTP error:", error);
-
-    let errorMessage = "Failed to resend OTP. Please try again.";
-    let statusCode = 500;
-
-    if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
-      errorMessage = "Unable to connect to the backend server. Please check your internet connection and try again.";
-      statusCode = 503;
-    } else if (error?.response?.status === 502) {
-      errorMessage = "Backend server is not responding. The server may be down or overloaded. Please try again in a few moments.";
-      statusCode = 502;
-    } else if (error?.response?.status === 504) {
-      errorMessage = "Request timeout. The backend server took too long to respond. Please try again.";
-      statusCode = 504;
-    } else if (error?.code === 'ECONNABORTED' || error?.message?.includes('timeout')) {
-      errorMessage = "The request took too long (over 25 seconds). The backend server may be slow or unresponsive. Please try again.";
-      statusCode = 504;
-    } else if (error?.response?.status === 500) {
-      errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
-      statusCode = 500;
-    } else if (error?.response?.status === 503) {
-      errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
-      statusCode = 503;
-    } else if (error?.response?.data?.message) {
-      errorMessage = error.response.data.message;
-      statusCode = error?.response?.status || 400;
-    } else if (error?.response) {
-      errorMessage = error.response.data?.message || errorMessage;
-      statusCode = error.response.status;
-    }
-
-    return NextResponse.json(
-      { success: false, message: errorMessage },
-      { status: statusCode }
-    );
+    const { message, status } = handleAxiosError(error);
+    return NextResponse.json({ success: false, message }, { status });
   }
 }

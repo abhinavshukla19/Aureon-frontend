@@ -1,36 +1,41 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { Host } from "@/components/Global-exports/global-exports";
 import { handleAxiosError } from "../ApiErrorHandler/errorHadler";
 
 export async function POST(req: NextRequest) {
   try {
-    const { username, email, password, phone_number } = await req.json();
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
 
-    if (!username || !email || !password || !phone_number) {
+    if (!token) {
       return NextResponse.json(
-        { success: false, message: "All fields are required" },
-        { status: 400 }
+        { success: false, message: "Authentication required. Please sign in." },
+        { status: 401 }
       );
     }
 
     const res = await axios.post(
-      `${Host}/api/auth/signup`,
-      { username, email, password, phone_number },
+      `${Host}/api/update/request-password-change`,
+      {},
       {
         timeout: 25000,
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "token": token   // keep as is
+        },
       }
     );
 
     return NextResponse.json({
       success: true,
-      message: res.data.message || "Account created. Please check your email for OTP.",
-      unverified: res.data.unverified || false, // true if account existed but was unverified
-    }, { status: 201 });
+      message: res.data.message || "OTP sent to your email.",
+      email: res.data.email,
+    });
 
   } catch (error: any) {
-    console.error("Signup error:", error);
+    console.error("Request password change error:", error);
     const { message, status } = handleAxiosError(error);
     return NextResponse.json({ success: false, message }, { status });
   }

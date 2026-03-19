@@ -1,10 +1,6 @@
-import { userAgent } from "next/server";
 import "./profiledetail.css";
 import { Calendar, CreditCard, User, Mail } from "lucide-react";
-import { headers } from "next/headers";
-import { Active_device } from "../active-devices/active";
-import { ProfileContinueWatching } from "@/components/continue-watching/profile-cw";
-import { AxiosHeaderValue } from "axios";
+import { ProfileContinueWatching } from "../profile cw/profile-cw";
 
 type ProfileProps = {
   username: string;
@@ -13,46 +9,36 @@ type ProfileProps = {
   plan_name: string | null;
   member_since: string | undefined;
   is_verified: boolean | undefined;
-  token: AxiosHeaderValue | undefined;
 };
 
-export const Profile_detail = async ({
+export const Profile_detail = ({
   username,
   email,
   phone_number,
   plan_name,
   member_since,
   is_verified,
-  token,
 }: ProfileProps) => {
+
   const calculateAccountAge = () => {
     if (!member_since) return "N/A";
-
     const days = Math.floor(
       (Date.now() - new Date(member_since).getTime()) / 86400000
     );
-
     if (days < 30) return `${days} days`;
-
     const months = Math.floor(days / 30);
     if (months < 12) return `${months} ${months === 1 ? "month" : "months"}`;
-
     const years = Math.floor(months / 12);
     const remMonths = months % 12;
-
     return remMonths
-      ? `${years} ${years === 1 ? "year" : "years"}, ${remMonths} ${
-          remMonths === 1 ? "month" : "months"
-        }`
+      ? `${years} ${years === 1 ? "year" : "years"}, ${remMonths} ${remMonths === 1 ? "month" : "months"}`
       : `${years} ${years === 1 ? "year" : "years"}`;
   };
-
-  const accountAge = calculateAccountAge();
 
   const AccountInfo = [
     {
       label: "Account Age",
-      value: accountAge,
+      value: calculateAccountAge(),
       icon: Calendar,
       color: "#7c3aed",
       description: "Member since",
@@ -80,38 +66,6 @@ export const Profile_detail = async ({
     },
   ];
 
-
-  // keep for later 
-
-  // const headersList = await headers();
-  // const ua = userAgent({ headers: headersList });
-
-  // const device = ua.device?.type ?? "desktop";
-  // const os = ua.os?.name ?? "unknown";
-  // const browser = ua.browser?.name ?? "unknown";
-
-  // let ip =
-  //   headersList.get("x-forwarded-for")?.split(",")[0] ||
-  //   headersList.get("x-real-ip") ||
-  //   "";
-
-  // if (!ip || ip === "::1" || ip === "127.0.0.1") {
-  //   ip = "8.8.8.8";
-  // }
-
-  // let location = "Unknown";
-
-  // try {
-  //   const res = await fetch(`https://ipapi.co/${ip}/json/`);
-  //   const data = await res.json();
-  //   location = `${data.city ?? "Bhagalpur"}, ${data.country_name ?? "India"}`;
-  // } catch {
-  //   location = "Unknown";
-  // }
-
-  // console.log(os, browser, location, device);
-
-  
   return (
     <section className="profile-detail-main-div">
       <header className="profile-detail-header">
@@ -119,12 +73,13 @@ export const Profile_detail = async ({
           <p className="profile-detail-eyebrow">Profile</p>
           <h2 className="profile-detail-title">Account overview</h2>
           <p className="profile-detail-subtitle">
-            Manage your personal info, subscription and where you're signed in.
+            Manage your personal info and subscription.
           </p>
         </div>
       </header>
 
       <div className="profile-detail-grid">
+        {/* LEFT */}
         <div className="left-column">
           <div className="card profile-card">
             <div className="card-header">
@@ -189,25 +144,16 @@ export const Profile_detail = async ({
           </div>
         </div>
 
+        {/* RIGHT */}
         <div className="right-column">
-          <div className="card">
-            <div className="card-header card-header--compact">
-              <p className="card-title">Active devices</p>
-              <p className="card-subtitle">
-                Review where your Aureon account is currently signed in.
-              </p>
-            </div>
-            <Active_device />
-          </div>
-
           <div className="card">
             <div className="card-header card-header--compact">
               <p className="card-title">Continue watching</p>
               <p className="card-subtitle">
-                Pick up right where you left off across any device.
+                Pick up right where you left off.
               </p>
             </div>
-            <ProfileContinueWatching token={token} />
+            <ProfileContinueWatching />
           </div>
         </div>
       </div>

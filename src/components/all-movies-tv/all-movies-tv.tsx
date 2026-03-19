@@ -32,7 +32,7 @@ export const AllMoviesTV = async ({ hideHeader = false, token, limit, showViewMo
   let errorMessage: string | null = null;
   
   try {
-    const res = await axios.get(`${Host}/get_all_movie`, { headers: { token: token } })
+    const res = await axios.get(`${Host}/api/movie/get_all_movie`, { headers: { token: token } })
     if (res.data && res.data.data) {
       data = res.data.data as rowdata[];
       // Apply limit if specified

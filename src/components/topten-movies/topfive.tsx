@@ -21,7 +21,7 @@ export const Topfive = async({token}:tokentype) => {
   
   try {
 
-      const res=await axios(`${Host}/topfivemovies`,{headers:{token:token}})
+      const res=await axios(`${Host}/api/movie/topfivemovies`,{headers:{token:token}})
       if (res.data && res.data.data) {
         data=res.data.data as rowdata[]
       } else {

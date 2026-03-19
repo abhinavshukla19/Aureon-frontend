@@ -27,12 +27,13 @@ const MyListPage = async () => {
 
     if (!token) {
       redirect("/signin");
-      
     }
 
   try {
     
-    const res = await axios.get(`${Host}/get_my_list`, {headers: { token: token }});
+    const res = await axios.get(`${Host}/api/mylist/get_my_list`, {
+      headers: { token },
+    });
     if (res.data.data) {
       apiData = res.data.data as rowdata[];
     }

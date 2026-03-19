@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Signup_form } from "@/components/signup_form/signup_form";
+import { Signup_form } from "@/app/(auth)/signup/component/signup_form";
 import { Appname } from "@/components/Global-exports/global-exports";
 import "./signup.css";
 

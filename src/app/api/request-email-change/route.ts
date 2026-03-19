@@ -1,20 +1,12 @@
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
-import { Host } from "@/components/Global-exports/global-exports";
 import { cookies } from "next/headers";
+import { Host } from "@/components/Global-exports/global-exports";
 import { handleAxiosError } from "../ApiErrorHandler/errorHadler";
 
 export async function POST(req: NextRequest) {
   try {
-    const { movie_id, progress } = await req.json();
-
-    if (!movie_id || progress == null) {
-      return NextResponse.json(
-        { success: false, message: "Movie ID and progress are required" },
-        { status: 400 }
-      );
-    }
-
+    const { newEmail } = await req.json();
     const cookieStore = await cookies();
     const token = cookieStore.get("token")?.value;
 
@@ -25,25 +17,32 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (!newEmail) {
+      return NextResponse.json(
+        { success: false, message: "New email is required." },
+        { status: 400 }
+      );
+    }
+
     const res = await axios.post(
-      `${Host}/api/movie/add_watching_timesatmp`,
-      { movie_id, progress },
+      `${Host}/api/update/request-email-change`,
+      { newEmail },
       {
         timeout: 25000,
         headers: {
           "Content-Type": "application/json",
-          "token": token,
+          "token": token   // keep as is
         },
       }
     );
 
     return NextResponse.json({
       success: true,
-      message: res.data?.message || "Progress saved",
+      message: res.data.message || "OTP sent to your new email. Please verify.",
     });
 
   } catch (error: any) {
-    console.error("Update progress error:", error);
+    console.error("Request email change error:", error);
     const { message, status } = handleAxiosError(error);
     return NextResponse.json({ success: false, message }, { status });
   }

@@ -303,9 +303,10 @@ html, body {
 
 .signup-sub-head {
   font-size: 15px;
-  color: #0101e4;
-  margin: 0 110 32px 0;
+  color: #b8b8c5; 
+  margin: 0 0 32px 0; 
 }
+
 
 /* ================= CARD FOOTER ================= */
 .signup-card-footer {

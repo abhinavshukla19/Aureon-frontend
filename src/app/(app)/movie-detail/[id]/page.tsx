@@ -23,40 +23,28 @@ type RecommendationMovie = {
 
 async function fetchCompleteMovieData(movieId: string, token: string) {
   try {
-    const [movieRes, castRes, recommendationsRes, progressRes] = await Promise.allSettled([
-      fetch(`${Host}/moviedetailbyid/${movieId}`, {
+    const [movieRes, castRes] = await Promise.allSettled([
+      fetch(`${Host}/api/movie/moviedetailbyid/${movieId}`, {
         headers: { token },
         next: { revalidate: 300 } // Cache for 5 minutes
       }),
-      fetch(`${Host}/get-cast?movie_id=${movieId}`, {
+      fetch(`${Host}/api/cast/get-cast?movie_id=${movieId}`, {
         headers: { token },
         next: { revalidate: 600 }
-      }),
-      fetch(`${Host}/get-recommendations?movie_id=${movieId}`, {
-        headers: { token },
-        next: { revalidate: 600 }
-      }),
-      fetch(`${Host}/get-watch-progress?movie_id=${movieId}`, {
-        headers: { token },
-        next: { revalidate: 0 } // Never cache progress
       })
     ]);
 
-    const movie = movieRes.status === 'fulfilled' && movieRes.value.ok 
-      ? (await movieRes.value.json()).data[0] 
+    const movie = movieRes.status === 'fulfilled' && movieRes.value.ok
+      ? (await movieRes.value.json()).data 
       : null;
     
     const cast = castRes.status === 'fulfilled' && castRes.value.ok
       ? (await castRes.value.json()).data || []
       : [];
     
-    const recommendations = recommendationsRes.status === 'fulfilled' && recommendationsRes.value.ok
-      ? (await recommendationsRes.value.json()).data || []
-      : [];
-    
-    const progress = progressRes.status === 'fulfilled' && progressRes.value.ok
-      ? (await progressRes.value.json()).data
-      : null;
+    // Recommendations and progress are currently provided via dummy data / not yet implemented
+    const recommendations: RecommendationMovie[] = [];
+    const progress = null;
 
     return { movie, cast, recommendations, progress };
   } catch (error) {

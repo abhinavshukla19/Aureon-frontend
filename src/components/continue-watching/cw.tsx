@@ -21,7 +21,7 @@ export const Continue_watching = async ({ token }: tokentype) => {
   let moviesdata = [] as rowdata[]
 
   try {
-    const res = await axios.get(`${Host}/continue_watching`, {
+    const res = await axios.get(`${Host}/api/movie/continue_watching`, {
       headers: { token: token }
     });
     moviesdata = res.data.data as rowdata[];

@@ -4,7 +4,7 @@ import { Input } from "@/components/input/input";
 import { Button } from "@/components/button/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useAlert } from "../alert/alert";
+import { useAlert } from "../../../../components/alert/alert";
 
 export const Signup_form = () => {
   const router = useRouter();
@@ -19,31 +19,33 @@ export const Signup_form = () => {
   const invalid = !name || !email || !phone_number || !pass || !confirm || pass !== confirm;
 
   const signupbutton = async () => {
-    // Validation checks
     if (pass !== confirm) {
       showWarning("Passwords do not match", "Validation Error");
       return;
     }
 
-    if (pass.length < 6) {
-      showWarning("Password must be at least 6 characters long", "Validation Error");
+    if (pass.length < 8) {  // fixed: 6 → 8 to match backend
+      showWarning("Password must be at least 8 characters long", "Validation Error");
       return;
     }
 
-    // Email validation
+    const passwordStrengthRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/;
+    if (!passwordStrengthRegex.test(pass)) {
+      showWarning("Password must contain uppercase, lowercase, and a number", "Validation Error");
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       showWarning("Please enter a valid email address", "Validation Error");
       return;
     }
 
-    // Phone validation
-    if (!phone_number || phone_number.length !== 10 || !/^\d+$/.test(phone_number)) {
+    if (phone_number.length !== 10 || !/^\d+$/.test(phone_number)) {
       showWarning("Phone number must be exactly 10 digits", "Validation Error");
       return;
     }
 
-    // Name validation
     if (name.trim().length < 2) {
       showWarning("Name must be at least 2 characters long", "Validation Error");
       return;
@@ -56,26 +58,18 @@ export const Signup_form = () => {
         username: name.trim(),
         email: email.toLowerCase().trim(),
         phone_number,
-        password: pass
-      }, {
-        timeout: 30000, // 30 seconds timeout
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        password: pass,
       });
 
-      if (res.data.success === true) {
+      if (res.data.success) {
         showSuccess(
-          res.data.message || "Account created successfully! Please check your email for OTP.",
+          res.data.message || "Account created! Please check your email for OTP.",
           "Account Created"
         );
-        
-        // Store email in sessionStorage for OTP verification page
-        sessionStorage.setItem("verification_email", email.toLowerCase().trim());
-        
-        // Navigate to OTP page after a short delay
+
+        // consistent with signin — pass via URL params, no sessionStorage
         setTimeout(() => {
-          router.push("/otp");
+          router.push(`/otpverify?email=${encodeURIComponent(email.toLowerCase().trim())}&purpose=signup`);
         }, 1500);
       } else {
         showError(res.data.message || "Signup failed", "Error");
@@ -84,37 +78,14 @@ export const Signup_form = () => {
 
     } catch (error: any) {
       console.error("Signup error:", error);
-      let errorMessage = "Something went wrong. Please try again.";
-
-      if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
-        errorMessage = "Unable to connect to the server. Please check your internet connection and try again.";
-      } else if (error?.response?.status === 502) {
-        errorMessage = "Backend server is not responding. The server may be down or overloaded. Please try again in a few moments.";
-      } else if (error?.response?.status === 504) {
-        errorMessage = "Request timeout. The server took too long to respond. Please try again.";
-      } else if (error?.response?.status === 409) {
-        errorMessage = "An account with this email or phone number already exists. Please sign in instead.";
-      } else if (error?.response?.status === 400) {
-        errorMessage = error?.response?.data?.message || "Invalid information provided. Please check all fields and try again.";
-      } else if (error?.response?.status === 500) {
-        errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
-      } else if (error?.response?.status === 503) {
-        errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
-      } else if (error?.code === 'ECONNABORTED' || error?.message?.includes('timeout')) {
-        errorMessage = "The request took too long (over 30 seconds). Please check your connection and try again.";
-      } else if (error?.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      }
-
-      showError(errorMessage, "Signup Failed");
-    } finally {
+      const message = error?.response?.data?.message || "Something went wrong. Please try again.";
+      showError(message, "Signup Failed");
       setIsLoading(false);
     }
   };
 
-  // Handle Enter key press
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !invalid && !isLoading) {
+    if (e.key === "Enter" && !invalid && !isLoading) {
       signupbutton();
     }
   };
@@ -144,8 +115,7 @@ export const Signup_form = () => {
         placeholder="Enter your 10 digit number"
         value={phone_number}
         onchange={(e) => {
-          // Only allow numbers and limit to 10 digits
-          const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+          const value = e.target.value.replace(/\D/g, "").slice(0, 10);
           setphone_number(value);
         }}
         onKeyPress={handleKeyPress}
@@ -168,7 +138,7 @@ export const Signup_form = () => {
         label="Password"
         id="password"
         type="password"
-        placeholder="Create a password (min 6 characters)"
+        placeholder="Min 8 chars, uppercase, lowercase, number"
         value={pass}
         onchange={(e) => setPass(e.target.value)}
         onKeyPress={handleKeyPress}

@@ -30,7 +30,7 @@ const Newmovie=async()=>{
    }
    
    try {
-    const res=await axios.get(`${Host}/get_all_movie`,{headers:{token:token}})
+    const res=await axios.get(`${Host}/api/movie/get_all_movie`,{headers:{token:token}})
     movie=res.data.data
 
   } catch (error) {

@@ -59,7 +59,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
     setLoading(true);
     setErrorMessage(null);
     try {
-      const res = await axios.get(`${Host}/my_list`, {
+      const res = await axios.get(`${Host}/api/mylist/get_my_list`, {
         headers: { token: token }
       });
       if (res.data && res.data.data) {
