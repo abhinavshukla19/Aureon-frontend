@@ -92,7 +92,6 @@ export const Main_header = () => {
                                 className={`nav-link ${isActive ? "active" : ""}`}
                             >
                                 <span className="nav-link-text">{item.name}</span>
-                                {isActive && <span className="active-indicator" />}
                             </Link>
                         )
                     })}

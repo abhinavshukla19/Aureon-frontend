@@ -84,6 +84,14 @@ export const AllMoviesTV = async ({ hideHeader = false, token, limit, showViewMo
             <h2 className="movies-title">Explore Collection</h2>
             <p className="movies-subtitle">Discover movies and shows tailored for you</p>
           </div>
+          {showViewMore && (
+            <Link href="/newmovie" className="movies-header-cta">
+              View More
+              <span className="movies-header-cta-arrow" aria-hidden>
+                →
+              </span>
+            </Link>
+          )}
         </div>
       )}
 
@@ -144,16 +152,6 @@ export const AllMoviesTV = async ({ hideHeader = false, token, limit, showViewMo
               </Link>
             ))}
           </div>
-          {showViewMore && (
-            <div className="view-more-container">
-              <Link href="/newmovie" className="view-more-btn">
-                View More
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M7 4l6 6-6 6"/>
-                </svg>
-              </Link>
-            </div>
-          )}
         </>
       )}
     </section>

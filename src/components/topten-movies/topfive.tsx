@@ -51,7 +51,7 @@ export const Topfive = async({token}:tokentype) => {
   return (
     <section className="top-ten">
       <ErrorHandler error={errorMessage} title="Top Movies Error" />
-      <h2 className="top-ten-title">Top 10 In Your Country Today</h2>
+      <h2 className="top-ten-title">Top 5 In Your Country Today</h2>
 
       {data.length === 0 && !errorMessage ? (
         <div style={{ padding: '2rem', textAlign: 'center' }}>
@@ -65,6 +65,23 @@ export const Topfive = async({token}:tokentype) => {
 
               <div className="rank-poster">
                 <img src={item.banner_url} alt={item.title} />
+              </div>
+
+              <div className="rank-play-overlay" aria-hidden="true">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="rank-play-icon"
+                >
+                  <path
+                    d="M10 8.5V15.5L16 12L10 8.5Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span className="rank-play-text">Play</span>
               </div>
             </div>
           ))}

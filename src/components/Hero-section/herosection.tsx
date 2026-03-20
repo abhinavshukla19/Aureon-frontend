@@ -1,59 +1,3 @@
-// import { Plus } from "lucide-react"
-// import "./hero-section.css"
-
-// export const Hero_section = () => {
-//   const heromovie = {
-//     name: "Love At First Sight",
-//     lastname: "",
-//     match: "98%",
-//     year: "2025",
-//     rating: "4K Ultra HD",
-//     ageRating: "5.1",
-//     description:
-//       "Love at First Sight is a heartwarming romantic story that begins with a chance encounter and unfolds into an unforgettable connection. As two strangers navigate distance, timing, and fate, the film explores how fleeting moments can change lives forever. A tender exploration of destiny, hope, and emotional vulnerability."
-//   }
-
-//   return (
-//     <section className="hero">
-//       {/* 🎬 Background Video */}
-//       <video
-//         className="hero-video"
-//         src="https://pub-0ab957bd269d4ddbb175b1627b53d2a4.r2.dev/Love--at-first-sight/movie/Love_at_First_Sight_Official_Trailer_Netflix_1080P.mp4"
-//         autoPlay
-//         muted
-//         loop
-//         playsInline
-//       />
-
-//       {/* 🎥 Hero Content */}
-//       <div className="hero-content">
-//         <span className="hero-tag">#1 IN MOVIES TODAY</span>
-
-//         <h1 className="hero-title">
-//           {heromovie.name}
-//           {heromovie.lastname && <span>{heromovie.lastname}</span>}
-//         </h1>
-
-//         <div className="hero-meta">
-//           <span className="match">{heromovie.match} Match</span>
-//           <span className="year">{heromovie.year}</span>
-//           <span className="rating">{heromovie.rating}</span>
-//           <span className="age-rating">{heromovie.ageRating}</span>
-//         </div>
-
-//         <p className="hero-desc">{heromovie.description}</p>
-
-//         <div className="hero-actions">
-//           <button className="btn primary">▶ Play</button>
-//           <button className="movie-icon-button"><Plus size={20} /></button>
-//         </div>
-//       </div>
-//     </section>
-//   )
-// }
-
-
-
 "use client"
 import { Play, Volume2, VolumeX, Plus } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
@@ -67,19 +11,23 @@ export const Hero_section = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const heroMovie = {
-    name: "Love At First Sight",
+    name: "People we meet on vacation",
     lastname: "",
     match: "98%",
-    year: "2025",
+    year: "2026",
     rating: "4K Ultra HD",
-    ageRating: "5.1",
-    duration: "1h 32m",
+    /** Surround / spatial audio — shown once in metadata only */
+    audioFormat: "5.1",
+    duration: "1h 52m",
     genres: ["Romance", "Drama", "Feel-Good"],
     description:
-      "Love at First Sight is a heartwarming romantic story that begins with a chance encounter and unfolds into an unforgettable connection. As two strangers navigate distance, timing, and fate, the film explores how fleeting moments can change lives forever.",
-    // Fallback poster image - replace with your own
-    posterUrl: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1920&q=80"
+      "People we meet on vacation is a heartwarming romantic story that begins with a chance encounter and unfolds into an unforgettable connection. As two strangers navigate distance, timing, and fate, the film explores how fleeting moments can change lives forever.",
+    posterUrl:
+      "https://dnm.nflximg.net/api/v6/BvVbc2Wxr2w6QuoANoSpJKEIWjQ/AAAAQX109M3039unqsrU2LMU3y3f-kBN5Y5v4R0482N8pTexwgxoHxi4f7CKG4zUy0e_PiSTv7mjBwin4QVN2j6f6U9KFzobPEr-oC8ROzGgCpGNq7xE46tA-NlGs79R3fbigrYMpz2V_nS9fH8bdu1elfYJ3m4.jpg?r=c02",
   }
+
+  const heroVideoSrc =
+    "https://pub-0ab957bd269d4ddbb175b1627b53d2a4.r2.dev/people%20we%20meet%20at%20vaction/trailer/People%20We%20Meet%20On%20Vacation%20%20Official%20Teaser%20%20Netflix%20-%20Netflix%20(1080p%2C%20h264).mp4"
 
   useEffect(() => {
     const video = videoRef.current
@@ -139,12 +87,17 @@ export const Hero_section = () => {
   return (
     <section className="hero-section">
       {/* Background - Video or Fallback */}
-      <div className="hero-video-wrapper">
+      <div
+        className="hero-video-wrapper"
+        style={{
+          backgroundImage: `url(${heroMovie.posterUrl})`,
+        }}
+      >
         {!videoError ? (
           <video
             ref={videoRef}
             className={`hero-background-video ${isVideoLoaded ? 'loaded' : ''}`}
-            src="https://pub-0ab957bd269d4ddbb175b1627b53d2a4.r2.dev/Love--at-first-sight/movie/Love_at_First_Sight_Official_Trailer_Netflix_1080P.mp4"
+            src={heroVideoSrc}
             poster={heroMovie.posterUrl}
             autoPlay
             muted={isMuted}
@@ -166,6 +119,9 @@ export const Hero_section = () => {
         <div className="hero-gradient-overlay" />
         <div className="hero-vignette" />
         <div className="hero-left-gradient" />
+        {/* Soften typical trailer watermark corners without heavy UI */}
+        <div className="hero-watermark-shield hero-watermark-shield--tr" aria-hidden />
+        <div className="hero-watermark-shield hero-watermark-shield--br" aria-hidden />
       </div>
 
       {/* Main Content */}
@@ -203,7 +159,7 @@ export const Hero_section = () => {
             <span className="metadata-divider">•</span>
             <span className="metadata-duration">{heroMovie.duration}</span>
             <span className="metadata-badge-quality">{heroMovie.rating}</span>
-            <span className="metadata-badge-age">{heroMovie.ageRating}</span>
+            <span className="metadata-badge-age">{heroMovie.audioFormat}</span>
           </div>
 
           {/* Genres */}
@@ -258,11 +214,6 @@ export const Hero_section = () => {
             )}
           </button>
         )}
-
-        {/* Age Rating */}
-        <div className="hero-rating-info">
-          <span className="rating-badge">{heroMovie.ageRating}</span>
-        </div>
       </div>
 
       {/* Loading Spinner */}

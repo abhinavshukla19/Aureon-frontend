@@ -1,4 +1,11 @@
-<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
-  <!-- Simple, bold "A" logo -->
-  <path d="M20 8L12 32H16L17 28H23L24 32H28L20 8ZM21 14L23.5 26H16.5L19 14H21Z" fill="white" stroke="none"/>
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <!-- Aureon mark: stylized "A" with a merged play icon -->
+  <path
+    d="M20 7 L9 33 H14.2 L16.3 27 H23.7 L25.8 33 H31 L20 7 Z"
+    fill="none"
+    stroke="#FFFFFF"
+    stroke-width="2.6"
+    stroke-linejoin="round"
+  />
+  <path d="M17.1 16.3 L24.3 19.2 L17.1 22.1 Z" fill="#FFFFFF" />
 </svg>

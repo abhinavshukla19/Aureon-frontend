@@ -12,7 +12,7 @@ export const Footer = () => {
           <div className="footer-brand">
             <h3 className="footer-logo">{Appname}</h3>
             <p className="footer-tagline">
-              Your ultimate destination for streaming movies and TV shows.
+              Watch what you love. Anytime, anywhere.
             </p>
           </div>
 

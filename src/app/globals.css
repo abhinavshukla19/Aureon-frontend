@@ -1,17 +1,36 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Keep site theme consistent regardless of OS/browser theme. */
+  --background: #000000;
+  --foreground: #ededed;
+  /* Secondary text — still one palette, slightly softer */
+  --foreground-muted: rgba(237, 237, 237, 0.72);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Accent text (same font everywhere — color / gradient only) */
+  --text-accent-violet: #c4b5fd;
+  --text-accent-cyan: #22d3ee;
+  --text-accent-soft: #a5b4fc;
+  --gradient-heading: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #c4b5fd 45%,
+    #22d3ee 100%
+  );
+  --gradient-heading-subtle: linear-gradient(
+    135deg,
+    rgba(237, 237, 237, 0.98) 0%,
+    rgba(196, 181, 253, 0.88) 55%,
+    rgba(34, 211, 238, 0.92) 100%
+  );
 }
 
 html {
   scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: var(--background);
+  color: var(--foreground);
+  color-scheme: dark;
 }
 
 html,
@@ -19,16 +38,34 @@ body {
   max-width: 100%;
   overflow-x: hidden;
   width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
   color: var(--foreground);
-  background: #000000;
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background: var(--background);
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Home and app roots: no mystery gap above fixed header */
+body > * {
+  margin-top: 0;
+}
+
+main {
+  margin: 0;
+  padding: 0;
+  flex: 1 0 auto;
+  width: 100%;
 }
 
 * {
@@ -42,10 +79,18 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* One font stack everywhere (keep monospace for code) */
+body *:not(pre):not(code):not(kbd):not(samp) {
+  font-family: inherit !important;
+}
+
+/* Optional: add class on any heading for violet→cyan text (font unchanged) */
+.aureon-heading-gradient {
+  background: var(--gradient-heading);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* =========================
