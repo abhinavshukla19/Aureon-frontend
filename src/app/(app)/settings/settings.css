@@ -1,95 +1,166 @@
 /* =========================
-   PAGE BASE (FULL WIDTH)
+   PAGE SHELL (aligned with profile)
 ========================= */
 .setting-main-div {
+  --settings-glow-violet: rgba(196, 181, 253, 0.42);
+  --settings-glow-cyan: rgba(34, 211, 238, 0.28);
+
   width: 100%;
   min-height: 100vh;
-
-  padding: 56px 80px 96px;
-  color: #ffffff;
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-
-  background: radial-gradient(
-    ellipse 1400px 800px at 50% -10%,
-    rgba(124, 58, 237, 0.15) 0%,
-    rgba(79, 70, 229, 0.08) 30%,
-    rgba(11, 11, 18, 0.98) 70%,
-    #0b0b12 100%
-  );
-
+  min-height: 100dvh;
   position: relative;
   overflow-x: hidden;
+  padding: 24px 20px 56px;
+  color: var(--foreground, #ededed);
+  background:
+    radial-gradient(ellipse 130% 75% at 50% -25%, rgba(88, 28, 135, 0.32) 0%, transparent 52%),
+    radial-gradient(ellipse 85% 55% at 100% 15%, rgba(34, 211, 238, 0.1) 0%, transparent 42%),
+    radial-gradient(ellipse 65% 45% at 0% 55%, rgba(124, 58, 237, 0.16) 0%, transparent 48%),
+    linear-gradient(180deg, #050508 0%, #0a0a0f 42%, #06060a 100%);
 }
 
-.setting-main-div::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 30%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(79, 70, 229, 0.06) 0%, transparent 50%);
+.settings-ambient {
+  position: fixed;
+  inset: 0;
   pointer-events: none;
   z-index: 0;
+  background:
+    radial-gradient(circle at 18% 28%, var(--settings-glow-violet) 0%, transparent 40%),
+    radial-gradient(circle at 88% 72%, var(--settings-glow-cyan) 0%, transparent 36%);
+  opacity: 0.5;
+  animation: settingsAmbientDrift 20s ease-in-out infinite alternate;
+}
+
+@keyframes settingsAmbientDrift {
+  0% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.42;
+  }
+  100% {
+    transform: scale(1.06) translate(-1.5%, 1%);
+    opacity: 0.58;
+  }
+}
+
+.settings-page-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 /* =========================
    HEADER
 ========================= */
 .setting-header-div {
-  max-width: 1200px;
-  margin: 0 auto 48px;
+  margin: 0 0 36px;
   position: relative;
   z-index: 1;
+  scroll-margin-top: calc(var(--nav-height, 70px) + 20px);
+}
+
+.setting-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.setting-header-copy {
+  flex: 1;
+  min-width: min(100%, 260px);
+}
+
+.settings-eyebrow {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--foreground-muted, rgba(237, 237, 237, 0.55));
+  margin: 0 0 10px;
 }
 
 .setting-title-row {
   display: flex;
   align-items: center;
   gap: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .settings-icon-wrapper {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(79, 70, 229, 0.15));
-  border-radius: 12px;
-  border: 1px solid rgba(124, 58, 237, 0.3);
-  color: #a78bfa;
-  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.2);
+  background: linear-gradient(
+    145deg,
+    rgba(196, 181, 253, 0.18) 0%,
+    rgba(34, 211, 238, 0.08) 100%
+  );
+  border-radius: 14px;
+  border: 1px solid rgba(196, 181, 253, 0.35);
+  color: var(--text-accent-violet, #c4b5fd);
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.35),
+    0 0 24px rgba(124, 58, 237, 0.15);
 }
 
 .settings-main-head-para {
-  font-size: 36px;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
   font-weight: 700;
-  letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.9) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  letter-spacing: -0.04em;
   margin: 0;
+  line-height: 1.15;
 }
 
 .setting-head-para {
   margin: 0;
-  font-size: 16px;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--foreground-muted, rgba(237, 237, 237, 0.72));
   font-weight: 400;
+  max-width: 520px;
+}
+
+.settings-header-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.98);
+  text-decoration: none;
+  background: linear-gradient(
+    135deg,
+    rgba(196, 181, 253, 0.18) 0%,
+    rgba(34, 211, 238, 0.1) 100%
+  );
+  border: 1px solid rgba(196, 181, 253, 0.32);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  flex-shrink: 0;
+}
+
+.settings-header-cta:hover {
+  transform: translateY(-2px);
+  border-color: rgba(34, 211, 238, 0.45);
+  box-shadow:
+    0 14px 40px rgba(0, 0, 0, 0.4),
+    0 0 40px rgba(34, 211, 238, 0.1);
 }
 
 /* =========================
    SUBSCRIPTION CARD
 ========================= */
 .setting-subscription-main-div {
-  max-width: 1200px;
-  margin: 0 auto 32px;
+  max-width: none;
+  margin: 0 0 28px;
   position: relative;
   z-index: 1;
 
@@ -98,22 +169,24 @@
   align-items: center;
   gap: 32px;
 
-  padding: 32px 40px;
+  padding: 28px 36px;
   background: linear-gradient(
-    135deg,
-    rgba(25, 18, 45, 0.95) 0%,
-    rgba(15, 10, 30, 0.98) 100%
+    145deg,
+    rgba(255, 255, 255, 0.06) 0%,
+    rgba(25, 18, 45, 0.88) 38%,
+    rgba(12, 10, 24, 0.95) 100%
   );
-  border: 1px solid rgba(124, 58, 237, 0.25);
-  border-radius: 24px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(196, 181, 253, 0.22);
+  border-radius: 22px;
 
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 1px 0 rgba(255, 255, 255, 0.05) inset;
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(34, 211, 238, 0.06) inset,
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
 
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
   overflow: hidden;
 }
 
@@ -189,16 +262,33 @@
 }
 
 .plan-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.setting-plan-pill {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(196, 181, 253, 0.95);
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(196, 181, 253, 0.35);
 }
 
 .setting-plan-para {
-  font-size: 24px;
+  font-size: clamp(1.25rem, 3vw, 1.65rem);
   font-weight: 700;
-  color: #ffffff;
+  color: #f8fafc;
   margin: 0;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.03em;
 }
 
 .billing-info {
@@ -228,14 +318,16 @@
 }
 
 .button-to-subscription-div button {
-  height: 48px;
-  padding: 0 28px;
-  border-radius: 12px;
+  width: auto;
+  margin-top: 0;
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 14px;
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.2px;
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-  color: #fff;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, #8b5cf6 0%, #22d3ee 140%);
+  color: #0f172a;
   border: none;
   display: flex;
   align-items: center;
@@ -243,18 +335,18 @@
   gap: 8px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 
-    0 4px 16px rgba(124, 58, 237, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  box-shadow:
+    0 8px 28px rgba(34, 211, 238, 0.2),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
   white-space: nowrap;
 }
 
 .button-to-subscription-div button:hover {
   transform: translateY(-2px);
-  background: linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%);
-  box-shadow: 
-    0 8px 24px rgba(124, 58, 237, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  filter: brightness(1.06);
+  box-shadow:
+    0 12px 36px rgba(139, 92, 246, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.25) inset;
 }
 
 .button-to-subscription-div button:active {
@@ -265,8 +357,8 @@
    SECURITY CARD
 ========================= */
 .setting-security-div {
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   position: relative;
   z-index: 1;
 
@@ -502,8 +594,8 @@
    CONTACT INFORMATION CARD
 ========================= */
 .setting-contact-wrapper {
-  max-width: 1200px;
-  margin: 0 auto 32px;
+  max-width: none;
+  margin: 0 0 24px;
   position: relative;
   z-index: 1;
 }
@@ -544,21 +636,49 @@
 }
 
 .setting-contact-item-card {
-  padding: 24px 28px;
+  padding: 18px 22px;
   background: linear-gradient(
-    135deg,
-    rgba(25, 18, 45, 0.95) 0%,
-    rgba(15, 10, 30, 0.98) 100%
+    145deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(18, 14, 32, 0.92) 55%,
+    rgba(10, 8, 18, 0.98) 100%
   );
-  border: 1px solid rgba(124, 58, 237, 0.25);
-  border-radius: 16px;
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset,
-    0 1px 0 rgba(255, 255, 255, 0.05) inset;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(196, 181, 253, 0.18);
+  border-radius: 18px;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.38),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   overflow: hidden;
+}
+
+.contact-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.contact-item-info {
+  flex: 1;
+  min-width: min(100%, 200px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contact-item-info .contact-label-group {
+  margin: 0;
+}
+
+.contact-item-info .contact-value {
+  text-align: left;
+  margin: 0;
+  word-break: break-word;
 }
 
 .setting-contact-item-card::before {
@@ -666,6 +786,29 @@
   position: relative;
   overflow: hidden;
   z-index: 1;
+}
+
+.contact-edit-btn--inline {
+  width: auto;
+  flex-shrink: 0;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(248, 250, 252, 0.95);
+  border: 1px solid rgba(196, 181, 253, 0.35);
+  box-shadow: none;
+}
+
+.contact-edit-btn--inline:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.35) 0%, rgba(34, 211, 238, 0.15) 100%);
+  border-color: rgba(34, 211, 238, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.25);
+}
+
+.contact-edit-btn--inline:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .contact-edit-btn::before {
@@ -834,7 +977,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1200;
   padding: 20px;
   animation: fadeIn 0.2s ease-out;
 }
@@ -928,8 +1071,8 @@
    PASSWORD CHANGE FORM
 ========================= */
 .setting-password-form-wrapper {
-  max-width: 1200px;
-  margin: 0 auto 32px;
+  max-width: none;
+  margin: 0 0 28px;
   position: relative;
   z-index: 1;
 }
@@ -998,13 +1141,23 @@
 ========================= */
 @media (max-width: 1024px) {
   .setting-main-div {
-    padding: 48px 48px 80px;
+    padding: 20px 16px 48px;
   }
 }
 
 @media (max-width: 900px) {
   .setting-main-div {
-    padding: 40px 32px 64px;
+    padding: 18px 14px 44px;
+  }
+
+  .setting-header-top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .settings-header-cta {
+    justify-content: center;
+    width: 100%;
   }
 
   .setting-subscription-main-div {
@@ -1029,15 +1182,11 @@
   .setting-security-div {
     padding: 28px 32px;
   }
-
-  .settings-main-head-para {
-    font-size: 32px;
-  }
 }
 
 @media (max-width: 640px) {
   .setting-main-div {
-    padding: 32px 24px 56px;
+    padding: 16px 12px 40px;
   }
 
   .setting-subscription-main-div,
@@ -1056,6 +1205,16 @@
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 16px;
+  }
+
+  .contact-item-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .contact-edit-btn--inline {
+    width: 100%;
+    justify-content: center;
   }
 
   .contact-value {
@@ -1086,7 +1245,7 @@
   }
 
   .settings-main-head-para {
-    font-size: 28px;
+    font-size: clamp(1.5rem, 6vw, 1.85rem);
   }
 
   .setting-head-para {
@@ -1101,5 +1260,12 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-ambient {
+    animation: none;
+    opacity: 0.48;
   }
 }

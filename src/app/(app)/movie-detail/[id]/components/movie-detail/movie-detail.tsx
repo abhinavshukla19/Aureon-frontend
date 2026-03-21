@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Play, Plus, Check, Share2, Info, Clock, Star, X, Volume2, VolumeX } from "lucide-react";
+import { Play, Plus, Check, Info, Clock, Star, X, Volume2, VolumeX } from "lucide-react";
 import { MoviePlayer } from "../movie-player/movie-player";
 import { CastSection } from "../cast-section/cast-section";
 import { RecommendationsGrid } from "../recommendation-grid/recommendation-grid";
+import { toggleMyListItem } from "@/lib/mylist-client";
 import "./movie-detail.css";
 
 type MovieDetailContentProps = {
@@ -12,11 +13,20 @@ type MovieDetailContentProps = {
   cast: any[];
   recommendations: any[];
   progress: any;
+  token: string;
+  initialInMyList: boolean;
 };
 
-export function MovieDetailContent({ movie, cast, recommendations, progress }: MovieDetailContentProps) {
+export function MovieDetailContent({
+  movie,
+  cast,
+  recommendations,
+  progress,
+  token,
+  initialInMyList,
+}: MovieDetailContentProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isInMyList, setIsInMyList] = useState(false);
+  const [isInMyList, setIsInMyList] = useState(initialInMyList);
   const [showInfo, setShowInfo] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
@@ -35,18 +45,29 @@ export function MovieDetailContent({ movie, cast, recommendations, progress }: M
     }, 100);
   };
 
-  // const handleAddToList = async () => {
-  //   const result = isInMyList 
-  //     ? await removeFromMyList(movie.movie_id)
-  //     : await addToMyList(movie.movie_id);
-    
-  //   if (result.success) {
-  //     setIsInMyList(!isInMyList);
-  //     notify(result.message);
-  //   } else {
-  //     notify(result.message, 'error');
-  //   }
-  // };
+  useEffect(() => {
+    setIsInMyList(initialInMyList);
+  }, [movie?.movie_id, initialInMyList]);
+
+  const handleAddToList = async () => {
+    try {
+      const data = await toggleMyListItem(token, movie.movie_id);
+      if (data.success) {
+        const next = Boolean(data.inList);
+        setIsInMyList(next);
+        notify(data.message || (next ? "Added to your list" : "Removed from your list"));
+      } else {
+        notify(data.message || "Could not update your list", "error");
+      }
+    } catch (err: unknown) {
+      const ax = err as { response?: { status?: number; data?: { message?: string } } };
+      if (ax?.response?.status === 401) {
+        notify("Please sign in again", "error");
+      } else {
+        notify(ax?.response?.data?.message || "Could not update your list", "error");
+      }
+    }
+  };
 
   // const handleShare = async () => {
   //   const result = await shareMovie(movie.movie_id, movie.title);
@@ -67,16 +88,22 @@ export function MovieDetailContent({ movie, cast, recommendations, progress }: M
     }
   };
 
-  // Auto-play preview video on mount
   useEffect(() => {
     if (videoRef.current && movie.movie_url) {
       videoRef.current.play().catch(() => {});
     }
-  }, []);
+  }, [movie.movie_url]);
 
-  const progressPercentage = progress 
-    ? Math.round((progress.progress_seconds / movie.duration) * 100)
+  /** DB `duration` is minutes; resume / player use seconds */
+  const durationMinutes = Number(movie.duration) || 0;
+  const durationSeconds = durationMinutes * 60;
+  const progressSeconds = progress
+    ? Number(progress.progress_seconds) || 0
     : 0;
+  const progressPercentage =
+    progress && durationSeconds > 0
+      ? Math.min(100, Math.round((progressSeconds / durationSeconds) * 100))
+      : 0;
 
   return (
     <>
@@ -93,8 +120,9 @@ export function MovieDetailContent({ movie, cast, recommendations, progress }: M
       {isPlaying && (
         <MoviePlayer
           movieUrl={movie.movie_url}
-          movieId={movie.movie_id}
-          resumeTime={progress?.progress_seconds || 0}
+          movieId={String(movie.movie_id)}
+          resumeTime={progressSeconds}
+          movieTitle={movie.title}
           onClose={() => setIsPlaying(false)}
         />
       )}
@@ -152,13 +180,14 @@ export function MovieDetailContent({ movie, cast, recommendations, progress }: M
               <span>{progressPercentage > 5 ? `Resume (${progressPercentage}%)` : 'Play'}</span>
             </button>
 
-            {/* <button 
-              className={`btn-list ${isInMyList ? 'active' : ''}`}
-              onClick={handleAddToList}
+            <button
+              type="button"
+              className={`btn-list ${isInMyList ? "active" : ""}`}
+              onClick={() => void handleAddToList()}
             >
               {isInMyList ? <Check size={20} /> : <Plus size={20} />}
-              <span>{isInMyList ? 'In List' : 'My List'}</span>
-            </button> */}
+              <span>{isInMyList ? "In List" : "My List"}</span>
+            </button>
 
 
             <button className="btn-icon" onClick={() => setShowInfo(!showInfo)} title="More Info">
@@ -181,7 +210,7 @@ export function MovieDetailContent({ movie, cast, recommendations, progress }: M
               </div>
               <span className="progress-text">
                 <Clock size={12} />
-                {Math.floor(progress.progress_seconds / 60)} min watched
+                {Math.floor(progressSeconds / 60)} min watched
               </span>
             </div>
           )}
@@ -240,9 +269,10 @@ export function MovieDetailContent({ movie, cast, recommendations, progress }: M
 
         {/* Recommendations */}
         {recommendations.length > 0 && (
-          <RecommendationsGrid 
+          <RecommendationsGrid
             recommendations={recommendations}
             currentGenre={movie.genre}
+            token={token}
           />
         )}
 

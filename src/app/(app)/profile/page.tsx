@@ -42,23 +42,26 @@ const Profile = async () => {
 
   return (
     <div className="profile-main-div">
-      <ProfileErrorHandler error={errorMessage} />
+      <div className="profile-ambient" aria-hidden />
+      <div className="profile-page-inner">
+        <ProfileErrorHandler error={errorMessage} />
 
-      <Profilehead
-        username={username as string}
-        plan_name={plan_name as string}
-        member_since={member_since}
-      />
-
-      <div className="profile-detail-div">
-        <Profile_detail
+        <Profilehead
           username={username as string}
-          email={email as string}
-          phone_number={phone_number}
           plan_name={plan_name as string}
           member_since={member_since}
-          is_verified={is_verified as boolean | undefined}
         />
+
+        <div className="profile-detail-div">
+          <Profile_detail
+            username={username as string}
+            email={email as string}
+            phone_number={phone_number}
+            plan_name={plan_name as string}
+            member_since={member_since}
+            is_verified={is_verified as boolean | undefined}
+          />
+        </div>
       </div>
     </div>
   );

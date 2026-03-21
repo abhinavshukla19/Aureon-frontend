@@ -1,27 +1,5 @@
-/* =========================
-   RESET
-========================= */
-* {
-  box-sizing: border-box;
-}
+/* Auth page styles — do not set html/body overflow here (avoids double scrollbars). */
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: #000;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-#__next {
-  min-height: 100vh;
-}
-  
   /* =========================
      PAGE FADE
   ========================= */
@@ -40,21 +18,13 @@ body {
      MAIN FRAME
   ========================= */
   .main-frame-div {
-    min-height: 100vh;
+    min-height: 100dvh;
     width: 100%;
     position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-  
+    overflow-x: clip;
+    overflow-y: visible;
     display: grid;
     grid-template-rows: auto 1fr auto;
-  
-    background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCuOLP07XQhsIO5LLzjXPY2FRvBjwl8fVnNMyfpJaEMIBkrtblr96y4f5FaUu5zoIGvYUBNu2RAm4Lo8ks80CePuVFWPiLLPG5pkYZKBjfI-D22uPLow2WNr1R980msY-VtUSdtGN9lHFNuA-sMECZzzOy4rdaAkdMgmzLO8Bdcqp-vfeMF7C9bkh19qglTLCd2Yt-4IQshaDKIRbjh6LSt9Zz7gTG8oecAywlftoP24TPbg9vuFTeXru3TDq_CaSc5-8H9tA4m4rP_");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-  
     animation: pageFadeIn 0.8s ease forwards;
   }
   
@@ -65,32 +35,7 @@ body {
     }
   }
   
-/* =========================
-     OVERLAY
-  ========================= */
-.main-frame-div::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0,0,0,0.2) 0%,
-      rgba(0,0,0,0.6) 30%,
-      rgba(0,0,0,0.95) 100%
-    ),
-    radial-gradient(
-      circle at 30% 30%,
-      rgba(90, 30, 160, 0.25),
-      rgba(0, 0, 0, 0.92)
-    );
-  z-index: 0;
-}
-
-.main-frame-div > * {
-  position: relative;
-  z-index: 1;
-}
+/* Background layers: auth-cosmic-shell.css */
 
 /* =========================
      HEADER
@@ -107,6 +52,7 @@ body {
 }
 
 /* brand container */
+a.brand,
 .brand {
   display: flex;
   align-items: center;
@@ -176,22 +122,30 @@ body {
   font-size: 15px;
   font-weight: 600;
   padding: 11px 24px;
-  border-radius: 8px;
+  border-radius: 999px;
   color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(
+    135deg,
+    rgba(124, 42, 232, 0.35) 0%,
+    rgba(34, 211, 238, 0.12) 100%
+  );
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(196, 181, 253, 0.35);
   text-decoration: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 24px rgba(124, 42, 232, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
 }
 
 .signup-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  background: linear-gradient(
+    135deg,
+    rgba(124, 42, 232, 0.5) 0%,
+    rgba(34, 211, 238, 0.22) 100%
+  );
+  border-color: rgba(34, 211, 238, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(34, 211, 238, 0.15), 0 0 40px rgba(124, 42, 232, 0.2);
 }
 
 .signup-btn:active {
@@ -232,22 +186,27 @@ body {
   ========================= */
 .signin-content {
   width: 100%;
-  max-width: 480px;
-  background: rgba(20, 20, 30, 0.4);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  max-width: 460px;
+  background: linear-gradient(
+    155deg,
+    rgba(22, 18, 40, 0.82) 0%,
+    rgba(12, 12, 28, 0.78) 45%,
+    rgba(8, 10, 24, 0.85) 100%
+  );
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
   color: #fff;
-  padding: 48px 40px;
-  border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-    0 2px 8px rgba(255, 255, 255, 0.05) inset,
-    0 20px 60px rgba(0, 0, 0, 0.6),
-    0 0 80px rgba(120, 80, 255, 0.1);
-  animation: cardEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 44px 38px;
+  border-radius: 28px;
+  border: 1px solid rgba(196, 181, 253, 0.22);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.12) inset,
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 32px 90px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(124, 42, 232, 0.12),
+    0 0 120px rgba(34, 211, 238, 0.06);
+  animation: cardEnter 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
   position: relative;
   overflow: hidden;
 }
@@ -258,43 +217,43 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(255, 255, 255, 0.3),
+    rgba(124, 42, 232, 0.9),
+    rgba(34, 211, 238, 0.85),
     transparent
   );
-  opacity: 0.6;
+  opacity: 0.85;
 }
 
 .signin-content::after {
   content: "";
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  top: -40%;
+  right: -30%;
+  width: 70%;
+  height: 70%;
   background: radial-gradient(
     circle,
-    rgba(120, 80, 255, 0.1) 0%,
-    transparent 70%
+    rgba(124, 42, 232, 0.18) 0%,
+    transparent 65%
   );
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  opacity: 0.6;
   pointer-events: none;
+  transition: opacity 0.45s ease;
 }
 
 .signin-content:hover {
-  transform: translateY(-4px);
-  background: rgba(25, 25, 35, 0.45);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
-    0 2px 12px rgba(255, 255, 255, 0.08) inset,
-    0 24px 72px rgba(0, 0, 0, 0.7),
-    0 0 100px rgba(120, 80, 255, 0.15);
+  transform: translateY(-3px);
+  border-color: rgba(196, 181, 253, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.2) inset,
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 40px 100px rgba(0, 0, 0, 0.6),
+    0 0 100px rgba(124, 42, 232, 0.2),
+    0 0 140px rgba(34, 211, 238, 0.1);
 }
 
 .signin-content:hover::after {
@@ -313,12 +272,17 @@ body {
   ========================= */
 .signin-content .main-heading {
   font-size: 32px;
-  font-weight: 700;
+  font-weight: 800;
   color: #ffffff;
   margin: 0 0 8px 0;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
-  background: linear-gradient(135deg, #ffffff 0%, #e8d9ff 100%);
+  line-height: 1.15;
+  letter-spacing: -0.6px;
+  background: linear-gradient(
+    120deg,
+    #ffffff 0%,
+    #e9d5ff 40%,
+    #a5f3fc 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -390,40 +354,7 @@ body {
     opacity: 1;
   }
   
-  /* =========================
-     BUTTON
-  ========================= */
-  button {
-    width: 100%;
-    height: 48px;
-    margin-top: 12px;
-  
-    background: #7c2ae8;
-    border: none;
-    border-radius: 8px;
-  
-    color: #fff;
-    font-size: 16px;
-    font-weight: 600;
-  
-    cursor: pointer;
-    transition: background 0.25s ease,
-                transform 0.15s ease,
-                box-shadow 0.2s ease;
-  }
-  
-  button:hover:not(:disabled) {
-    background: #6a22cc;
-    transform: translateY(-1px);
-    box-shadow: 0 10px 25px rgba(124, 42, 232, 0.5);
-  }
-  
-  button:disabled {
-    background: #3a3a5a;
-    opacity: 0.6;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
+  /* Submit uses .aureon-brand-button from components/button — no bare button rules here */
   
 /* =========================
      CARD FOOTER
@@ -474,7 +405,7 @@ body {
   color: #b8a0ff;
   text-decoration: underline;
 }
-  
+
 /* =========================
      BOTTOM FOOTER
   ========================= */
@@ -485,6 +416,12 @@ body {
   z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
+  border-top: 1px solid rgba(196, 181, 253, 0.1);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(3, 3, 14, 0.35) 100%
+  );
 }
 
 .contact-text {
@@ -544,7 +481,7 @@ body {
 .footer-link:hover::after {
   width: 100%;
 }
-  
+
 /* =========================
      MOBILE
   ========================= */
@@ -576,11 +513,6 @@ body {
 
   .signin-content .main-heading {
     font-size: 28px;
-  }
-
-  button {
-    height: 48px;
-    font-size: 15px;
   }
 
   .signin-card-footer {
@@ -634,7 +566,8 @@ body {
      ACCESSIBILITY
   ========================= */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  .main-frame-div,
+  .main-frame-div * {
     animation: none !important;
     transition: none !important;
   }

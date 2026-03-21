@@ -10,7 +10,12 @@ type ButtonProps = {
 
 export const Button = ({ buttonname, onclick, disabled }: ButtonProps) => {
   return (
-    <button onClick={onclick} disabled={disabled}>
+    <button
+      type="button"
+      className="aureon-brand-button"
+      onClick={onclick}
+      disabled={disabled}
+    >
       {buttonname}
     </button>
   );

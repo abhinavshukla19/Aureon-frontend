@@ -1,0 +1,135 @@
+/*
+  Auth backgrounds — candidates reviewed:
+  1) Freepik blue-lights portrait (user) — premium, cool tones, fits Aureon violet
+  2) Freepik techno-party portrait (user) — high energy, great for “join”
+  3) Unsplash red cinema seats — iconic streaming mood
+  4) Unsplash cozy movie night — warm, approachable
+  5) Unsplash cinema hall / screen — wide cinematic
+
+  Sign-in: Freepik techno-party woman portrait (vibrant club lights).
+  Sign-up: Freepik blue-lights woman portrait — same “hero portrait + neon” language, different shot & palette.
+*/
+
+@keyframes auth-aurora-drift {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.9;
+  }
+  75% {
+    opacity: 0.96;
+  }
+}
+
+/* Base + chosen hero photos */
+.main-frame-div,
+.signup-page {
+  background-color: #03030c;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+  /* Keep decor from widening the scrollable area */
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+/* Sign-in: techno party portrait */
+.main-frame-div {
+  background-image: url("https://img.freepik.com/free-photo/portrait-person-attending-vibrant-techno-music-party_23-2150551577.jpg");
+}
+
+/* Sign-up: woman + blue / UV portrait (matches sign-in layout & mood, not the same asset) */
+.signup-page {
+  background-image: url("https://img.freepik.com/free-photo/woman-portrait-with-blue-lights-visual-effects_23-2149419522.jpg");
+}
+
+/* Layer 1: translucent violet/cyan wash */
+.main-frame-div::before,
+.signup-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(
+      ellipse 90% 60% at 15% 12%,
+      rgba(124, 42, 232, 0.42),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 75% 55% at 85% 18%,
+      rgba(34, 211, 238, 0.2),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse 70% 50% at 72% 85%,
+      rgba(168, 85, 247, 0.28),
+      transparent 52%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.15) 0%,
+      transparent 28%,
+      transparent 48%,
+      rgba(2, 2, 10, 0.55) 78%,
+      rgba(2, 2, 12, 0.88) 100%
+    );
+  animation: auth-aurora-drift 28s ease-in-out infinite;
+}
+
+/* Layer 2: fine grid + soft vignette */
+.main-frame-div::after,
+.signup-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    ),
+    radial-gradient(
+      ellipse 100% 85% at 50% 45%,
+      transparent 0%,
+      rgba(3, 3, 14, 0.42) 100%
+    );
+  background-size:
+    56px 56px,
+    56px 56px,
+    100% 100%;
+  background-position: center;
+  opacity: 0.9;
+}
+
+.main-frame-div > *,
+.signup-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Beat `> *` specificity so nav stays above aurora/grid (::after) */
+.main-frame-div .header-div,
+.signup-page .signup-header {
+  z-index: 5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-frame-div::before,
+  .signup-page::before {
+    animation: none !important;
+  }
+
+  .signup-page {
+    animation: none !important;
+  }
+}

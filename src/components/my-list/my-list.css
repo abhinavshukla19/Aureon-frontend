@@ -1,5 +1,10 @@
 .my-list-section {
   min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background: linear-gradient(180deg, #000000 0%, #0a0a0a 50%, #000000 100%);
   padding: 0;
   position: relative;
@@ -38,6 +43,9 @@
   position: relative;
   z-index: 1;
   animation: fadeInUp 0.8s ease-out;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 @keyframes fadeInUp {
@@ -116,18 +124,25 @@
   padding: 1.5rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 0;
+  width: 100%;
 }
 
 .my-list-filters {
   display: flex;
   gap: 0.75rem;
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 
 .my-list-filter-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
   padding: 0.625rem 1.25rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -212,8 +227,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
   width: 36px;
   height: 36px;
+  padding: 0;
   border: none;
   background: transparent;
   color: rgba(255, 255, 255, 0.6);
@@ -250,6 +267,9 @@
 .my-list-content {
   position: relative;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .my-list-content.grid-view {
@@ -284,8 +304,9 @@
 
 .my-list-content.grid-view {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
   gap: 2rem;
+  align-items: start;
 }
 
 .my-list-content.list-view {
@@ -297,6 +318,9 @@
 /* Card */
 .my-list-card {
   position: relative;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   animation: cardFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) backwards;
   will-change: transform;
@@ -560,8 +584,13 @@
 }
 
 .my-list-remove-btn {
+  flex: 0 0 auto;
   width: 36px;
+  min-width: 36px;
+  max-width: 36px;
   height: 36px;
+  padding: 0;
+  margin: 0;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.08);
@@ -704,6 +733,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 100%;
   padding: 0.875rem 2rem;
   background: linear-gradient(135deg, #9b5cff 0%, #c77dff 100%);
   color: #ffffff;
@@ -883,7 +915,7 @@
 /* Responsive Design */
 @media (max-width: 1400px) {
   .my-list-content.grid-view {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
     gap: 1.75rem;
   }
 }
@@ -894,7 +926,7 @@
   }
 
   .my-list-content.grid-view {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
     gap: 1.5rem;
   }
 
@@ -942,7 +974,7 @@
   }
 
   .my-list-content.grid-view {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 150px), 1fr));
     gap: 1.25rem;
   }
 
@@ -982,7 +1014,7 @@
   }
 
   .my-list-content.grid-view {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 130px), 1fr));
     gap: 1rem;
   }
 

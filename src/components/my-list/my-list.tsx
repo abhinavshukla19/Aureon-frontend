@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import axios from "axios";
 import "./my-list.css";
 import Link from "next/link";
@@ -32,97 +32,73 @@ type MyListProps = {
 
 export const MyList = ({ apiData = [], token }: MyListProps) => {
   const [data, setData] = useState<rowdata[]>(apiData);
-  const [filteredData, setFilteredData] = useState<rowdata[]>(apiData);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [removingId, setRemovingId] = useState<number | null>(null);
   const [filterType, setFilterType] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("recent");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const router = useRouter();
 
-
-
-  // this useState fetches the list 
-  useEffect(() => {
-    if (apiData.length === 0 && token) {
-      fetchMyList();
-    } else if (!token && apiData.length === 0) {
-      setErrorMessage("Please sign in to view your list.");
-    }
-  }, []);
-
-  useEffect(() => {
-    applyFiltersAndSort();
-  }, [data, filterType, sortBy]);
-
-  const fetchMyList = async () => {
+  const fetchMyList = useCallback(async () => {
+    if (!token) return;
     setLoading(true);
     setErrorMessage(null);
     try {
       const res = await axios.get(`${Host}/api/mylist/get_my_list`, {
-        headers: { token: token }
+        headers: { token },
       });
       if (res.data && res.data.data) {
         setData(res.data.data as rowdata[]);
       } else {
         setErrorMessage("No items found in your list.");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.log(error);
-      if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
+      const err = error as {
+        code?: string;
+        response?: { status?: number; data?: { message?: string } };
+      };
+      if (err?.code === "ECONNREFUSED" || err?.code === "ENOTFOUND") {
         setErrorMessage("Unable to connect to the server. Please check your internet connection.");
-      } else if (error?.response?.status === 401) {
+      } else if (err?.response?.status === 401) {
         setErrorMessage("Your session has expired. Please sign in again.");
         router.push("/signin");
-      } else if (error?.response?.status === 500) {
+      } else if (err?.response?.status === 500) {
         setErrorMessage("Our servers are experiencing issues. Please try again in a few moments.");
-      } else if (error?.response?.data?.message) {
-        setErrorMessage(error.response.data.message);
+      } else if (err?.response?.data?.message) {
+        setErrorMessage(err.response.data.message);
       } else {
         setErrorMessage("Failed to load your list. Please refresh the page or try again later.");
       }
     } finally {
       setLoading(false);
     }
-  };
+  }, [token, router]);
 
-  // const removeFromList = async (movieId: number) => {
-  //   if (!token) {
-  //     // For dummy data, just remove from UI without API call
-  //     setData(prev => prev.filter(item => item.movie_id !== movieId));
-  //     return;
-  //   }
-    
-  //   setRemovingId(movieId);
-  //   try {
-  //     await axios.delete(`${Host}/my_list/${movieId}`, {
-  //       headers: { token: token }
-  //     });
-  //     setData(prev => prev.filter(item => item.movie_id !== movieId));
-  //   } catch (error: any) {
-  //     console.error("Failed to remove from list:", error);
-  //     if (error?.response?.status === 401) {
-  //       setErrorMessage("Your session has expired. Please sign in again.");
-  //       router.push("/signin");
-  //     } else {
-  //       alert("Failed to remove item from your list. Please try again.");
-  //     }
-  //   } finally {
-  //     setRemovingId(null);
-  //   }
-  // };
+  useEffect(() => {
+    setData(apiData);
+  }, [apiData]);
 
-  const applyFiltersAndSort = () => {
+  useEffect(() => {
+    if (apiData.length === 0 && token) {
+      void fetchMyList();
+    } else if (!token && apiData.length === 0) {
+      setErrorMessage("Please sign in to view your list.");
+    }
+  }, [token, apiData.length, fetchMyList]);
+
+  const filteredData = useMemo(() => {
     let filtered = [...data];
 
-    // Apply type filter
     if (filterType !== "all") {
-      filtered = filtered.filter(item => 
-        filterType === "movie" ? item.type.toLowerCase() === "movie" : item.type.toLowerCase() === "tv"
+      filtered = filtered.filter((item) =>
+        filterType === "movie"
+          ? item.type.toLowerCase() === "movie"
+          : item.type.toLowerCase() === "tv"
       );
     }
 
-    // Apply sort
     switch (sortBy) {
       case "recent":
         filtered.sort((a, b) => {
@@ -141,8 +117,37 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
         break;
     }
 
-    setFilteredData(filtered);
-  };
+    return filtered;
+  }, [data, filterType, sortBy]);
+
+  const removeFromList = useCallback(
+    async (movieId: number) => {
+      if (!token) return;
+      setRemovingId(movieId);
+      setErrorMessage(null);
+      try {
+        await axios.post(
+          `${Host}/api/mylist/remove-from-mylist`,
+          { movie_id: movieId },
+          { headers: { token } }
+        );
+        setData((prev) => prev.filter((item) => item.movie_id !== movieId));
+      } catch (error: unknown) {
+        const err = error as { response?: { status?: number; data?: { message?: string } } };
+        if (err?.response?.status === 401) {
+          setErrorMessage("Your session has expired. Please sign in again.");
+          router.push("/signin");
+        } else {
+          setErrorMessage(
+            err?.response?.data?.message ?? "Failed to remove item from your list. Please try again."
+          );
+        }
+      } finally {
+        setRemovingId(null);
+      }
+    },
+    [token, router]
+  );
 
   if (loading && data.length === 0) {
     return (
@@ -187,6 +192,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
             <div className="my-list-controls">
               <div className="my-list-filters">
                 <button
+                  type="button"
                   className={`my-list-filter-btn ${filterType === "all" ? "active" : ""}`}
                   onClick={() => setFilterType("all")}
                 >
@@ -194,6 +200,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
                   <span>All</span>
                 </button>
                 <button
+                  type="button"
                   className={`my-list-filter-btn ${filterType === "movie" ? "active" : ""}`}
                   onClick={() => setFilterType("movie")}
                 >
@@ -201,6 +208,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
                   <span>Movies</span>
                 </button>
                 <button
+                  type="button"
                   className={`my-list-filter-btn ${filterType === "tv" ? "active" : ""}`}
                   onClick={() => setFilterType("tv")}
                 >
@@ -224,6 +232,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
 
               <div className="my-list-view-toggle">
                 <button
+                  type="button"
                   className={`my-list-view-btn ${viewMode === "grid" ? "active" : ""}`}
                   onClick={() => setViewMode("grid")}
                   aria-label="Grid view"
@@ -231,6 +240,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
                   <Grid3x3 size={18} />
                 </button>
                 <button
+                  type="button"
                   className={`my-list-view-btn ${viewMode === "list" ? "active" : ""}`}
                   onClick={() => setViewMode("list")}
                   aria-label="List view"
@@ -255,7 +265,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
             <p className="my-list-empty-text">
               Start adding movies and TV shows to your list to watch them later.
             </p>
-            <Link href="/movies" className="my-list-empty-button">
+            <Link href="/newmovie" className="my-list-empty-button">
               <span>Browse Content</span>
             </Link>
           </div>
@@ -269,6 +279,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
               Try adjusting your filters to see more results.
             </p>
             <button
+              type="button"
               className="my-list-empty-button"
               onClick={() => setFilterType("all")}
             >
@@ -278,10 +289,17 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
         ) : (
           <div className={`my-list-content ${viewMode === "grid" ? "grid-view" : "list-view"}`}>
             {filteredData.map((item, index) => (
-              <div 
-                key={item.movie_id} 
-                // className={`my-list-card ${removingId === item.movie_id ? "removing" : ""}`}
-                style={viewMode === "grid" ? { "--index": index, animationDelay: `${index * 0.05}s` } as React.CSSProperties : undefined}
+              <div
+                key={item.movie_id}
+                className={`my-list-card ${removingId === item.movie_id ? "removing" : ""}`}
+                style={
+                  viewMode === "grid"
+                    ? ({
+                        "--index": index,
+                        animationDelay: `${index * 0.05}s`,
+                      } as React.CSSProperties)
+                    : undefined
+                }
               >
                 <Link 
                   href={`/movie-detail/${item.movie_id}`}
@@ -314,14 +332,15 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
                       {item.title}
                     </Link>
                     <button
-                      // className={`my-list-remove-btn ${removingId === item.movie_id ? "removing" : ""}`}
+                      type="button"
+                      className={`my-list-remove-btn ${removingId === item.movie_id ? "removing" : ""}`}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        // removeFromList(item.movie_id);
+                        void removeFromList(item.movie_id);
                       }}
-                      aria-label="Remove from list"
-                      // disabled={removingId === item.movie_id}
+                      aria-label={`Remove ${item.title} from list`}
+                      disabled={removingId === item.movie_id}
                     >
                       <X size={18} />
                     </button>

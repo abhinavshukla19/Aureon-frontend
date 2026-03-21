@@ -1,5 +1,6 @@
 "use client";
 import "./signin_form.css";
+import "../../auth-glass-inputs.css";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -50,7 +51,7 @@ export const Signin_form = () => {
   };
 
   return (
-    <div className="form-div">
+    <div className="form-div auth-glass-inputs">
       <header className="signin-text">
         <h1 className="main-heading">Sign In</h1>
       </header>

@@ -1,0 +1,9 @@
+.add-to-list-spinner {
+  animation: addToListSpin 0.75s linear infinite;
+}
+
+@keyframes addToListSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

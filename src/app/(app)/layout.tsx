@@ -24,11 +24,9 @@ export default function AppLayout({
   }, [pathname]);
 
   return (
-    <>
+    <div className="app-route-shell">
       <Header />
-      <div className="page-content">
-        {children}
-      </div>
-    </>
+      <div className="page-content">{children}</div>
+    </div>
   );
 }

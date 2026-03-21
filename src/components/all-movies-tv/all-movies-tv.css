@@ -222,6 +222,42 @@
   justify-content: center;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.movie-overlay-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+
+.movie-add-list-btn {
+  pointer-events: auto;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.movie-add-list-btn:hover:not(:disabled) {
+  transform: scale(1.08);
+  background: rgba(196, 181, 253, 0.2);
+  border-color: rgba(196, 181, 253, 0.45);
+}
+
+.movie-add-list-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .movie-card:hover .movie-overlay {

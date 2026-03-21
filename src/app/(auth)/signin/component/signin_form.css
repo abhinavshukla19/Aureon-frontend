@@ -23,34 +23,7 @@
   letter-spacing: -0.5px;
 }
   
-  button {
-    margin-top: 0;
-    height: 48px;
-  
-    background: #7c2ae8;
-    border-radius: 10px;
-  
-    font-size: 15px;
-    font-weight: 600;
-    color: #ffffff;
-  
-    transition: background 0.2s ease,
-                transform 0.15s ease,
-                box-shadow 0.2s ease;
-  }
-  
-  button:hover:not(:disabled) {
-    background: #6a22cc;
-    transform: translateY(-1px);
-    box-shadow: 0 10px 25px rgba(124, 42, 232, 0.45);
-  }
-  
-  button:disabled {
-    background: #3a3a55;
-    color: #9a9aab;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
+  /* Primary action: global .aureon-brand-button */
   
 /* =========================
      FORM OPTIONS (Remember me & Need help)

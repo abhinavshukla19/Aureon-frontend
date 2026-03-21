@@ -1,5 +1,6 @@
-export const Appname = "Aureon";
 import { Home, List, Film, Settings, User } from "lucide-react";
+
+export const Appname = "Aureon";
 
 export const navItems = [
   { name: "My List", path: "/my-list", icon: List },
@@ -9,7 +10,5 @@ export const navItems = [
   { name: "Profile", path: "/profile", icon: User },
 ];
 
-
-
 // export const Host="https://aureon-backend-fxqq.onrender.com"
-export const Host="http://localhost:3001"
+export const Host = "http://localhost:3001";

@@ -1,10 +1,11 @@
 "use client";
+import "../../auth-glass-inputs.css";
 import { useState } from "react";
 import { Input } from "@/components/input/input";
 import { Button } from "@/components/button/button";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useAlert } from "../../../../components/alert/alert";
+import { useAlert } from "@/components/alert/alert";
 
 export const Signup_form = () => {
   const router = useRouter();
@@ -91,7 +92,7 @@ export const Signup_form = () => {
   };
 
   return (
-    <div className="form-div">
+    <div className="form-div auth-glass-inputs">
       <h1 className="main-heading">Start your streaming journey</h1>
       <p className="sub-para">
         Create your account in seconds and dive into a world of premium content.

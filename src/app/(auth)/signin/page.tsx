@@ -1,6 +1,7 @@
 import { Signin_form } from "./component/signin_form";
-import { Appname, Host } from "@/components/Global-exports/global-exports";
+import { Appname } from "@/components/Global-exports/global-exports";
 import Link from "next/link";
+import "../auth-cosmic-shell.css";
 import "./signin.css";
 
 
@@ -12,10 +13,10 @@ const Signin = () => {
     <div className="main-frame-div">
       {/* HEADER */}
       <header className="header-div">
-        <div className="brand">
-          <img src="/aureon-logo-icon.svg" alt="Aureon logo" className="logo" />
+        <Link href="/" className="brand" aria-label={`${Appname} home`}>
+          <img src="/aureon-logo-icon.svg" alt="" className="logo" />
           <span>{Appname}</span>
-        </div>
+        </Link>
         <Link className="signup-btn" href="/signup" aria-label="Create a new account">
           Sign Up
         </Link>
@@ -45,8 +46,6 @@ const Signin = () => {
         <p className="contact-text">Questions? Call <a href="tel:000-800-919-1743" className="contact-link">000-800-919-1743</a></p>
         <div className="footer-links">
           <div className="footer-links-row">
-            <a href="#" className="footer-link">FAQ</a>
-            <a href="#" className="footer-link">Help Center</a>
             <a href="#" className="footer-link">Terms of Use</a>
             <a href="#" className="footer-link">Privacy</a>
           </div>

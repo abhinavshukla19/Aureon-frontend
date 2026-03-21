@@ -6,12 +6,27 @@ import Link from "next/link";
 type RowData = {
   movie_id: number;
   title: string;
-  thumbnail_url: string;
+  /** API may send either; `/continue_watching` currently returns `banner_url`. */
+  thumbnail_url?: string | null;
+  banner_url?: string | null;
   progress: number;
   watched_percent: number;
   remaining_time: number;
   episode?: string | null;
 };
+
+/** Match profile CW: absolute URLs as-is; relative paths → backend Host. */
+function resolveCwPoster(
+  thumbnail: string | null | undefined,
+  banner: string | null | undefined
+): string | null {
+  const raw = (thumbnail || banner || "").trim();
+  if (!raw) return null;
+  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+  const base = Host.replace(/\/$/, "");
+  const path = raw.startsWith("/") ? raw : `/${raw}`;
+  return `${base}${path}`;
+}
 
 type TokenType = {
   token: AxiosHeaderValue | undefined;
@@ -48,7 +63,7 @@ export const Continue_watching_home = async ({ token }: TokenType) => {
               <h2 className="cw-home-title">Continue Watching</h2>
               <p className="cw-home-subtitle">Pick up right where you left off</p>
             </div>
-            <Link href="/movies" className="cw-home-view-all">
+            <Link href="/newmovie" className="cw-home-view-all">
               View All
               <span aria-hidden className="cw-home-view-all-arrow">
                 →
@@ -76,27 +91,43 @@ export const Continue_watching_home = async ({ token }: TokenType) => {
             <h2 className="cw-home-title">Continue Watching</h2>
             <p className="cw-home-subtitle">Pick up right where you left off</p>
           </div>
-          <Link href="/movies" className="cw-home-view-all">
+          <Link href="/newmovie" className="cw-home-view-all">
             View All
             <span aria-hidden className="cw-home-view-all-arrow">→</span>
           </Link>
         </div>
 
         <div className="cw-home-list">
-          {moviesdata.slice(0, 6).map((movie, idx) => {
+          {moviesdata.slice(0, 12).map((movie, idx) => {
             const pct = clampPct(movie.watched_percent);
             const isCompleted = pct >= 98;
+            const posterSrc = resolveCwPoster(
+              movie.thumbnail_url,
+              movie.banner_url
+            );
 
             return (
               <Link
                 key={movie.movie_id}
                 href={`/movie-detail/${movie.movie_id}?resumetime=${movie.progress}`}
-                className="cw-home-row"
-                style={{ animationDelay: `${idx * 60}ms` }}
+                className="cw-home-card"
+                style={{ animationDelay: `${idx * 50}ms` }}
                 aria-label={`Continue watching ${movie.title}`}
               >
                 <div className="cw-home-thumb">
-                  <img src={movie.thumbnail_url} alt={movie.title} loading="lazy" />
+                  {posterSrc ? (
+                    <img
+                      src={posterSrc}
+                      alt={movie.title}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div
+                      className="cw-home-thumb-placeholder"
+                      role="img"
+                      aria-label={movie.title}
+                    />
+                  )}
                   <div className="cw-home-play-pill" aria-hidden>
                     <svg
                       width="18"
@@ -108,42 +139,27 @@ export const Continue_watching_home = async ({ token }: TokenType) => {
                       <path d="M8 5v14l11-7z" fill="currentColor" />
                     </svg>
                   </div>
-                </div>
-
-                <div className="cw-home-meta">
-                  <div className="cw-home-meta-top">
-                    <h3 className="cw-home-title-row">{movie.title}</h3>
-                    {movie.episode ? (
-                      <span className="cw-home-episode">{movie.episode}</span>
-                    ) : null}
-                  </div>
-
-                  <div className="cw-home-progress">
-                    <div className="cw-home-bar" aria-hidden>
-                      <div className="cw-home-bar-fill" style={{ width: `${pct}%` }} />
-                    </div>
-
-                    <div className="cw-home-progress-bottom">
-                      <span className="cw-home-progress-text">
-                        {isCompleted
-                          ? "Completed"
-                          : formatRemainingTime(movie.remaining_time)}
-                      </span>
-                      <span className="cw-home-progress-pct">{pct}%</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="cw-home-chevron" aria-hidden>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M9 6l6 6-6 6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                  <div className="cw-home-thumb-progress" aria-hidden>
+                    <div
+                      className="cw-home-thumb-progress-fill"
+                      style={{ width: `${pct}%` }}
                     />
-                  </svg>
+                  </div>
+                </div>
+
+                <div className="cw-home-card-body">
+                  <h3 className="cw-home-title-row">{movie.title}</h3>
+                  {movie.episode ? (
+                    <span className="cw-home-episode">{movie.episode}</span>
+                  ) : null}
+                  <div className="cw-home-progress-bottom">
+                    <span className="cw-home-progress-text">
+                      {isCompleted
+                        ? "Completed"
+                        : formatRemainingTime(movie.remaining_time)}
+                    </span>
+                    <span className="cw-home-progress-pct">{pct}%</span>
+                  </div>
                 </div>
               </Link>
             );

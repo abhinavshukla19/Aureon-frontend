@@ -1,6 +1,7 @@
-import "./all-movies-tv.css"
+import "./all-movies-tv.css";
 import Link from "next/link";
 import axios, { AxiosHeaderValue } from "axios";
+import { ExploreMovieCard } from "./ExploreMovieCard";
 import { Host } from "../Global-exports/global-exports";
 import { ErrorHandler } from "../error-handler/error-handler";
 
@@ -61,19 +62,6 @@ export const AllMoviesTV = async ({ hideHeader = false, token, limit, showViewMo
     }
   }
 
-  // Helper function to format duration
-  const formatDuration = (minutes: number): string => {
-    const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return mins > 0 ? `${hours}h ${mins}m` : `${hours}h`;
-  };
-
-  // Helper to get primary genre
-  const getPrimaryGenre = (genreString: string): string => {
-    return genreString.split(',')[0].trim();
-  };
-
-
   return (
     <section className="movies-section">
       <ErrorHandler error={errorMessage} title="Content Loading Error" />
@@ -110,46 +98,12 @@ export const AllMoviesTV = async ({ hideHeader = false, token, limit, showViewMo
         <>
           <div className="movies-grid">
             {data.map((item, index) => (
-              <Link 
-                key={item.movie_id} 
-                href={`/movie-detail/${item.movie_id}`}
-                className="movie-card"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
-                <div className="movie-poster">
-                  <img src={item.banner_url} alt={item.title} loading="lazy" />
-                  
-                  <div className="movie-overlay">
-                    <button className="play-btn">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
-                      </svg>
-                    </button>
-                  </div>
-
-                  <div className="movie-badges">
-                    <span className="type-badge">{item.type}</span>
-                    <span className="rating-badge">
-                      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                        <path d="M6 1l1.5 3.5L11 5.5l-2.5 2L9 11l-3-2L3 11l.5-3.5L1 5.5l3.5-1L6 1z"/>
-                      </svg>
-                      {item.rating}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="movie-info">
-                  <h3 className="movie-title">{item.title}</h3>
-                  <div className="movie-meta">
-                    <span className="meta-year">{item.release_year}</span>
-                    <span className="meta-dot">•</span>
-                    <span className="meta-duration">{formatDuration(item.duration)}</span>
-                    <span className="meta-dot">•</span>
-                    <span className="meta-genre">{getPrimaryGenre(item.genre)}</span>
-                  </div>
-                  <p className="movie-description">{item.description}</p>
-                </div>
-              </Link>
+              <ExploreMovieCard
+                key={item.movie_id}
+                item={item}
+                token={String(token ?? "")}
+                index={index}
+              />
             ))}
           </div>
         </>

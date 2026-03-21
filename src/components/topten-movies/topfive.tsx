@@ -2,6 +2,7 @@ import axios, { AxiosHeaderValue } from "axios";
 import "./topfive.css"
 import { Host } from "../Global-exports/global-exports";
 import { ErrorHandler } from "../error-handler/error-handler";
+import { TopFiveRankCard } from "./TopFiveRankCard";
 
 
 type rowdata={
@@ -60,30 +61,11 @@ export const Topfive = async({token}:tokentype) => {
       ) : (
         <div className="top-ten-row">
           {data.map((item) => (
-            <div key={item.rank_position} className="rank-card">
-              <span className="rank-number">{item.rank_position}</span>
-
-              <div className="rank-poster">
-                <img src={item.banner_url} alt={item.title} />
-              </div>
-
-              <div className="rank-play-overlay" aria-hidden="true">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="rank-play-icon"
-                >
-                  <path
-                    d="M10 8.5V15.5L16 12L10 8.5Z"
-                    fill="currentColor"
-                  />
-                </svg>
-                <span className="rank-play-text">Play</span>
-              </div>
-            </div>
+            <TopFiveRankCard
+              key={item.rank_position}
+              item={item}
+              token={String(token ?? "")}
+            />
           ))}
         </div>
       )}

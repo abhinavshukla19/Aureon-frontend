@@ -7,9 +7,10 @@ import { Host } from "@/components/Global-exports/global-exports";
 
 type PageProps = {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-type RecommendationMovie = {
+export type RecommendationMovie = {
   movie_id: string;
   title: string;
   genre: string;
@@ -20,106 +21,144 @@ type RecommendationMovie = {
   release_year: number;
 };
 
+type CastMemberNormalized = {
+  actor_name: string;
+  character_name: string;
+  profile_url: string;
+  order?: number;
+};
+
+function absMediaUrl(path: string): string {
+  const raw = path.trim();
+  if (!raw) return "";
+  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+  const base = Host.replace(/\/$/, "");
+  return `${base}${raw.startsWith("/") ? raw : `/${raw}`}`;
+}
+
+async function fetchInMyList(movieId: string, token: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${Host}/api/mylist/contains/${movieId}`, {
+      headers: { token },
+      cache: "no-store",
+    });
+    if (!res.ok) return false;
+    const data = await res.json();
+    return Boolean(data?.inList);
+  } catch {
+    return false;
+  }
+}
+
+function normalizeCastRows(rows: unknown): CastMemberNormalized[] {
+  if (!Array.isArray(rows)) return [];
+  return rows
+    .filter(
+      (row): row is Record<string, unknown> =>
+        row != null && typeof row === "object"
+    )
+    .map((row) => ({
+      actor_name: String(row.actor_name ?? row.name ?? "Unknown"),
+      character_name: String(row.character_name ?? ""),
+      profile_url: absMediaUrl(String(row.profile_url ?? "")),
+      order: typeof row.order === "number" ? row.order : undefined,
+    }));
+}
+
+async function fetchRecommendations(
+  movieId: string,
+  currentGenre: string,
+  token: string
+): Promise<RecommendationMovie[]> {
+  try {
+    const res = await fetch(`${Host}/api/movie/get_all_movie`, {
+      headers: { token },
+      next: { revalidate: 120 },
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    const all: Record<string, unknown>[] = Array.isArray(json.data)
+      ? json.data
+      : [];
+    const idNum = Number(movieId);
+    const primary =
+      (currentGenre || "").split(",")[0]?.trim().toLowerCase() || "";
+    const pool = all.filter(
+      (m) => m.movie_id != null && Number(m.movie_id) !== idNum
+    );
+
+    const scored = pool.map((m, i) => {
+      const g = String(m.genre || "").toLowerCase();
+      const hit = primary !== "" && g.includes(primary);
+      const score = hit ? 92 - (i % 9) : 68 - (i % 11);
+      return { m, score: Math.max(52, Math.min(97, score)) };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+
+    return scored.slice(0, 12).map(({ m, score }) => ({
+      movie_id: String(m.movie_id),
+      title: String(m.title ?? "Untitled"),
+      genre:
+        String(m.genre || "Movie").split(",")[0]?.trim() || "Movie",
+      banner_url: absMediaUrl(String(m.banner_url ?? "")),
+      match_percentage: score,
+      description: String(m.description ?? "").slice(0, 320),
+      duration: Number(m.duration) || 0,
+      release_year: Number(m.release_year) || 0,
+    }));
+  } catch {
+    return [];
+  }
+}
 
 async function fetchCompleteMovieData(movieId: string, token: string) {
   try {
     const [movieRes, castRes] = await Promise.allSettled([
       fetch(`${Host}/api/movie/moviedetailbyid/${movieId}`, {
         headers: { token },
-        next: { revalidate: 300 } // Cache for 5 minutes
+        next: { revalidate: 300 },
       }),
       fetch(`${Host}/api/cast/get-cast?movie_id=${movieId}`, {
         headers: { token },
-        next: { revalidate: 600 }
-      })
+        next: { revalidate: 600 },
+      }),
     ]);
 
-    const movie = movieRes.status === 'fulfilled' && movieRes.value.ok
-      ? (await movieRes.value.json()).data 
-      : null;
-    
-    const cast = castRes.status === 'fulfilled' && castRes.value.ok
-      ? (await castRes.value.json()).data || []
-      : [];
-    
-    // Recommendations and progress are currently provided via dummy data / not yet implemented
-    const recommendations: RecommendationMovie[] = [];
-    const progress = null;
+    const movie =
+      movieRes.status === "fulfilled" && movieRes.value.ok
+        ? (await movieRes.value.json()).data
+        : null;
 
-    return { movie, cast, recommendations, progress };
+    let castRaw: unknown = [];
+    if (castRes.status === "fulfilled" && castRes.value.ok) {
+      const body = await castRes.value.json();
+      castRaw = body.data ?? [];
+    }
+
+    const cast = normalizeCastRows(castRaw);
+
+    const recommendations = movie
+      ? await fetchRecommendations(
+          movieId,
+          String(movie.genre ?? ""),
+          token
+        )
+      : [];
+
+    return { movie, cast, recommendations };
   } catch (error) {
     console.error("Fatal error fetching movie data:", error);
-    return { movie: null, cast: [], recommendations: [], progress: null };
+    return { movie: null, cast: [], recommendations: [] };
   }
 }
 
-
-const dummyRecommendations: RecommendationMovie[] = [
-  {
-    movie_id: "1",
-    title: "Inception",
-    genre: "Sci-Fi",
-    banner_url: "https://image.tmdb.org/t/p/w500/8h58bY1nX3X7K3V6gYv8v2X5p9s.jpg",
-    match_percentage: 92,
-    description: "A skilled thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
-    duration: 148,
-    release_year: 2010
-  },
-  {
-    movie_id: "2",
-    title: "The Dark Knight",
-    genre: "Action",
-    banner_url: "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
-    match_percentage: 88,
-    description: "Batman faces the Joker, a criminal mastermind who plunges Gotham City into chaos and tests the limits of the Dark Knight.",
-    duration: 152,
-    release_year: 2008
-  },
-  {
-    movie_id: "3",
-    title: "Interstellar",
-    genre: "Sci-Fi",
-    banner_url: "https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg",
-    match_percentage: 85,
-    description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.",
-    duration: 169,
-    release_year: 2014
-  },
-  {
-    movie_id: "4",
-    title: "The Matrix",
-    genre: "Sci-Fi",
-    banner_url: "https://image.tmdb.org/t/p/w500/aoiC6uHkN7c6bJz3Vh5b9q3D9nY.jpg",
-    match_percentage: 74,
-    description: "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
-    duration: 136,
-    release_year: 1999
-  },
-  {
-    movie_id: "5",
-    title: "Avengers: Endgame",
-    genre: "Superhero",
-    banner_url: "https://image.tmdb.org/t/p/w500/or06FN3Dka5tukK1e9sl16pB3iy.jpg",
-    match_percentage: 67,
-    description: "After the devastating events of Infinity War, the Avengers assemble once more to reverse Thanos' actions and restore balance.",
-    duration: 181,
-    release_year: 2019
-  },
-  {
-    movie_id: "6",
-    title: "Joker",
-    genre: "Drama",
-    banner_url: "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
-    match_percentage: 55,
-    description: "A mentally troubled comedian embarks on a downward spiral that leads to the creation of an iconic villain.",
-    duration: 122,
-    release_year: 2019
-  }
-];
-
-
-export default async function MovieDetailPage({ params }: PageProps) {
+export default async function MovieDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { id: movieId } = await params;
+  const sp = (await searchParams) ?? {};
 
   if (!movieId) {
     return <ErrorScreen message="Invalid movie ID" />;
@@ -132,7 +171,24 @@ export default async function MovieDetailPage({ params }: PageProps) {
     return <ErrorScreen message="Please sign in to watch movies" showSignIn />;
   }
 
-  const { movie, cast, recommendations, progress } = await fetchCompleteMovieData(movieId, token);
+  const rawResume =
+    typeof sp.resumetime === "string"
+      ? sp.resumetime
+      : Array.isArray(sp.resumetime)
+        ? sp.resumetime[0]
+        : undefined;
+  const resumeNum =
+    rawResume != null && rawResume !== "" ? Number(rawResume) : NaN;
+  const progress =
+    Number.isFinite(resumeNum) && resumeNum > 0
+      ? { progress_seconds: resumeNum }
+      : null;
+
+  const [{ movie, cast, recommendations }, initialInMyList] =
+    await Promise.all([
+      fetchCompleteMovieData(movieId, token),
+      fetchInMyList(movieId, token),
+    ]);
 
   if (!movie) {
     return <ErrorScreen message="Movie not found" type="404" />;
@@ -141,11 +197,13 @@ export default async function MovieDetailPage({ params }: PageProps) {
   return (
     <div className="movie-detail-page-wrapper">
       <Suspense fallback={<MovieDetailSkeleton />}>
-        <MovieDetailContent 
+        <MovieDetailContent
           movie={movie}
           cast={cast}
-          recommendations={dummyRecommendations}
+          recommendations={recommendations}
           progress={progress}
+          token={token}
+          initialInMyList={initialInMyList}
         />
       </Suspense>
     </div>

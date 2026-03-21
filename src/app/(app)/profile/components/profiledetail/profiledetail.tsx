@@ -1,5 +1,6 @@
 import "./profiledetail.css";
-import { Calendar, CreditCard, User, Mail } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, Calendar, CreditCard, Mail, ShieldCheck, User } from "lucide-react";
 import { ProfileContinueWatching } from "../profile cw/profile-cw";
 
 type ProfileProps = {
@@ -69,13 +70,20 @@ export const Profile_detail = ({
   return (
     <section className="profile-detail-main-div">
       <header className="profile-detail-header">
-        <div>
-          <p className="profile-detail-eyebrow">Profile</p>
-          <h2 className="profile-detail-title">Account overview</h2>
+        <div className="profile-detail-header-copy">
+          <p className="profile-detail-eyebrow">Your space</p>
+          <h2 className="profile-detail-title aureon-heading-gradient">
+            Account overview
+          </h2>
           <p className="profile-detail-subtitle">
-            Manage your personal info and subscription.
+            Personal details, plan, and picks you left mid-watch — all in one
+            place.
           </p>
         </div>
+        <Link href="/newmovie" className="profile-detail-cta">
+          <span>Browse catalog</span>
+          <ArrowUpRight size={18} strokeWidth={2.2} aria-hidden />
+        </Link>
       </header>
 
       <div className="profile-detail-grid">
@@ -100,9 +108,21 @@ export const Profile_detail = ({
               </div>
             </div>
 
-            <div className="info-box">
-              <p className="field-label">Email</p>
-              <p className="email-para">{email}</p>
+            <div className="info-box info-box-email">
+              <div className="info-email-row">
+                <div>
+                  <p className="field-label">Email</p>
+                  <p className="email-para">{email}</p>
+                </div>
+                {is_verified ? (
+                  <span className="email-verified-chip">
+                    <ShieldCheck size={14} strokeWidth={2.5} aria-hidden />
+                    Verified
+                  </span>
+                ) : (
+                  <span className="email-pending-chip">Unverified</span>
+                )}
+              </div>
             </div>
           </div>
 

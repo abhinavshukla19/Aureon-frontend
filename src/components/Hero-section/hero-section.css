@@ -166,10 +166,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: var(--bg-dark);
+  /* Let the poster show through — 1080p hero MP4 can take many seconds to buffer */
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.35) 0%,
+    rgba(0, 0, 0, 0.5) 45%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
   z-index: 10;
   gap: 1.4rem;
   animation: fade-in 0.3s ease;
+  pointer-events: none;
 }
 
 .loading-spinner {
@@ -485,6 +492,19 @@
 }
 
 .hero-icon-btn:active { transform: scale(0.96); }
+
+.hero-icon-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.hero-icon-btn--in-list {
+  border-color: rgba(34, 211, 238, 0.55);
+  background: rgba(34, 211, 238, 0.16);
+  color: #ecfeff;
+}
 
 /* ========================================
    SOUND TOGGLE

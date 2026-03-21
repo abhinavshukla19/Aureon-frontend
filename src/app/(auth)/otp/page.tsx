@@ -4,6 +4,8 @@ import "./otp.css";
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAlert } from "@/components/alert/alert";
+import { Input } from "@/components/input/input";
+import { KeyRound, Mail, ShieldCheck } from "lucide-react";
 import axios from "axios";
 
 // inner component that uses useSearchParams
@@ -12,16 +14,32 @@ const OtpInner = () => {
   const searchParams = useSearchParams();
   const { showSuccess, showError, showWarning } = useAlert();
 
-  const email = searchParams.get("email") || "";
-  const purpose = searchParams.get("purpose") || "signup";
-  const newPassword = searchParams.get("newPassword") || undefined;
+  const emailFromUrl = searchParams.get("email")?.trim() || "";
+  const purposeFromUrl = searchParams.get("purpose")?.trim() || "";
 
   const [otp, setOtp] = useState("");
+  const [passwordNew, setPasswordNew] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+  const [paramsReady, setParamsReady] = useState(false);
+  const [email, setEmail] = useState("");
+  const [purpose, setPurpose] = useState("signup");
 
-  // redirect if no email in URL
+  // Merge URL + sessionStorage (settings used to push /otp with no query string)
   useEffect(() => {
+    const fromStorageEmail = sessionStorage.getItem("verification_email")?.trim() || "";
+    const fromStoragePurpose = sessionStorage.getItem("otp_purpose")?.trim() || "";
+    const e = emailFromUrl || fromStorageEmail;
+    const p = purposeFromUrl || fromStoragePurpose || "signup";
+    setEmail(e);
+    setPurpose(p);
+    setParamsReady(true);
+  }, [emailFromUrl, purposeFromUrl]);
+
+  // redirect if no email after we know params / storage
+  useEffect(() => {
+    if (!paramsReady) return;
     if (!email) {
       showError("No email found. Please try again.", "Error");
       setTimeout(() => {
@@ -32,7 +50,7 @@ const OtpInner = () => {
         }
       }, 1500);
     }
-  }, [email, purpose, router, showError]);
+  }, [paramsReady, email, purpose, router, showError]);
 
   // resend countdown timer
   useEffect(() => {
@@ -42,21 +60,37 @@ const OtpInner = () => {
     }
   }, [resendCooldown]);
 
+  const passwordsValidForChange =
+    purpose === "password_change" &&
+    passwordNew.length >= 6 &&
+    passwordNew === passwordConfirm;
+
   const verifyOTP = async () => {
     if (!otp || otp.length !== 6) {
       showWarning("Please enter a valid 6-digit OTP", "Validation Error");
       return;
     }
 
+    if (purpose === "password_change") {
+      if (passwordNew.length < 6) {
+        showWarning("New password must be at least 6 characters.", "Validation Error");
+        return;
+      }
+      if (passwordNew !== passwordConfirm) {
+        showWarning("Passwords do not match.", "Validation Error");
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     try {
-      const res = await axios.post("/api/otpverify", {
-        email,
-        otp,
-        purpose,
-        ...(purpose === "password_change" && newPassword ? { newPassword } : {}),
-      });
+      const body: Record<string, string> = { email, otp, purpose };
+      if (purpose === "password_change") {
+        body.newPassword = passwordNew;
+      }
+
+      const res = await axios.post("/api/otpverify", body);
 
       if (res.data.success) {
         const successMessages: Record<string, string> = {
@@ -108,11 +142,16 @@ const OtpInner = () => {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && otp.length === 6 && !isLoading) {
-      verifyOTP();
-    }
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter" || isLoading || otp.length !== 6) return;
+    if (purpose === "password_change" && !passwordsValidForChange) return;
+    verifyOTP();
   };
+
+  const verifyDisabled =
+    otp.length !== 6 ||
+    isLoading ||
+    (purpose === "password_change" && !passwordsValidForChange);
 
   const getPurposeText = () => {
     switch (purpose) {
@@ -124,15 +163,16 @@ const OtpInner = () => {
         };
       case "password_change":
         return {
-          title: "Verify Password Change",
-          description: "Enter the OTP sent to your registered email to confirm.",
-          showEmail: false,
+          title: "Reset your password",
+          description:
+            "Enter the code from your email, then choose a new password below.",
+          showEmail: true,
         };
       case "email_change":
         return {
-          title: "Verify New Email",
-          description: "Enter the OTP sent to your new email address to confirm the change.",
-          showEmail: false,
+          title: "Verify new email",
+          description: "Code sent to",
+          showEmail: true,
         };
       default:
         return {
@@ -144,6 +184,7 @@ const OtpInner = () => {
   };
 
   const purposeText = getPurposeText();
+  const isPasswordReset = purpose === "password_change" && paramsReady;
 
   const getBackPath = () => {
     if (purpose === "password_change" || purpose === "email_change") return "/settings";
@@ -152,68 +193,165 @@ const OtpInner = () => {
   };
 
   return (
-    <div className="otp-verify-container">
-      <h1 className="main-heading">{purposeText.title}</h1>
-      <p className="sub-para">
-        {purposeText.description}{" "}
-        {purposeText.showEmail && <strong>{email}</strong>}
-      </p>
+    <div
+      className={`otp-verify-container${isPasswordReset ? " otp-verify-container--password-reset" : ""}`}
+    >
+      <div className="otp-ambient" aria-hidden />
 
-      <div className="otp-input-wrapper">
-        <input
-          type="text"
-          inputMode="numeric"
-          placeholder="Enter 6-digit OTP"
-          value={otp}
-          onChange={(e) => {
-            const value = e.target.value.replace(/\D/g, "").slice(0, 6);
-            setOtp(value);
-          }}
-          onKeyPress={handleKeyPress}
-          maxLength={6}
-          disabled={isLoading}
-          className="otp-input"
-          autoFocus
-        />
-      </div>
+      <div className="otp-card">
+        <div className="otp-card-header">
+          <span className="otp-eyebrow">
+            {isPasswordReset
+              ? "Account security"
+              : purpose === "email_change"
+                ? "Email update"
+                : purpose === "signin"
+                  ? "Sign in"
+                  : "Verification"}
+          </span>
+          <h1 className="otp-title aureon-heading-gradient">{purposeText.title}</h1>
+          <p className="otp-lead">
+            {purposeText.description}{" "}
+            {purposeText.showEmail ? (
+              <span className="otp-email-chip">
+                <Mail size={14} strokeWidth={2} aria-hidden />
+                {email}
+              </span>
+            ) : null}
+          </p>
+        </div>
 
-      <button
-        onClick={verifyOTP}
-        disabled={otp.length !== 6 || isLoading}
-        className="verify-button"
-      >
-        {isLoading ? "Verifying..." : "Verify OTP"}
-      </button>
+        <div className="otp-input-wrapper">
+          <div className="otp-section-head">
+            {isPasswordReset ? (
+              <>
+                <span className="otp-step-badge">1</span>
+                <ShieldCheck size={18} strokeWidth={2} className="otp-section-icon" aria-hidden />
+                <span className="otp-section-label">Code from email</span>
+              </>
+            ) : (
+              <span className="otp-section-label">Enter 6-digit code</span>
+            )}
+          </div>
+          <input
+            type="text"
+            inputMode="numeric"
+            placeholder="• • • • • •"
+            value={otp}
+            onChange={(e) => {
+              const value = e.target.value.replace(/\D/g, "").slice(0, 6);
+              setOtp(value);
+            }}
+            onKeyDown={handleKeyPress}
+            maxLength={6}
+            disabled={isLoading}
+            className="otp-input"
+            autoComplete="one-time-code"
+            autoFocus={!isPasswordReset}
+            aria-label="One-time password code"
+          />
+          {otp.length > 0 && otp.length < 6 ? (
+            <p className="otp-hint">{6 - otp.length} more digit{6 - otp.length === 1 ? "" : "s"}</p>
+          ) : null}
+        </div>
 
-      <div className="resend-section">
-        <p>Didn't receive the code?</p>
+        {isPasswordReset ? (
+          <div className="otp-password-panel">
+            <div className="otp-section-head otp-section-head--password">
+              <span className="otp-step-badge">2</span>
+              <KeyRound size={18} strokeWidth={2} className="otp-section-icon" aria-hidden />
+              <span className="otp-section-label">New password</span>
+            </div>
+            <p className="otp-password-hint">
+              Choose a strong password you haven&apos;t used here before.
+            </p>
+            <div className="otp-password-fields">
+              <Input
+                label="New password"
+                id="otp-new-password"
+                type="password"
+                placeholder="At least 6 characters"
+                value={passwordNew}
+                onchange={(e) => setPasswordNew(e.target.value)}
+                disabled={isLoading}
+              />
+              <Input
+                label="Confirm new password"
+                id="otp-confirm-password"
+                type="password"
+                placeholder="Re-enter new password"
+                value={passwordConfirm}
+                onchange={(e) => setPasswordConfirm(e.target.value)}
+                onKeyDown={handleKeyPress}
+                disabled={isLoading}
+              />
+            </div>
+            {passwordNew.length > 0 &&
+            passwordConfirm.length > 0 &&
+            passwordNew !== passwordConfirm ? (
+              <p className="otp-password-mismatch" role="alert">
+                Passwords don&apos;t match yet.
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
         <button
-          onClick={resendOTP}
-          disabled={resendCooldown > 0 || isLoading}
-          className="resend-button"
+          type="button"
+          onClick={verifyOTP}
+          disabled={verifyDisabled}
+          className={`verify-button${isPasswordReset ? " verify-button--accent" : ""}`}
         >
-          {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend OTP"}
+          {isLoading
+            ? "Working…"
+            : isPasswordReset
+              ? "Update password"
+              : "Verify"}
+        </button>
+
+        <div className="resend-section">
+          <p>Didn&apos;t get the code?</p>
+          <button
+            type="button"
+            onClick={resendOTP}
+            disabled={resendCooldown > 0 || isLoading}
+            className="resend-button"
+          >
+            {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend code"}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => router.push(getBackPath())}
+          className="back-button"
+          disabled={isLoading}
+        >
+          {purpose === "password_change" || purpose === "email_change"
+            ? "← Back to Settings"
+            : purpose === "signin"
+              ? "← Back to Sign In"
+              : "← Back to Sign Up"}
         </button>
       </div>
-
-      <button
-        onClick={() => router.push(getBackPath())}
-        className="back-button"
-        disabled={isLoading}
-      >
-        {purpose === "password_change" || purpose === "email_change"
-          ? "Back to Settings"
-          : purpose === "signin"
-          ? "Back to Sign In"
-          : "Back to Sign Up"}
-      </button>
     </div>
   );
 };
 
 // wrap in Suspense because useSearchParams needs it in Next.js
 export const Otp = () => (
-  <Suspense fallback={<div className="otp-verify-container"><p>Loading...</p></div>}>
+  <Suspense
+    fallback={
+      <div className="otp-verify-container">
+        <div className="otp-ambient" aria-hidden />
+        <div className="otp-card">
+          <p className="otp-lead" style={{ textAlign: "center" }}>
+            Loading…
+          </p>
+        </div>
+      </div>
+    }
+  >
     <OtpInner />
   </Suspense>
 );

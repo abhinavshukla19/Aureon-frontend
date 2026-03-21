@@ -1,8 +1,16 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import {
+  useRef,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import "./cast-section.css";
+
+const CAST_IMG_FALLBACK = "/aureon-logo-icon.svg";
 
 type CastMember = {
   actor_name: string;
@@ -18,34 +26,46 @@ type CastSectionProps = {
 export function CastSection({ cast }: CastSectionProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-
+  const [canScrollRight, setCanScrollRight] = useState(false);
+  /** Mount arrows only after hydrate — avoids SSR/client DOM mismatch */
+  const [scrollNavReady, setScrollNavReady] = useState(false);
   useEffect(() => {
-    checkScrollPosition();
+    setScrollNavReady(true);
   }, []);
 
-  const checkScrollPosition = () => {
+  const checkScrollPosition = useCallback(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    const max = container.scrollWidth - container.clientWidth;
+    const left = container.scrollLeft;
+    setCanScrollLeft(left > 4);
+    setCanScrollRight(max > 4 && left < max - 4);
+  }, []);
+
+  useLayoutEffect(() => {
+    checkScrollPosition();
+    const el = scrollRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => checkScrollPosition());
+    ro.observe(el);
+    window.addEventListener("resize", checkScrollPosition);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", checkScrollPosition);
+    };
+  }, [cast.length, checkScrollPosition]);
+
+  const scroll = (direction: "left" | "right") => {
     const container = scrollRef.current;
     if (!container) return;
 
-    setCanScrollLeft(container.scrollLeft > 0);
-    setCanScrollRight(
-      container.scrollLeft < container.scrollWidth - container.clientWidth - 10
-    );
-  };
-
-  const scroll = (direction: 'left' | 'right') => {
-    const container = scrollRef.current;
-    if (!container) return;
-
-    const scrollAmount = container.clientWidth * 0.8;
+    const scrollAmount = container.clientWidth * 0.75;
     container.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth'
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
     });
-    
-    // Check scroll position after animation
-    setTimeout(checkScrollPosition, 300);
+
+    window.setTimeout(checkScrollPosition, 350);
   };
 
   if (!cast || cast.length === 0) {
@@ -56,7 +76,7 @@ export function CastSection({ cast }: CastSectionProps) {
     <section className="cast-section">
       <div className="section-header">
         <h2 className="section-title">Cast & Crew</h2>
-        {cast.length > 5 && (
+        {scrollNavReady && cast.length > 3 && (
           <div className="section-nav">
             <button 
               className={`nav-btn ${!canScrollLeft ? 'disabled' : ''}`}
@@ -87,13 +107,15 @@ export function CastSection({ cast }: CastSectionProps) {
           <div key={idx} className="cast-card">
             <div className="cast-image-container">
               <img
-                src={member.profile_url || '/placeholder-actor.jpg'}
+                src={member.profile_url || CAST_IMG_FALLBACK}
                 alt={member.actor_name}
                 className="cast-image"
                 loading="lazy"
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = '/placeholder-actor.jpg';
+                  target.onerror = null;
+                  if (!target.src.includes("aureon-logo-icon"))
+                    target.src = CAST_IMG_FALLBACK;
                 }}
               />
               <div className="cast-overlay" />

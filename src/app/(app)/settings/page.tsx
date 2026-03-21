@@ -24,7 +24,21 @@ const Settings = async() => {
       const data=res.data.data;
       email=data.email;
       phone_number=data.phone_number ; 
-      next_billing=new Date(data.next_billing).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); 
+      const rawBilling = data.next_billing;
+      if (rawBilling == null || rawBilling === "") {
+        next_billing = "Not scheduled";
+      } else {
+        const ms = new Date(rawBilling).getTime();
+        if (Number.isNaN(ms) || ms <= 0) {
+          next_billing = "Not scheduled";
+        } else {
+          next_billing = new Date(rawBilling).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          });
+        }
+      }
       plan_name=data.plan_name ; 
       status=data.status;
     }
@@ -53,15 +67,15 @@ const Settings = async() => {
 
   return (
     <div className="setting-main-div">
-      <SettingsErrorHandler error={errorMessage} />
-      {/* HEADER */}
-      <Settingheader />
+      <div className="settings-ambient" aria-hidden />
+      <div className="settings-page-inner">
+        <SettingsErrorHandler error={errorMessage} />
+        <Settingheader />
 
-      {/* SUBSCRIPTION CARD */}
         <Settingsubs plan_name={plan_name} next_billing={next_billing} />
 
-      {/* ACCOUNT & SECURITY */}
         <Settingcontact email={email} phone_number={phone_number} />
+      </div>
     </div>
   );
 };

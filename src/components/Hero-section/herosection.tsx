@@ -1,12 +1,21 @@
 "use client"
-import { Play, Volume2, VolumeX, Plus } from "lucide-react"
+import { Play, Volume2, VolumeX, Plus, Check } from "lucide-react"
 import { useState, useEffect, useRef } from "react"
+import { useMyListToggle } from "@/hooks/useMyListToggle"
+import { fetchMyListContains } from "@/lib/mylist-client"
 import "./hero-section.css"
 
-export const Hero_section = () => {
+type HeroSectionProps = {
+  token: string
+  featuredMovieId: number | null
+}
+
+export const Hero_section = ({ token, featuredMovieId }: HeroSectionProps) => {
   const [isMuted, setIsMuted] = useState(true)
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
+  /** Full-screen spinner; hidden as soon as metadata loads so poster stays visible while video buffers */
+  const [showLoadingOverlay, setShowLoadingOverlay] = useState(true)
   const videoRef = useRef<HTMLVideoElement>(null)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -33,44 +42,59 @@ export const Hero_section = () => {
     const video = videoRef.current
     if (!video) return
 
-    // Set timeout - hide spinner after 8 seconds
+    let overlayDismissed = false
+    const dismissOverlay = () => {
+      if (overlayDismissed) return
+      overlayDismissed = true
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      setShowLoadingOverlay(false)
+    }
+
+    // Full 1080p MP4 from CDN can take many seconds to buffer; don't block the hero on that.
     timeoutRef.current = setTimeout(() => {
+      dismissOverlay()
       setIsVideoLoaded(true)
       if (!video.readyState || video.readyState < 2) {
         setVideoError(true)
       }
-    }, 8000)
+    }, 12000)
+
+    // Metadata is tiny — hide the blocking spinner so the poster shows right away.
+    const handleLoadedMetadata = () => {
+      dismissOverlay()
+    }
 
     const handleLoadedData = () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      dismissOverlay()
       setIsVideoLoaded(true)
       setVideoError(false)
     }
 
     const handleCanPlay = () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      dismissOverlay()
       setIsVideoLoaded(true)
       setVideoError(false)
     }
 
     const handleError = () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      dismissOverlay()
       setVideoError(true)
       setIsVideoLoaded(true)
     }
 
-    video.addEventListener('loadeddata', handleLoadedData)
-    video.addEventListener('canplay', handleCanPlay)
-    video.addEventListener('error', handleError)
+    video.addEventListener("loadedmetadata", handleLoadedMetadata)
+    video.addEventListener("loadeddata", handleLoadedData)
+    video.addEventListener("canplay", handleCanPlay)
+    video.addEventListener("error", handleError)
 
-    // Attempt to load
     video.load()
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
-      video.removeEventListener('loadeddata', handleLoadedData)
-      video.removeEventListener('canplay', handleCanPlay)
-      video.removeEventListener('error', handleError)
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata)
+      video.removeEventListener("loadeddata", handleLoadedData)
+      video.removeEventListener("canplay", handleCanPlay)
+      video.removeEventListener("error", handleError)
     }
   }, [])
 
@@ -79,9 +103,30 @@ export const Hero_section = () => {
     // Add your play logic here
   }
 
+  const { toggle: toggleMyList, isListBusy } = useMyListToggle(token)
+  const [heroInMyList, setHeroInMyList] = useState(false)
+
+  useEffect(() => {
+    if (featuredMovieId == null || !token) {
+      setHeroInMyList(false)
+      return
+    }
+    let cancelled = false
+    void fetchMyListContains(token, featuredMovieId)
+      .then((v) => {
+        if (!cancelled) setHeroInMyList(v)
+      })
+      .catch(() => {
+        if (!cancelled) setHeroInMyList(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [featuredMovieId, token])
+
   const handleAddToList = () => {
-    console.log("Added to list")
-    // Add to list logic
+    if (featuredMovieId == null) return
+    void toggleMyList(featuredMovieId, setHeroInMyList)
   }
 
   return (
@@ -103,7 +148,7 @@ export const Hero_section = () => {
             muted={isMuted}
             loop
             playsInline
-            preload="auto"
+            preload="metadata"
           />
         ) : (
           // Fallback: Beautiful gradient background with poster
@@ -176,7 +221,8 @@ export const Hero_section = () => {
 
           {/* Action Buttons */}
           <div className="hero-action-buttons">
-            <button 
+            <button
+              type="button"
               className="hero-btn hero-btn-primary"
               onClick={handlePlayClick}
             >
@@ -186,22 +232,29 @@ export const Hero_section = () => {
             
 
             <div className="hero-icon-buttons">
-              <button 
-                className="hero-icon-btn"
+              <button
+                type="button"
+                className={`hero-icon-btn${heroInMyList ? " hero-icon-btn--in-list" : ""}`}
                 onClick={handleAddToList}
-                aria-label="Add to My List"
-                title="Add to My List"
+                disabled={featuredMovieId == null || isListBusy}
+                aria-label={heroInMyList ? "Remove from My List" : "Add to My List"}
+                title={heroInMyList ? "Remove from My List" : "Add to My List"}
+                aria-pressed={heroInMyList}
               >
-                <Plus size={20} strokeWidth={2.5} />
+                {heroInMyList ? (
+                  <Check size={20} strokeWidth={2.5} />
+                ) : (
+                  <Plus size={20} strokeWidth={2.5} />
+                )}
               </button>
-            
             </div>
           </div>
         </div>
 
         {/* Sound Control - Only if video loaded successfully */}
         {isVideoLoaded && !videoError && (
-          <button 
+          <button
+            type="button"
             className="hero-sound-toggle"
             onClick={() => setIsMuted(!isMuted)}
             aria-label={isMuted ? "Unmute" : "Mute"}
@@ -217,7 +270,7 @@ export const Hero_section = () => {
       </div>
 
       {/* Loading Spinner */}
-      {!isVideoLoaded && !videoError && (
+      {showLoadingOverlay && (
         <div className="hero-loading">
           <div className="loading-spinner"></div>
           <p className="loading-text">Loading preview...</p>

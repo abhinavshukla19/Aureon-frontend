@@ -7,12 +7,23 @@ import Link from "next/link";
 type RowData = {
   movie_id: number;
   title: string;
-  banner_url: string;
+  banner_url?: string | null;
   progress: number;
   watched_percent: number;
   remaining_time: number;
   episode?: string | null;
 };
+
+function resolvePoster(url: string | null | undefined) {
+  const trimmed = url?.trim() ?? "";
+  if (!trimmed) return "/aureon-logo-icon.svg";
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+  const base = Host.replace(/\/$/, "");
+  const path = trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  return `${base}${path}`;
+}
 
 export const ProfileContinueWatching = async () => {
   let moviesdata: RowData[] = [];
@@ -35,7 +46,12 @@ export const ProfileContinueWatching = async () => {
 
   if (moviesdata.length === 0) {
     return (
-      <p className="pcw-empty">Nothing here yet. Start watching something!</p>
+      <div className="pcw-empty" role="status">
+        <span className="pcw-empty-glow" aria-hidden />
+        <p className="pcw-empty-text">
+          Nothing here yet — start something new and we&apos;ll save your spot.
+        </p>
+      </div>
     );
   }
 
@@ -50,11 +66,14 @@ export const ProfileContinueWatching = async () => {
           >
             <div className="pcw-thumb-wrap">
               <img
-                src={movie.banner_url}
+                src={resolvePoster(movie.banner_url)}
                 alt={movie.title}
                 loading="lazy"
                 className="pcw-thumb"
               />
+              <div className="pcw-play-overlay" aria-hidden>
+                <span className="pcw-play-icon">▶</span>
+              </div>
               <div className="pcw-progress-pill">
                 <span className="pcw-progress-value">
                   {movie.watched_percent}%

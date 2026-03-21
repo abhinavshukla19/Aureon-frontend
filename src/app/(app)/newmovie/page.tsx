@@ -1,23 +1,8 @@
 import axios from "axios"
 import { Host } from "@/components/Global-exports/global-exports" 
 import { cookies } from "next/headers";
-import { Newmoviepage } from "@/components/newmovie/newmovie";
+import { Newmoviepage, type Movie } from "@/components/newmovie/newmovie";
 import { redirect } from "next/navigation";
-
-interface Movie {
-  movie_id: number;
-  title: string;
-  description: string;
-  release_year: number;
-  duration: number; 
-  genre: string; 
-  banner_url: string;
-  movie_url: string;
-  audio_languages: string;
-  subtitle_languages: string;
-  type: string;
-  created_at: string | null;
-}
 
 
 const Newmovie=async()=>{
@@ -39,7 +24,7 @@ const Newmovie=async()=>{
 
     return(
         <>
-        <Newmoviepage moviedata={movie}/>
+        <Newmoviepage moviedata={movie} token={token} />
         </>
     )
 }

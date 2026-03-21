@@ -11,6 +11,7 @@ type InputProps = {
   value: string;
   onchange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   disabled?: boolean;
   maxLength?: number;
 };
@@ -23,6 +24,7 @@ export const Input = ({
   value, 
   onchange,
   onKeyPress,
+  onKeyDown,
   disabled = false,
   maxLength
 }: InputProps) => {
@@ -42,6 +44,7 @@ export const Input = ({
           value={value}
           onChange={onchange}
           onKeyPress={onKeyPress}
+          onKeyDown={onKeyDown}
           disabled={disabled}
           maxLength={maxLength}
         />

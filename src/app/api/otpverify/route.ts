@@ -22,16 +22,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (purpose === "password_change" && !newPassword) {
-      return NextResponse.json(
-        { success: false, message: "New password is required" },
-        { status: 400 }
-      );
+    if (purpose === "password_change") {
+      if (
+        newPassword == null ||
+        typeof newPassword !== "string" ||
+        newPassword.length < 6
+      ) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "New password is required (at least 6 characters)",
+          },
+          { status: 400 }
+        );
+      }
     }
 
     const res = await axios.post(
       `${Host}/api/otp/otpverify`,
-      { email, otp, purpose, newPassword },
+      {
+        email,
+        otp,
+        purpose,
+        ...(purpose === "password_change" ? { newPassword } : {}),
+      },
       {
         timeout: 25000,
         headers: { "Content-Type": "application/json" },
