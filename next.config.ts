@@ -7,11 +7,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'aureon-backend-fxqq.onrender.com',
+        hostname: 'aureon-backend-fl40.onrender.com',
       },
       {
         protocol: 'http',
-        hostname: 'aureon-backend-fxqq.onrender.com',
+        hostname: 'aureon-backend-fl40.onrender.com',
       },
       {
         protocol: 'https',

@@ -10,5 +10,5 @@ export const navItems = [
   { name: "Profile", path: "/profile", icon: User },
 ];
 
-export const Host="https://aureon-backend-fxqq.onrender.com"
+export const Host="https://aureon-backend-fl40.onrender.com"
 // export const Host = "http://localhost:3001";
