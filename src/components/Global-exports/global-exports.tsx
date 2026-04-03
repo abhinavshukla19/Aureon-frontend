@@ -11,4 +11,3 @@ export const navItems = [
 ];
 
 export const Host="https://aureon-backend-fl40.onrender.com"
-// export const Host = "http://localhost:3001";

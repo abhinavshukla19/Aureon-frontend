@@ -46,7 +46,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
     setErrorMessage(null);
     try {
       const res = await axios.get(`${Host}/api/mylist/get_my_list`, {
-        headers: { token },
+        headers: { Authorization: token },
       });
       if (res.data && res.data.data) {
         setData(res.data.data as rowdata[]);
@@ -129,7 +129,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
         await axios.post(
           `${Host}/api/mylist/remove-from-mylist`,
           { movie_id: movieId },
-          { headers: { token } }
+          { headers: { Authorization: token } }
         );
         setData((prev) => prev.filter((item) => item.movie_id !== movieId));
       } catch (error: unknown) {
@@ -138,7 +138,7 @@ export const MyList = ({ apiData = [], token }: MyListProps) => {
           setErrorMessage("Your session has expired. Please sign in again.");
           router.push("/signin");
         } else {
-          setErrorMessage(
+            setErrorMessage(
             err?.response?.data?.message ?? "Failed to remove item from your list. Please try again."
           );
         }

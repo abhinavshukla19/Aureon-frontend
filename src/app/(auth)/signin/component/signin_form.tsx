@@ -30,9 +30,9 @@ export const Signin_form = () => {
 
       if (res.data.success) {
         showSuccess("OTP sent to your email!", "Check your inbox");
-        // redirect to OTP page with email prefilled
-        router.push(`/otp?email=${encodeURIComponent(username.trim())}&purpose=signin`);
-      } else {
+        const verificationEmail = (res.data.email || username).trim();
+        router.push(`/otp?email=${encodeURIComponent(verificationEmail)}&purpose=signin`);
+       } else {
         showError(res.data.message || "Sign in failed", "Error");
         setIsLoading(false);
       }

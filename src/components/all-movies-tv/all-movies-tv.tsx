@@ -31,38 +31,26 @@ type rowdata = {
 export const AllMoviesTV = async ({ hideHeader = false, token, limit, showViewMore = false }: AllMoviesTVProps) => {
   let data = [] as rowdata[];
   let errorMessage: string | null = null;
-  
-  try {
-    const res = await axios.get(`${Host}/api/movie/get_all_movie`, { headers: { token: token } })
-    if (res.data && res.data.data) {
-      data = res.data.data as rowdata[];
-      // Apply limit if specified
-      if (limit && limit > 0) {
-        data = data.slice(0, limit);
-      }
-    } else {
-      errorMessage = "No movies or TV shows found. The catalog may be empty.";
-    }
-  } catch (error: any) {
-    console.log(error, "Failed to fetch movies and TV shows");
-    if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
-      errorMessage = "Unable to connect to the server. Please check your internet connection.";
-    } else if (error?.response?.status === 401) {
-      errorMessage = "Your session has expired. Please sign in again to browse content.";
-    } else if (error?.response?.status === 500) {
-      errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
-    } else if (error?.response?.status === 503) {
-      errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
-    } else if (error?.message?.includes('timeout')) {
-      errorMessage = "The request took too long. Please check your connection and try again.";
-    } else if (error?.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else {
-      errorMessage = "Failed to load movies and TV shows. Please refresh the page or try again later.";
-    }
-  }
 
-  return (
+  try {
+    const res = await axios.get(`${Host}/api/movie/get_all_movie`, {
+      headers: { Authorization: token }
+    });
+
+    if (res.data?.data) {
+      data = limit ? res.data.data.slice(0, limit) : res.data.data;
+    } else {
+      errorMessage = "No movies or TV shows found.";
+    }
+
+  } catch (error: any) {
+    console.error("Failed to fetch movies:", error);
+    errorMessage = error?.response?.data?.message
+      || "Failed to load movies. Please refresh the page.";
+  }
+  
+  
+return (
     <section className="movies-section">
       <ErrorHandler error={errorMessage} title="Content Loading Error" />
       

@@ -39,7 +39,7 @@ function absMediaUrl(path: string): string {
 async function fetchInMyList(movieId: string, token: string): Promise<boolean> {
   try {
     const res = await fetch(`${Host}/api/mylist/contains/${movieId}`, {
-      headers: { token },
+      headers: { Authorization: token },
       cache: "no-store",
     });
     if (!res.ok) return false;
@@ -72,7 +72,7 @@ async function fetchRecommendations(
 ): Promise<RecommendationMovie[]> {
   try {
     const res = await fetch(`${Host}/api/movie/get_all_movie`, {
-      headers: { token },
+      headers: { Authorization: token },
       next: { revalidate: 120 },
     });
     if (!res.ok) return [];
@@ -116,11 +116,11 @@ async function fetchCompleteMovieData(movieId: string, token: string) {
   try {
     const [movieRes, castRes] = await Promise.allSettled([
       fetch(`${Host}/api/movie/moviedetailbyid/${movieId}`, {
-        headers: { token },
+        headers: { Authorization: token },
         next: { revalidate: 300 },
       }),
       fetch(`${Host}/api/cast/get-cast?movie_id=${movieId}`, {
-        headers: { token },
+        headers: { Authorization: token },
         next: { revalidate: 600 },
       }),
     ]);

@@ -9,14 +9,10 @@ import { fetchMyListContains } from "@/lib/mylist-client";
 type Props = {
   token: string;
   movieId: number;
-  /** e.g. recommendation-grid `overlay-btn add-btn` */
   className?: string;
   ariaLabel?: string;
 };
 
-/**
- * Icon-only add/remove; stops propagation for use inside <Link> cards.
- */
 export function AddToListIconButton({
   token,
   movieId,
@@ -30,15 +26,9 @@ export function AddToListIconButton({
   useEffect(() => {
     let cancelled = false;
     void fetchMyListContains(token, movieId)
-      .then((v) => {
-        if (!cancelled) setInList(v);
-      })
-      .catch(() => {
-        if (!cancelled) setInList(false);
-      });
-    return () => {
-      cancelled = true;
-    };
+      .then((v) => { if (!cancelled) setInList(v); })
+      .catch(() => { if (!cancelled) setInList(false); });
+    return () => { cancelled = true; };
   }, [token, movieId]);
 
   return (

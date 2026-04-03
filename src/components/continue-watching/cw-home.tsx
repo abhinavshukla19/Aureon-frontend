@@ -47,7 +47,7 @@ export const Continue_watching_home = async ({ token }: TokenType) => {
 
   try {
     const res = await axios.get(`${Host}/api/movie/continue_watching`, {
-      headers: { token },
+      headers: { Authorization: token },
     });
     moviesdata = res.data.data as RowData[];
   } catch (err) {

@@ -46,11 +46,8 @@ export const Settingcontact = ({ email, phone_number }: ContactProps) => {
     setIsLoading("email");
 
     try {
-      // Request OTP for email change (send to new email)
-      const res = await axios.post("/api/resend-otp", {
-        email: newEmail.toLowerCase().trim(),
-        purpose: "email_change",
-        currentEmail: email // Send current email for backend verification
+      const res = await axios.post("/api/request-email-change", {
+        newEmail: newEmail.toLowerCase().trim(),
       }, {
         timeout: 30000,
         headers: {
@@ -59,20 +56,17 @@ export const Settingcontact = ({ email, phone_number }: ContactProps) => {
       });
 
       if (res.data.success) {
-        // Store new email and purpose in sessionStorage
-        sessionStorage.setItem("verification_email", newEmail.toLowerCase().trim());
+        sessionStorage.setItem("verification_email", email);
         sessionStorage.setItem("otp_purpose", "email_change");
-        sessionStorage.setItem("current_email", email); // Store current email for backend
         
         showSuccess("OTP sent to your new email. Please check your inbox.", "OTP Sent");
-        const otpEmail = newEmail.toLowerCase().trim();
         setShowEmailModal(false);
         setNewEmail("");
 
         // OTP page reads email + purpose from URL (same as signin/signup)
         setTimeout(() => {
           router.push(
-            `/otp?email=${encodeURIComponent(otpEmail)}&purpose=email_change`
+            `/otp?email=${encodeURIComponent(email)}&purpose=email_change`
           );
         }, 1000);
       } else {
@@ -111,11 +105,7 @@ export const Settingcontact = ({ email, phone_number }: ContactProps) => {
     setIsLoading("password");
 
     try {
-      // Request OTP for password change
-      const res = await axios.post("/api/resend-otp", {
-        email: email,
-        purpose: "password_change"
-      }, {
+      const res = await axios.post("/api/request-password-change", {}, {
         timeout: 30000,
         headers: {
           'Content-Type': 'application/json'
@@ -123,15 +113,15 @@ export const Settingcontact = ({ email, phone_number }: ContactProps) => {
       });
 
       if (res.data.success) {
-        // Store email and purpose in sessionStorage
-        sessionStorage.setItem("verification_email", email);
+        const otpEmail = (res.data.email || email).trim();
+        sessionStorage.setItem("verification_email", otpEmail);
         sessionStorage.setItem("otp_purpose", "password_change");
         
         showSuccess("OTP sent to your email. Please check your inbox.", "OTP Sent");
 
         setTimeout(() => {
           router.push(
-            `/otp?email=${encodeURIComponent(email)}&purpose=password_change`
+            `/otp?email=${encodeURIComponent(otpEmail)}&purpose=password_change`
           );
         }, 1000);
       } else {

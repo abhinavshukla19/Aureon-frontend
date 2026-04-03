@@ -14,7 +14,7 @@ export async function toggleMyListItem(
   const res = await axios.post(
     `${Host}/api/mylist/add-to-mylist`,
     { movie_id: movieId },
-    { headers: { token } }
+    { headers: { Authorization: token } }
   );
   return res.data as ToggleMyListResult;
 }
@@ -24,7 +24,7 @@ export async function fetchMyListContains(
   movieId: number
 ): Promise<boolean> {
   const res = await axios.get(`${Host}/api/mylist/contains/${movieId}`, {
-    headers: { token },
+    headers: { Authorization: token },
   });
   if (!res.data?.success) return false;
   return Boolean(res.data.inList);

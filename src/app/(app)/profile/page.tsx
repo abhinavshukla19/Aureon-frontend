@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import "./profile.css";
 import axios from "axios";
+import { handleAxiosError } from "@/app/api/ApiErrorHandler/errorHadler";
 
 const Profile = async () => {
   let username, email, phone_number, plan_name, member_since, is_verified;
@@ -18,7 +19,7 @@ const Profile = async () => {
 
   try {
     const res = await axios.get(`${Host}/api/profile/profile`, {
-      headers: { token },
+      headers: { Authorization: token },
     });
 
     const data = res.data.data;
@@ -36,8 +37,7 @@ const Profile = async () => {
   } catch (error: any) {
     console.error("Profile error", error);
     errorMessage =
-      error?.response?.data?.message ||
-      "Failed to load profile. Please refresh the page.";
+      handleAxiosError(error).message ?? "Failed to load profile. Please refresh the page." as string;
   }
 
   return (

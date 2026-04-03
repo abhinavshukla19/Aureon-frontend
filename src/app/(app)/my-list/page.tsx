@@ -32,7 +32,7 @@ const MyListPage = async () => {
   try {
     
     const res = await axios.get(`${Host}/api/mylist/get_my_list`, {
-      headers: { token },
+      headers: { Authorization: token },
     });
     if (res.data.data) {
       apiData = res.data.data as rowdata[];

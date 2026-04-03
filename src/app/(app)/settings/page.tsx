@@ -1,68 +1,50 @@
 import "./settings.css";
+import { cookies } from "next/headers";
+import axios from "axios";
+import { Host } from "@/components/Global-exports/global-exports";
+import { SettingsErrorHandler } from "./setting-comp/settings-error-handler";
 import { Settingheader } from "./setting-comp/settingheader";
 import { Settingsubs } from "./setting-comp/settingsubs";
 import { Settingcontact } from "./setting-comp/settingcontact";
-import { SettingsErrorHandler } from "./setting-comp/settings-error-handler";
-import { cookies} from "next/headers";
-import axios from "axios";
-import { Host } from "@/components/Global-exports/global-exports";
 
-
-const Settings = async() => {
-  let email , phone_number , next_billing , plan_name , status
+const Settings = async () => {
+  let email, phone_number, next_billing, plan_name, status;
   let errorMessage: string | null = null;
-  
+
   try {
-    const cookie=await cookies()
-    const token=cookie.get("token")?.value;
-    
+    const cookie = await cookies();
+    const token = cookie.get("token")?.value;
+
     if (!token) {
       errorMessage = "Authentication required. Please sign in.";
     } else {
-    const res=await axios.get(`${Host}/api/setting/settings`,{headers:{token:token}})
-    if(res.status===200){
-      const data=res.data.data;
-      email=data.email;
-      phone_number=data.phone_number ; 
+      const res = await axios.get(`${Host}/api/setting/settings`, {
+        headers: { Authorization: token }  
+      });
+
+      const data = res.data.data;
+      email = data.email;
+      phone_number = data.phone_number;
+
       const rawBilling = data.next_billing;
-      if (rawBilling == null || rawBilling === "") {
+      if (!rawBilling) {
         next_billing = "Not scheduled";
       } else {
         const ms = new Date(rawBilling).getTime();
-        if (Number.isNaN(ms) || ms <= 0) {
-          next_billing = "Not scheduled";
-        } else {
-          next_billing = new Date(rawBilling).toLocaleDateString("en-IN", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          });
-        }
+        next_billing = isNaN(ms) || ms <= 0
+          ? "Not scheduled"
+          : new Date(rawBilling).toLocaleDateString("en-IN", {
+              day: "2-digit", month: "short", year: "numeric",
+            });
       }
-      plan_name=data.plan_name ; 
-      status=data.status;
-    }
-    }
 
-  } catch (error: any) {
-    console.log(error);
-    if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
-      errorMessage = "Unable to connect to the server. Please check your internet connection.";
-    } else if (error?.response?.status === 401) {
-      errorMessage = "Your session has expired. Please sign in again to access your settings.";
-    } else if (error?.response?.status === 403) {
-      errorMessage = "You don't have permission to access settings. Please contact support if this is an error.";
-    } else if (error?.response?.status === 500) {
-      errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
-    } else if (error?.response?.status === 503) {
-      errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
-    } else if (error?.message?.includes('timeout')) {
-      errorMessage = "The request took too long. Please check your connection and try again.";
-    } else if (error?.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else {
-      errorMessage = "Failed to load your settings. Please refresh the page or try again later.";
+      plan_name = data.plan_name;
+      status = data.status;
     }
+  } catch (error: any) {
+    console.error(error);
+    errorMessage = error?.response?.data?.message
+      || "Failed to load your settings. Please refresh the page.";
   }
 
   return (
@@ -71,13 +53,12 @@ const Settings = async() => {
       <div className="settings-page-inner">
         <SettingsErrorHandler error={errorMessage} />
         <Settingheader />
-
         <Settingsubs plan_name={plan_name} next_billing={next_billing} />
-
         <Settingcontact email={email} phone_number={phone_number} />
       </div>
     </div>
   );
 };
 
-export default Settings;
+
+export default Settings; 

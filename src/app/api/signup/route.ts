@@ -8,25 +8,25 @@ export async function POST(req: NextRequest) {
     const { username, email, password, phone_number } = await req.json();
 
     if (!username || !email || !password || !phone_number) {
-      return NextResponse.json(
-        { success: false, message: "All fields are required" },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        success: false,
+        message: "All fields are required"
+      }, { status: 400 });
     }
 
-    const res = await axios.post(
-      `${Host}/api/auth/signup`,
-      { username, email, password, phone_number },
-      {
-        timeout: 25000,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const res = await axios.post(`${Host}/api/auth/signup`, {
+      username,
+      email,
+      password,
+      phone_number,
+    }, {
+      timeout: 25000,
+      headers: { "Content-Type": "application/json" }
+    });
 
     return NextResponse.json({
       success: true,
-      message: res.data.message || "Account created. Please check your email for OTP.",
-      unverified: res.data.unverified || false, // true if account existed but was unverified
+      message: res.data.message || "Account created successfully. Please check your email for OTP."
     }, { status: 201 });
 
   } catch (error: any) {

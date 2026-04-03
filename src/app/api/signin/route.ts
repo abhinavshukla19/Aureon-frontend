@@ -37,14 +37,11 @@ export async function POST(req: NextRequest) {
       }
     );
 
-
-    // signin send otp and token will be set in otpverify after user enters OTP
     return NextResponse.json({
       success: true,
       message: res.data.message || "OTP sent to your email. Please verify.",
-      email: isEmail ? username : null, // pass back so frontend knows where to send OTP
+      email: isEmail ? username : null,
     });
-
   } catch (error: any) {
     console.error("Signin error:", error);
     const { message, status } = handleAxiosError(error);

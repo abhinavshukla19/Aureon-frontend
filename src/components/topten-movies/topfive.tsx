@@ -3,6 +3,7 @@ import "./topfive.css"
 import { Host } from "../Global-exports/global-exports";
 import { ErrorHandler } from "../error-handler/error-handler";
 import { TopFiveRankCard } from "./TopFiveRankCard";
+import { handleAxiosError } from "@/app/api/ApiErrorHandler/errorHadler";
 
 
 type rowdata={
@@ -22,7 +23,7 @@ export const Topfive = async({token}:tokentype) => {
   
   try {
 
-      const res=await axios(`${Host}/api/movie/topfivemovies`,{headers:{token:token}})
+      const res=await axios(`${Host}/api/movie/topfivemovies`,{headers:{ Authorization: token}})
       if (res.data && res.data.data) {
         data=res.data.data as rowdata[]
       } else {
@@ -31,21 +32,7 @@ export const Topfive = async({token}:tokentype) => {
 
   } catch (error: any) {
     console.log(error);
-    if (error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND') {
-      errorMessage = "Unable to connect to the server. Please check your internet connection.";
-    } else if (error?.response?.status === 401) {
-      errorMessage = "Your session has expired. Please sign in again to view top movies.";
-    } else if (error?.response?.status === 500) {
-      errorMessage = "Our servers are experiencing issues. Please try again in a few moments.";
-    } else if (error?.response?.status === 503) {
-      errorMessage = "The service is temporarily unavailable. We're working on fixing it.";
-    } else if (error?.message?.includes('timeout')) {
-      errorMessage = "The request took too long. Please check your connection and try again.";
-    } else if (error?.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else {
-      errorMessage = "Failed to load top movies. Please refresh the page or try again later.";
-    }
+    errorMessage = handleAxiosError(error).message as string;
   }
 
 

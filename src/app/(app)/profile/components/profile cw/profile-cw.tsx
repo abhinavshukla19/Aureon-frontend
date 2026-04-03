@@ -35,7 +35,7 @@ export const ProfileContinueWatching = async () => {
     if (!token) return null;
 
     const res = await axios.get(`${Host}/api/movie/continue_watching`, {
-      headers: { token },
+      headers: { Authorization: token },
     });
 
     moviesdata = res.data.data as RowData[];
