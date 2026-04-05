@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useMyListToggle } from "@/hooks/useMyListToggle"
 import { fetchMyListContains } from "@/lib/mylist-client"
+import { getYoutubeVideoId, buildYoutubeHeroEmbedSrc } from "@/lib/youtube-url"
 import "./hero-section.css"
 
 type HeroSectionProps = {
@@ -26,6 +27,7 @@ type HeroSectionProps = {
 
 export const Hero_section = ({ token, featuredMovieId, heroMovie }: HeroSectionProps) => {
   const router = useRouter()
+  const ytId = getYoutubeVideoId(heroMovie.videoUrl)
   const [isMuted, setIsMuted] = useState(true)
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const [videoError, setVideoError] = useState(false)
@@ -49,6 +51,7 @@ export const Hero_section = ({ token, featuredMovieId, heroMovie }: HeroSectionP
 
   // ── Video ─────────────────────────────────────────────────────────
   useEffect(() => {
+    if (ytId) return
     const video = videoRef.current
     if (!video) return
 
@@ -81,7 +84,7 @@ export const Hero_section = ({ token, featuredMovieId, heroMovie }: HeroSectionP
       video.removeEventListener("canplay", handleCanPlay)
       video.removeEventListener("error", handleError)
     }
-  }, [])
+  }, [heroMovie.videoUrl, ytId])
 
   // ── Handlers ──────────────────────────────────────────────────────
   const handlePlayClick = () => {
@@ -97,17 +100,32 @@ export const Hero_section = ({ token, featuredMovieId, heroMovie }: HeroSectionP
     <section className="hero-section">
       <div className="hero-video-wrapper" style={{ backgroundImage: `url(${heroMovie.posterUrl})` }}>
         {!videoError ? (
-          <video
-            ref={videoRef}
-            className={`hero-background-video ${isVideoLoaded ? "loaded" : ""}`}
-            src={heroMovie.videoUrl}
-            poster={heroMovie.posterUrl}
-            autoPlay
-            muted={isMuted}
-            loop
-            playsInline
-            preload="metadata"
-          />
+          ytId ? (
+            <iframe
+              title="Featured title background preview"
+              aria-hidden
+              className={`hero-youtube-embed ${isVideoLoaded ? "loaded" : ""}`}
+              src={buildYoutubeHeroEmbedSrc(ytId)}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              onLoad={() => {
+                setShowLoadingOverlay(false)
+                setIsVideoLoaded(true)
+                setVideoError(false)
+              }}
+            />
+          ) : (
+            <video
+              ref={videoRef}
+              className={`hero-background-video ${isVideoLoaded ? "loaded" : ""}`}
+              src={heroMovie.videoUrl}
+              poster={heroMovie.posterUrl}
+              autoPlay
+              muted={isMuted}
+              loop
+              playsInline
+              preload="metadata"
+            />
+          )
         ) : (
           <div
             className="hero-background-fallback"
@@ -179,7 +197,7 @@ export const Hero_section = ({ token, featuredMovieId, heroMovie }: HeroSectionP
           </div>
         </div>
 
-        {isVideoLoaded && !videoError && (
+        {isVideoLoaded && !videoError && !ytId && (
           <button
             type="button"
             className="hero-sound-toggle"

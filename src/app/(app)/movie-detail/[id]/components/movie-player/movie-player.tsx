@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import "./movie-player.css";
+import { getYoutubeVideoId, buildYoutubeWatchEmbedSrc } from "@/lib/youtube-url";
 
 type MoviePlayerProps = {
   movieUrl: string;
@@ -74,6 +75,7 @@ export function MoviePlayer({
   onClose,
   movieTitle,
 }: MoviePlayerProps) {
+  const ytId = getYoutubeVideoId(movieUrl);
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const durationRef = useRef(0);
@@ -93,6 +95,13 @@ export function MoviePlayer({
   }, [duration]);
 
   useEffect(() => {
+    if (ytId) {
+      setIsPlaying(true);
+      setIsBuffering(false);
+    }
+  }, [ytId, movieUrl]);
+
+  useEffect(() => {
     const syncFs = () => setIsFullscreen(!!getFullscreenElement());
     document.addEventListener("fullscreenchange", syncFs);
     document.addEventListener("webkitfullscreenchange", syncFs as EventListener);
@@ -108,7 +117,7 @@ export function MoviePlayer({
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || ytId) return;
 
     const handleLoadedMetadata = () => {
       const d = Number.isFinite(video.duration) ? video.duration : 0;
@@ -150,7 +159,7 @@ export function MoviePlayer({
       video.removeEventListener("waiting", handleWaiting);
       video.removeEventListener("canplay", handleCanPlay);
     };
-  }, [resumeTime, movieUrl]);
+  }, [resumeTime, movieUrl, ytId]);
 
   const saveProgress = async (time: number) => {
     try {
@@ -211,19 +220,22 @@ export function MoviePlayer({
 
   const toggleFullscreen = useCallback(async () => {
     const container = containerRef.current;
+    if (!container) return;
     const video = videoRef.current;
-    if (!container || !video) return;
+    const isYt = !!getYoutubeVideoId(movieUrl);
 
     try {
       if (!getFullscreenElement()) {
         try {
           await enterFullscreen(container);
         } catch {
-          const v = video as HTMLVideoElement & {
-            webkitEnterFullscreen?: () => void;
-          };
-          if (typeof v.webkitEnterFullscreen === "function") {
-            v.webkitEnterFullscreen();
+          if (!isYt && video) {
+            const v = video as HTMLVideoElement & {
+              webkitEnterFullscreen?: () => void;
+            };
+            if (typeof v.webkitEnterFullscreen === "function") {
+              v.webkitEnterFullscreen();
+            }
           }
         }
       } else {
@@ -232,7 +244,7 @@ export function MoviePlayer({
     } catch (err) {
       console.error("Fullscreen error:", err);
     }
-  }, []);
+  }, [movieUrl]);
 
   const formatTime = (time: number) => {
     if (!Number.isFinite(time)) return "0:00";
@@ -250,14 +262,17 @@ export function MoviePlayer({
     if (hideControlsTimer.current) clearTimeout(hideControlsTimer.current);
     hideControlsTimer.current = setTimeout(() => {
       const v = videoRef.current;
-      if (v && !v.paused) setShowControls(false);
+      const isYt = !!getYoutubeVideoId(movieUrl);
+      const playing = isYt ? isPlaying : v && !v.paused;
+      if (playing) setShowControls(false);
     }, 3200);
-  }, []);
+  }, [movieUrl, isPlaying]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      const isYt = !!getYoutubeVideoId(movieUrl);
       const video = videoRef.current;
-      if (!video) return;
+      if (!isYt && !video) return;
 
       const target = e.target as HTMLElement;
       if (target.tagName === "INPUT" && e.key === " ") {
@@ -266,14 +281,17 @@ export function MoviePlayer({
 
       switch (e.key) {
         case " ":
+          if (isYt) return;
           e.preventDefault();
           togglePlay();
           break;
         case "ArrowLeft":
+          if (isYt) return;
           e.preventDefault();
           skipTime(-10);
           break;
         case "ArrowRight":
+          if (isYt) return;
           e.preventDefault();
           skipTime(10);
           break;
@@ -284,6 +302,7 @@ export function MoviePlayer({
           break;
         case "m":
         case "M":
+          if (isYt) return;
           e.preventDefault();
           toggleMute();
           break;
@@ -302,7 +321,7 @@ export function MoviePlayer({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [onClose, togglePlay, toggleMute, toggleFullscreen, skipTime]);
+  }, [onClose, togglePlay, toggleMute, toggleFullscreen, skipTime, movieUrl]);
 
   const handleClose = useCallback(() => {
     void (async () => {
@@ -318,6 +337,9 @@ export function MoviePlayer({
   }, [onClose]);
 
   const maxSeek = duration > 0 ? duration : Math.max(currentTime, 0);
+  const youtubeEmbedSrc = ytId
+    ? buildYoutubeWatchEmbedSrc(ytId, resumeTime)
+    : "";
 
   return (
     <div
@@ -330,18 +352,29 @@ export function MoviePlayer({
     >
       <div className="player-vignette" aria-hidden />
 
-      <video
-        ref={videoRef}
-        className="player-video"
-        src={movieUrl}
-        playsInline
-        onClick={(e) => {
-          e.stopPropagation();
-          togglePlay();
-        }}
-      />
+      {ytId ? (
+        <iframe
+          key={youtubeEmbedSrc}
+          title={movieTitle || "Video"}
+          className="player-video player-youtube-embed"
+          src={youtubeEmbedSrc}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+          allowFullScreen
+        />
+      ) : (
+        <video
+          ref={videoRef}
+          className="player-video"
+          src={movieUrl}
+          playsInline
+          onClick={(e) => {
+            e.stopPropagation();
+            togglePlay();
+          }}
+        />
+      )}
 
-      {!isPlaying && (
+      {!ytId && !isPlaying && (
         <button
           type="button"
           className="player-center-play"
@@ -355,7 +388,7 @@ export function MoviePlayer({
         </button>
       )}
 
-      {isBuffering && (
+      {!ytId && isBuffering && (
         <div className="player-buffering">
           <div className="buffering-spinner" />
         </div>
@@ -387,94 +420,117 @@ export function MoviePlayer({
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.stopPropagation()}
       >
-        <div className="controls-progress-container">
-          <input
-            type="range"
-            className="controls-progress"
-            min={0}
-            max={maxSeek || 100}
-            step={0.1}
-            value={Math.min(currentTime, maxSeek || currentTime)}
-            onChange={handleSeek}
-            aria-label="Seek"
-          />
-          <div className="progress-time">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-        </div>
-
-        <div className="controls-buttons">
-          <div className="controls-left">
-            <button
-              type="button"
-              onClick={() => togglePlay()}
-              className="control-btn control-btn--primary"
-              aria-label={isPlaying ? "Pause" : "Play"}
-            >
-              {isPlaying ? <Pause size={26} /> : <Play size={26} fill="currentColor" />}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => skipTime(-10)}
-              className="control-btn"
-              aria-label="Back 10 seconds"
-            >
-              <SkipBack size={22} />
-              <span className="skip-text">10</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => skipTime(10)}
-              className="control-btn"
-              aria-label="Forward 10 seconds"
-            >
-              <SkipForward size={22} />
-              <span className="skip-text">10</span>
-            </button>
-
-            <div className="volume-control">
+        {ytId ? (
+          <div className="controls-buttons controls-buttons--youtube">
+            <p className="player-youtube-hint">
+              Use YouTube controls inside the player. Press F for fullscreen.
+            </p>
+            <div className="controls-right">
               <button
                 type="button"
-                onClick={toggleMute}
-                className="control-btn"
-                aria-label={isMuted ? "Unmute" : "Mute"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  void toggleFullscreen();
+                }}
+                className="control-btn control-btn--accent"
+                aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
               >
-                {isMuted || volume === 0 ? (
-                  <VolumeX size={22} />
-                ) : (
-                  <Volume2 size={22} />
-                )}
+                {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
               </button>
-              <input
-                type="range"
-                className="volume-slider"
-                min={0}
-                max={1}
-                step={0.05}
-                value={isMuted ? 0 : volume}
-                onChange={handleVolumeChange}
-                aria-label="Volume"
-              />
             </div>
           </div>
+        ) : (
+          <>
+            <div className="controls-progress-container">
+              <input
+                type="range"
+                className="controls-progress"
+                min={0}
+                max={maxSeek || 100}
+                step={0.1}
+                value={Math.min(currentTime, maxSeek || currentTime)}
+                onChange={handleSeek}
+                aria-label="Seek"
+              />
+              <div className="progress-time">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
+              </div>
+            </div>
 
-          <div className="controls-right">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                void toggleFullscreen();
-              }}
-              className="control-btn control-btn--accent"
-              aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-            >
-              {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
-            </button>
-          </div>
-        </div>
+            <div className="controls-buttons">
+              <div className="controls-left">
+                <button
+                  type="button"
+                  onClick={() => togglePlay()}
+                  className="control-btn control-btn--primary"
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                >
+                  {isPlaying ? <Pause size={26} /> : <Play size={26} fill="currentColor" />}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => skipTime(-10)}
+                  className="control-btn"
+                  aria-label="Back 10 seconds"
+                >
+                  <SkipBack size={22} />
+                  <span className="skip-text">10</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => skipTime(10)}
+                  className="control-btn"
+                  aria-label="Forward 10 seconds"
+                >
+                  <SkipForward size={22} />
+                  <span className="skip-text">10</span>
+                </button>
+
+                <div className="volume-control">
+                  <button
+                    type="button"
+                    onClick={toggleMute}
+                    className="control-btn"
+                    aria-label={isMuted ? "Unmute" : "Mute"}
+                  >
+                    {isMuted || volume === 0 ? (
+                      <VolumeX size={22} />
+                    ) : (
+                      <Volume2 size={22} />
+                    )}
+                  </button>
+                  <input
+                    type="range"
+                    className="volume-slider"
+                    min={0}
+                    max={1}
+                    step={0.05}
+                    value={isMuted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    aria-label="Volume"
+                  />
+                </div>
+              </div>
+
+              <div className="controls-right">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    void toggleFullscreen();
+                  }}
+                  className="control-btn control-btn--accent"
+                  aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                >
+                  {isFullscreen ? <Minimize size={22} /> : <Maximize size={22} />}
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

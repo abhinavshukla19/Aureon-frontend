@@ -1184,9 +1184,15 @@
   }
 }
 
+@media (max-width: 768px) {
+  .setting-main-div {
+    padding-bottom: calc(44px + var(--bottom-nav-clearance, 88px));
+  }
+}
+
 @media (max-width: 640px) {
   .setting-main-div {
-    padding: 16px 12px 40px;
+    padding: 16px 12px calc(40px + var(--bottom-nav-clearance, 88px));
   }
 
   .setting-subscription-main-div,

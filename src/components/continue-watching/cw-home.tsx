@@ -49,38 +49,19 @@ export const Continue_watching_home = async ({ token }: TokenType) => {
     const res = await axios.get(`${Host}/api/movie/continue_watching`, {
       headers: { Authorization: token },
     });
-    moviesdata = res.data.data as RowData[];
+    const raw = res.data?.data;
+    moviesdata = Array.isArray(raw)
+      ? (raw as RowData[]).filter(
+          (m) =>
+            Number(m.progress) > 0 || Number(m.watched_percent) > 0
+        )
+      : [];
   } catch (err) {
     console.error("Continue watching error:", err);
   }
 
   if (moviesdata.length === 0) {
-    return (
-      <section className="cw-home-section">
-        <div className="cw-home-inner">
-          <div className="cw-home-head">
-            <div>
-              <h2 className="cw-home-title">Continue Watching</h2>
-              <p className="cw-home-subtitle">Pick up right where you left off</p>
-            </div>
-            <Link href="/newmovie" className="cw-home-view-all">
-              View All
-              <span aria-hidden className="cw-home-view-all-arrow">
-                →
-              </span>
-            </Link>
-          </div>
-
-          <div className="cw-home-empty">
-            <div className="cw-home-empty-card">
-              <p className="cw-home-empty-text">
-                Nothing here yet. Start watching something!
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   return (

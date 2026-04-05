@@ -6,6 +6,7 @@ import { MoviePlayer } from "../movie-player/movie-player";
 import { CastSection } from "../cast-section/cast-section";
 import { RecommendationsGrid } from "../recommendation-grid/recommendation-grid";
 import { toggleMyListItem } from "@/lib/mylist-client";
+import { getYoutubeVideoId, buildYoutubeHeroEmbedSrc } from "@/lib/youtube-url";
 import "./movie-detail.css";
 
 type MovieDetailContentProps = {
@@ -32,6 +33,7 @@ export function MovieDetailContent({
   const [notification, setNotification] = useState<{ type: 'success' | 'error', message: string } | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const detailYtId = getYoutubeVideoId(String(movie.movie_url ?? ""));
 
   const notify = (message: string, type: 'success' | 'error' = 'success') => {
     setNotification({ type, message });
@@ -82,6 +84,7 @@ export function MovieDetailContent({
   // };
 
   const toggleMute = () => {
+    if (detailYtId) return;
     if (videoRef.current) {
       videoRef.current.muted = !isMuted;
       setIsMuted(!isMuted);
@@ -89,10 +92,11 @@ export function MovieDetailContent({
   };
 
   useEffect(() => {
+    if (detailYtId) return;
     if (videoRef.current && movie.movie_url) {
       videoRef.current.play().catch(() => {});
     }
-  }, [movie.movie_url]);
+  }, [movie.movie_url, detailYtId]);
 
   /** DB `duration` is minutes; resume / player use seconds */
   const durationMinutes = Number(movie.duration) || 0;
@@ -104,6 +108,23 @@ export function MovieDetailContent({
     progress && durationSeconds > 0
       ? Math.min(100, Math.round((progressSeconds / durationSeconds) * 100))
       : 0;
+
+  const genrePills = movie.genre
+    ? String(movie.genre)
+        .split(",")
+        .map((g: string) => g.trim())
+        .filter(Boolean)
+        .slice(0, 5)
+    : [];
+
+  const ratingDisplay =
+    movie.rating != null && movie.rating !== ""
+      ? typeof movie.rating === "number"
+        ? Number.isInteger(movie.rating)
+          ? String(movie.rating)
+          : Number(movie.rating).toFixed(1)
+        : String(movie.rating)
+      : null;
 
   return (
     <>
@@ -130,22 +151,37 @@ export function MovieDetailContent({
       {/* Hero Section with Video Background */}
       <div className="movie-hero" ref={heroRef}>
         <div className="movie-hero-background">
-          <video
-            ref={videoRef}
-            className="hero-video"
-            src={movie.movie_url}
-            poster={movie.banner_url}
-            loop
-            muted={isMuted}
-            playsInline
-            autoPlay
-          />
+          {detailYtId ? (
+            <iframe
+              title="Title background preview"
+              aria-hidden
+              className="movie-hero-youtube"
+              src={buildYoutubeHeroEmbedSrc(detailYtId)}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+          ) : (
+            <video
+              ref={videoRef}
+              className="hero-video"
+              src={movie.movie_url}
+              poster={movie.banner_url}
+              loop
+              muted={isMuted}
+              playsInline
+              autoPlay
+            />
+          )}
           <div className="hero-gradient" />
+          <div className="md-hero-atmosphere" aria-hidden>
+            <div className="md-hero-left-scrim" />
+            <div className="md-hero-vignette" />
+            <div className="md-hero-glow-bl" />
+          </div>
         </div>
 
         <div className="movie-hero-content">
           <div className="hero-badge">
-            {movie.type.toUpperCase()}
+            {String(movie.type || "movie").toUpperCase()}
           </div>
 
           <h1 className="hero-title">{movie.title}</h1>
@@ -155,11 +191,23 @@ export function MovieDetailContent({
           )}
 
           <div className="hero-meta">
-            <span className="meta-year">{movie.release_year}</span>
-            <span className="meta-separator">•</span>
-            <span className="meta-rating">{movie.rating || '16+'}</span>
-            <span className="meta-separator">•</span>
-            <span className="meta-duration">{Math.floor(movie.duration / 60)}h {movie.duration % 60}m</span>
+            {movie.release_year != null && movie.release_year !== "" && (
+              <>
+                <span className="meta-year">{movie.release_year}</span>
+                <span className="meta-separator">•</span>
+              </>
+            )}
+            {ratingDisplay != null && (
+              <>
+                <span className="meta-rating">{ratingDisplay}</span>
+                <span className="meta-separator">•</span>
+              </>
+            )}
+            <span className="meta-duration">
+              {durationMinutes > 0
+                ? `${Math.floor(durationMinutes / 60)}h ${durationMinutes % 60}m`
+                : "—"}
+            </span>
             {movie.imdb_rating && (
               <>
                 <span className="meta-separator">•</span>
@@ -171,13 +219,23 @@ export function MovieDetailContent({
             )}
           </div>
 
+          {genrePills.length > 0 && (
+            <div className="md-hero-genres">
+              {genrePills.map((g: string, i: number) => (
+                <span key={`${g}-${i}`} className="md-genre-pill">
+                  {g}
+                </span>
+              ))}
+            </div>
+          )}
+
           <p className="hero-description">{movie.description}</p>
 
           {/* Action Buttons */}
           <div className="hero-actions">
-            <button className="btn-play" onClick={handlePlay}>
-              <Play size={24} fill="currentColor" />
-              <span>{progressPercentage > 5 ? `Resume (${progressPercentage}%)` : 'Play'}</span>
+            <button type="button" className="btn-play" onClick={handlePlay}>
+              <Play size={22} fill="currentColor" strokeWidth={0} />
+              <span>{progressPercentage > 5 ? `Resume (${progressPercentage}%)` : "Play"}</span>
             </button>
 
             <button
@@ -185,18 +243,31 @@ export function MovieDetailContent({
               className={`btn-list ${isInMyList ? "active" : ""}`}
               onClick={() => void handleAddToList()}
             >
-              {isInMyList ? <Check size={20} /> : <Plus size={20} />}
+              {isInMyList ? <Check size={20} strokeWidth={2.5} /> : <Plus size={20} strokeWidth={2.5} />}
               <span>{isInMyList ? "In List" : "My List"}</span>
             </button>
 
-
-            <button className="btn-icon" onClick={() => setShowInfo(!showInfo)} title="More Info">
-              <Info size={20} />
+            <button
+              type="button"
+              className="btn-icon"
+              onClick={() => setShowInfo(!showInfo)}
+              title="More info"
+              aria-label="More info"
+            >
+              <Info size={20} strokeWidth={2.25} />
             </button>
 
-            <button className="btn-icon" onClick={toggleMute} title={isMuted ? "Unmute" : "Mute"}>
-              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-            </button>
+            {!detailYtId && (
+              <button
+                type="button"
+                className="btn-icon"
+                onClick={toggleMute}
+                title={isMuted ? "Unmute" : "Mute"}
+                aria-label={isMuted ? "Unmute preview" : "Mute preview"}
+              >
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+              </button>
+            )}
           </div>
 
           {/* Progress Bar if watching */}

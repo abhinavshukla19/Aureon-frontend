@@ -8,19 +8,90 @@ import { redirect } from "next/navigation";
 import axios from "axios";
 import { Host } from "@/components/Global-exports/global-exports";
 
+type HeroMoviePayload = {
+  name: string;
+  match: string;
+  year: string;
+  rating: string;
+  audioFormat: string;
+  duration: string;
+  genres: string[];
+  description: string;
+  posterUrl: string;
+  videoUrl: string;
+};
+
+function absMediaUrl(path: string): string {
+  const raw = path.trim();
+  if (!raw) return "";
+  if (raw.startsWith("http://") || raw.startsWith("https://")) return raw;
+  const base = Host.replace(/\/$/, "");
+  return `${base}${raw.startsWith("/") ? raw : `/${raw}`}`;
+}
+
+function mapDetailToHero(m: Record<string, unknown>): HeroMoviePayload {
+  const durMin = Number(m.duration) || 0;
+  const durationStr =
+    durMin > 0 ? `${Math.floor(durMin / 60)}h ${durMin % 60}m` : "";
+  const genreStr = String(m.genre ?? "");
+  const genres = genreStr
+    .split(",")
+    .map((g) => g.trim())
+    .filter(Boolean);
+  const banner = absMediaUrl(String(m.banner_url ?? ""));
+  const video = absMediaUrl(String(m.movie_url ?? ""));
+  const matchRaw = m.match_percentage;
+  const match =
+    typeof matchRaw === "number" && Number.isFinite(matchRaw)
+      ? String(Math.round(matchRaw))
+      : "94";
+  const ageBadge =
+    m.rating != null && String(m.rating).trim() !== ""
+      ? String(m.rating)
+      : "16+";
+  return {
+    name: String(m.title ?? "Featured"),
+    match,
+    year: String(m.release_year ?? ""),
+    rating: "HD",
+    audioFormat: ageBadge,
+    duration: durationStr,
+    genres: genres.length ? genres : ["Movies"],
+    description: String(m.description ?? "").slice(0, 500),
+    posterUrl: banner || "/aureon-logo-icon.svg",
+    videoUrl: video,
+  };
+}
+
+const emptyHero: HeroMoviePayload = {
+  name: "Welcome to Aureon",
+  match: "100",
+  year: "",
+  rating: "HD",
+  audioFormat: "—",
+  duration: "",
+  genres: [],
+  description: "Browse movies and TV to start watching.",
+  posterUrl: "/aureon-logo-icon.svg",
+  videoUrl: "",
+};
+
 export default async function Home() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  // 🔐 AUTH CHECK ONLY HERE
   if (!token) {
     redirect("/signin");
   }
 
+  const authHeaders = { Authorization: token };
+
   let featuredMovieId: number | null = null;
+  let fallbackListRow: Record<string, unknown> | null = null;
+
   try {
     const topRes = await axios.get(`${Host}/api/movie/topfivemovies`, {
-      headers: { Authorization: token },
+      headers: authHeaders,
     });
     const top = topRes.data?.data;
     if (Array.isArray(top) && top[0]?.movie_id != null) {
@@ -29,34 +100,43 @@ export default async function Home() {
   } catch {
     /* ignore */
   }
+
   if (featuredMovieId == null) {
     try {
       const allRes = await axios.get(`${Host}/api/movie/get_all_movie`, {
-        headers: { Authorization: token },
+        headers: authHeaders,
       });
       const all = allRes.data?.data;
       if (Array.isArray(all) && all[0]?.movie_id != null) {
-        featuredMovieId = Number(all[0].movie_id);
+        const row = all[0] as Record<string, unknown>;
+        featuredMovieId = Number(row.movie_id);
+        fallbackListRow = row;
       }
     } catch {
       /* ignore */
     }
   }
-  
-  const heroMovie = {
-    name: "Amnora",
-    match: "99%",
-    year: "2025",
-    rating: "18+",
-    audioFormat: "Hindi",
-    duration: "120 minutes",
-    genres: ["Romance", "Drama", "Action"],
-    description: "A story of love, betrayal, action, and redemption.",
-    posterUrl: "https://img.englishcinemazurich.com/zJACExqHOItWlEwqUP1s_0M4zr8bhhE0noTCIlBzZOs/resize:fill:800:450:1:0/gravity:sm/aHR0cHM6Ly9leHBhdGNpbmVtYXByb2QuYmxvYi5jb3JlLndpbmRvd3MubmV0L2ltYWdlcy9lYTQ1YzFkNC1mMGYzLTRjZDktODBkNS0wMDc0NWFkNTFmMTcuanBn.jpg",
-    videoUrl: "https://www.youtube.com/watch?v=36Jt_145_3o",
-  };
 
-  console.log(heroMovie);
+  let heroMovie: HeroMoviePayload = emptyHero;
+
+  if (featuredMovieId != null) {
+    try {
+      const detailRes = await axios.get(
+        `${Host}/api/movie/moviedetailbyid/${featuredMovieId}`,
+        { headers: authHeaders }
+      );
+      const raw = detailRes.data?.data;
+      if (raw != null && typeof raw === "object" && !Array.isArray(raw)) {
+        heroMovie = mapDetailToHero(raw as Record<string, unknown>);
+      } else if (fallbackListRow) {
+        heroMovie = mapDetailToHero(fallbackListRow);
+      }
+    } catch {
+      if (fallbackListRow) {
+        heroMovie = mapDetailToHero(fallbackListRow);
+      }
+    }
+  }
 
   return (
     <main style={{ width: "100%", overflowX: "hidden", margin: 0, padding: 0 }}>

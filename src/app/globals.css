@@ -310,6 +310,35 @@ body *:not(pre):not(code):not(kbd):not(samp) {
   box-sizing: border-box;
 }
 
+/* Mobile: top bar hidden — only respect notch; bottom tab bar uses body padding (header.css) */
+@media (max-width: 768px) {
+  .page-content {
+    padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+  }
+}
+
+/*
+ * Scroll clearance above fixed bottom tab bar (must match Navbar/header.css heights).
+ * Use on long app pages so the last controls are not covered.
+ */
+@media (max-width: 768px) {
+  :root {
+    --bottom-nav-clearance: calc(78px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (max-width: 375px) {
+  :root {
+    --bottom-nav-clearance: calc(72px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 390px) and (max-width: 768px) {
+  :root {
+    --bottom-nav-clearance: calc(84px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 /* Loading Skeleton Animation */
 @keyframes skeleton-loading {
   0% {
@@ -381,14 +410,17 @@ body *:not(pre):not(code):not(kbd):not(samp) {
   border-radius: 4px;
 }
 
-/* Ensure no horizontal overflow on any element */
-* {
-  max-width: 100%;
-}
-
-img, video, iframe {
+/* Media scales down; avoid universal * { max-width:100% } — it breaks flex/grid intrinsic sizing */
+img,
+video,
+iframe,
+svg {
   max-width: 100%;
   height: auto;
+}
+
+table {
+  max-width: 100%;
 }
 
 /* Smooth Scrollbar */

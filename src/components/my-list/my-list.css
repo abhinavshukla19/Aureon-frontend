@@ -937,7 +937,7 @@
 
 @media (max-width: 768px) {
   .my-list-container {
-    padding: 40px 5vw 40px;
+    padding: 40px 5vw calc(40px + var(--bottom-nav-clearance, 88px));
   }
 
   .my-list-title {
@@ -1002,7 +1002,7 @@
 
 @media (max-width: 480px) {
   .my-list-container {
-    padding: 30px 4vw 30px;
+    padding: 30px 4vw calc(30px + var(--bottom-nav-clearance, 88px));
   }
 
   .my-list-title {

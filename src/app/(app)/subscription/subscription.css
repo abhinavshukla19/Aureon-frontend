@@ -422,7 +422,7 @@
 /* ===== Mobile ===== */
 @media (max-width: 768px) {
   .subs-main-div {
-    padding: 24px 16px;
+    padding: 24px 16px calc(24px + var(--bottom-nav-clearance, 88px));
   }
 
   .subs-head-text h1 {
