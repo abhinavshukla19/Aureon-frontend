@@ -8,6 +8,9 @@ import { Input } from "@/components/input/input";
 import { KeyRound, Mail, ShieldCheck } from "lucide-react";
 import axios from "axios";
 
+// The server rejects a resend within 60 seconds of the last one.
+const RESEND_SECONDS = 60;
+
 // inner component that uses useSearchParams
 const OtpInner = () => {
   const router = useRouter();
@@ -21,7 +24,10 @@ const OtpInner = () => {
   const [passwordNew, setPasswordNew] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
+  // Reaching this page always means an OTP has just been sent, so start the
+  // countdown at arrival rather than at zero. Arrival is necessarily later than
+  // the send, so this is never shorter than the server's own window.
+  const [resendCooldown, setResendCooldown] = useState(RESEND_SECONDS);
   const [paramsReady, setParamsReady] = useState(false);
   const [email, setEmail] = useState("");
   const [purpose, setPurpose] = useState("signup");
@@ -130,12 +136,15 @@ const OtpInner = () => {
 
       if (res.data.success) {
         showSuccess("OTP sent! Check your email.", "Sent");
-        setResendCooldown(60);
+        setResendCooldown(RESEND_SECONDS);
       } else {
         showError(res.data.message || "Failed to resend OTP", "Error");
       }
     } catch (error: any) {
       const message = error?.response?.data?.message || "Failed to resend OTP";
+      // The server also rate limits. If we somehow got ahead of it, fall back
+      // into the countdown rather than leaving the button live to fail again.
+      if (error?.response?.status === 429) setResendCooldown(RESEND_SECONDS);
       showError(message, "Error");
     } finally {
       setIsLoading(false);
