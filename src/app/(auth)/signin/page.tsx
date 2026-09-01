@@ -32,10 +32,6 @@ const Signin = () => {
               <p className="signin-footer-text">
                 New to {Appname}? <Link href="/signup" className="signin-link">Create account</Link>
               </p>
-              <p className="paragraph-text">
-                This page is protected by Google reCAPTCHA to ensure you're not a bot.{" "}
-                <a href="#" className="terms-link" aria-label="Learn more about reCAPTCHA">Learn more</a>.
-              </p>
             </footer>
           </section>
         </main>
@@ -43,7 +39,6 @@ const Signin = () => {
 
       {/* BOTTOM FOOTER */}
       <footer className="footer">
-        <p className="contact-text">Questions? Call <a href="tel:000-800-919-1743" className="contact-link">000-800-919-1743</a></p>
         <div className="footer-links">
           <div className="footer-links-row">
             <a href="#" className="footer-link">Terms of Use</a>

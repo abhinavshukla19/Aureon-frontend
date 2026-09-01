@@ -38,7 +38,6 @@ const Signup = () => {
 
       {/* BOTTOM FOOTER */}
       <footer className="signup-bottom">
-        <p className="contact-text">Questions? Call <a href="tel:000-800-919-1743" className="contact-link">000-800-919-1743</a></p>
         <div className="footer-links">
           <div className="footer-links-row">
             <a href="#" className="footer-link">Terms of Use</a>
