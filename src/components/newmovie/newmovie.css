@@ -380,8 +380,8 @@
   display: grid;
   width: 100%;
   min-width: 0;
-  /* Fallback until JS measures width (see grid--columns-set in newmovie.tsx) */
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  /* Pure CSS: columns resolve on first paint, no JS measurement needed */
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
   align-items: start;
   justify-items: stretch;
@@ -715,20 +715,20 @@
 /* Responsive */
 @media (min-width: 1400px) {
   .grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
 }
 
 @media (max-width: 1200px) {
   .grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.5rem;
   }
 }
 
 @media (max-width: 900px) {
   .grid {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.25rem;
   }
 }

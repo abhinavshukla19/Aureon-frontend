@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo, useRef, useEffect, useLayoutEffect, useCallback } from "react";
+import { useState, useMemo, useEffect } from "react";
 import "./newmovie.css";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -23,13 +23,9 @@ export interface Movie {
   rating?: number;
 }
 
-const GRID_GAP_PX = 24;
-
 export const Newmoviepage = ({ moviedata, token }: { moviedata: Movie[]; token: string }) => {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
   const [activeCategory, setActiveCategory] = useState("all");
-  const [gridColumns, setGridColumns] = useState<number | null>(null);
-  const gridMeasureRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { toggle: toggleMyList, isListBusy } = useMyListToggle(token);
   const [featuredInMyList, setFeaturedInMyList] = useState(false);
@@ -116,45 +112,6 @@ export const Newmoviepage = ({ moviedata, token }: { moviedata: Movie[]; token: 
       );
     });
   }, [movies, activeCategory]);
-
-  /**
-   * CSS `auto-fit` + `%` can resolve against a wrong width on first paint when
-   * `.page-content` is inside a flex column without `min-width: 0` (intrinsic
-   * width ≈ one column). We measure the real container and set explicit columns.
-   */
-  const computeGridColumns = useCallback(() => {
-    const el = gridMeasureRef.current;
-    if (!el) return;
-    const w = el.getBoundingClientRect().width;
-    if (w < 8) return;
-    const minCard =
-      w < 420 ? 148 : w < 560 ? 160 : w < 768 ? 190 : w < 1100 ? 220 : 240;
-    const raw = Math.floor((w + GRID_GAP_PX) / (minCard + GRID_GAP_PX));
-    const next = Math.min(8, Math.max(1, raw));
-    setGridColumns((prev) => (prev === next ? prev : next));
-  }, []);
-
-  useLayoutEffect(() => {
-    const el = gridMeasureRef.current;
-    if (!el || typeof ResizeObserver === "undefined") return;
-
-    computeGridColumns();
-    let raf2 = 0;
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => computeGridColumns());
-    });
-
-    const ro = new ResizeObserver(() => computeGridColumns());
-    ro.observe(el);
-    window.addEventListener("resize", computeGridColumns);
-
-    return () => {
-      cancelAnimationFrame(raf1);
-      cancelAnimationFrame(raf2);
-      ro.disconnect();
-      window.removeEventListener("resize", computeGridColumns);
-    };
-  }, [computeGridColumns, filteredMovies.length]);
 
   return (
     <div className="movies-page" style={{ minWidth: 0, width: "100%" }}>
@@ -263,20 +220,8 @@ export const Newmoviepage = ({ moviedata, token }: { moviedata: Movie[]; token: 
 
       {/* Movie Grid */}
       <section className="movies-grid">
-        <div
-          className="container movies-container"
-          ref={gridMeasureRef}
-        >
-          <div
-            className={`grid${gridColumns != null ? " grid--columns-set" : ""}`}
-            style={
-              gridColumns != null
-                ? {
-                    gridTemplateColumns: `repeat(${gridColumns}, minmax(0, 1fr))`,
-                  }
-                : undefined
-            }
-          >
+        <div className="container movies-container">
+          <div className="grid">
             {filteredMovies.map((movie, index) => (
               <div 
                 key={movie.movie_id} 
