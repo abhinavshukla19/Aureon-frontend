@@ -376,16 +376,11 @@
   width: 100%;
 }
 
-.grid {
-  display: grid;
-  width: 100%;
-  min-width: 0;
-  /* Pure CSS: columns resolve on first paint, no JS measurement needed */
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-  align-items: start;
-  justify-items: stretch;
-}
+/*
+ * `.grid` layout lives in globals.css as `.movies-grid .grid` — this file is
+ * fetched on client-side navigation, and rules that arrive late let the cards
+ * stack into one column. Edit it there, not here.
+ */
 
 .movie-card {
   width: 100%;
@@ -713,26 +708,6 @@
 }
 
 /* Responsive */
-@media (min-width: 1400px) {
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-}
-
-@media (max-width: 1200px) {
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 1.5rem;
-  }
-}
-
-@media (max-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.25rem;
-  }
-}
-
 @media (max-width: 768px) {
   .hero-content {
     padding: 0 1.5rem;
@@ -757,10 +732,6 @@
     padding-bottom: var(--bottom-nav-clearance, 1.5rem);
   }
 
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-  }
 
   .movie-card-inner {
     border-radius: 12px;
@@ -885,10 +856,6 @@
     font-size: 0.9rem;
   }
 
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-  }
 
   .category-tabs {
     gap: 0.4rem 0.5rem;
